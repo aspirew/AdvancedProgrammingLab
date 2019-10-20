@@ -6,10 +6,10 @@ using std::cout;
 
 int main()
 {
-	//v_alloc_table_add_5(TABLE_SIZE);
-	int **pi_table;
-	b_alloc_table_2_dim(&pi_table, SIZE_X_OF_TWO_DIMENSIONAL_TABLE, SIZE_Y_OF_TWO_DIMENSIONAL_TABLE);
-	b_dealloc_table_2_dim(&pi_table, SIZE_X_OF_TWO_DIMENSIONAL_TABLE, SIZE_Y_OF_TWO_DIMENSIONAL_TABLE);
+	v_alloc_table_add_5(TABLE_SIZE);
+	int **piTable;
+	bool isAllocated = b_alloc_table_2_dim(&piTable, SIZE_X_OF_TWO_DIMENSIONAL_TABLE, SIZE_Y_OF_TWO_DIMENSIONAL_TABLE);
+	b_dealloc_table_2_dim(piTable, SIZE_X_OF_TWO_DIMENSIONAL_TABLE, SIZE_Y_OF_TWO_DIMENSIONAL_TABLE);
 }
 
 void v_write_table(int *table, int sizeOfTable) {
@@ -45,27 +45,24 @@ bool b_alloc_table_2_dim(int ***piTable, int iSizeX, int iSizeY) {
 	}
 
 	*piTable = new int*[iSizeX];
-	//cout << *piTable << std::endl;
 
 	for (int i = 0; i < iSizeX; i++) {
 		(*piTable)[i] = new int[iSizeY];
-		//cout << "(*piTable)[" << i << "] = " << (*piTable)[i] << std::endl;
 	}
 
 	return true;
 }
 
-bool b_dealloc_table_2_dim(int ***piTable, int iSizeX, int iSizeY) {
+bool b_dealloc_table_2_dim(int **piTable, int iSizeX, int iSizeY) {
 
 	if (iSizeX != SIZE_X_OF_TWO_DIMENSIONAL_TABLE || iSizeY != SIZE_Y_OF_TWO_DIMENSIONAL_TABLE)
 		return false;
 
 	for (int i = 0; i < iSizeX; i++) {
-		//cout << "(*piTable)[" << i << "] = " << (*piTable)[i] << std::endl;
-		delete (*piTable)[i];
+		delete [] piTable;
 	}
 
-	delete *piTable;
+	delete [] piTable;
 	return true;
 }
 
