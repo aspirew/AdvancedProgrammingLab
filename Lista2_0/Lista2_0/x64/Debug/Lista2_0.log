@@ -1,0 +1,3 @@
+﻿  Lista2_0.cpp
+c:\users\rav\source\repos\lista2_0\lista2_0\ctable.cpp(112): error C2440: "return": nie można konwertować z "int" na "CTable"
+  c:\users\rav\source\repos\lista2_0\lista2_0\ctable.cpp(112): note: Żaden konstruktor nie mógł przyjąć typu źródłowego lub rozpoznanie przeciążenia konstruktora było niejednoznaczne
