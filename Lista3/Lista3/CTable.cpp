@@ -38,7 +38,7 @@ CTable::CTable(const CTable &pcOther) {
 
 CTable::~CTable() {
 	std::cout << "usuwam: " << s_name << std::endl;
-	//delete cTable;
+	//delete [] cTable;
 }
 
 void CTable::vSetName(std::string sName) {

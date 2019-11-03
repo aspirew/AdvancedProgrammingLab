@@ -42,6 +42,8 @@ int main() {
 		std::cout << mergedTab[i] << "; ";
 	}
 
+	delete [] mergedTab;
+
 	std::cout << std::endl;
 
 	c_tab_0 = c_tab_1;
