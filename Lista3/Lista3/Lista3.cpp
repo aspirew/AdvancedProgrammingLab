@@ -34,15 +34,15 @@ int main() {
 	c_tab_0.vShow();
 	c_tab_1.vShow();
 
-	int * mergedTab = c_tab_0 + c_tab_1;
+	CTable mergedTab = c_tab_0 + c_tab_1 + c_tab_0;
 
 	std::cout << "Polaczone tablice: " << std::endl;
 
-	for (int i = 0; i < c_tab_0.getTableLength() + c_tab_1.getTableLength(); i++) {
-		std::cout << mergedTab[i] << "; ";
-	}
+	mergedTab.vShow();
 
-	delete [] mergedTab;
+	CTable jumpedMergedTab = mergedTab /= 3;
+
+	jumpedMergedTab.vShow();
 
 	std::cout << std::endl;
 
@@ -52,6 +52,7 @@ int main() {
 
 	c_tab_0.vShow();
 	c_tab_1.vShow();
+
 
 
 }

@@ -7,7 +7,7 @@ CTable::CTable() {
 
 	vSetName(S_NAME);
 	std::cout << "bezp: " << s_name << std::endl;
-	cTable = new int[DEFAULT_TABLE_LENGTH];
+	piTable = new int[DEFAULT_TABLE_LENGTH];
 	tableLength = DEFAULT_TABLE_LENGTH;
 
 }
@@ -21,7 +21,7 @@ CTable::CTable(std::string sName, int iTableLen) {
 
 	vSetName(sName);
 	std::cout << "parametr: " << s_name << std::endl;
-	cTable = new int[iTableLen];
+	piTable = new int[iTableLen];
 	tableLength = iTableLen;
 
 }
@@ -29,7 +29,7 @@ CTable::CTable(std::string sName, int iTableLen) {
 CTable::CTable(const CTable &pcOther) {
 	s_name = pcOther.s_name + "_copy";
 	tableLength = pcOther.tableLength;
-	cTable = new int[tableLength];
+	piTable = new int[tableLength];
 
 	vOverwriteTable(pcOther);
 
@@ -38,7 +38,7 @@ CTable::CTable(const CTable &pcOther) {
 
 CTable::~CTable() {
 	std::cout << "usuwam: " << s_name << std::endl;
-	//delete [] cTable;
+	delete [] piTable;
 }
 
 void CTable::vSetName(std::string sName) {
@@ -59,13 +59,13 @@ bool CTable::bSetNewSize(int iTableLen) {
 	int quantityOfNumbersToCopy = (iTableLen < tableLength) ? iTableLen : tableLength;
 
 	for (int i = 0; i < quantityOfNumbersToCopy; i++) {
-		newTable[i] = cTable[i];
+		newTable[i] = piTable[i];
 	}
 
 	tableLength = iTableLen;
 
-	delete[] cTable;
-	cTable = newTable;
+	delete[] piTable;
+	piTable = newTable;
 
 	return true;
 
@@ -73,14 +73,14 @@ bool CTable::bSetNewSize(int iTableLen) {
 
 void CTable::vWriteTable() {
 	for (int i = 0; i < tableLength; i++) {
-		std::cout << cTable[i] << "; ";
+		std::cout << piTable[i] << "; ";
 	}
 	std::cout << std::endl;
 }
 
 void CTable::vOverwriteTable(const CTable &pcOther) {
 	for (int i = 0; i < tableLength; ++i) {
-		cTable[i] = pcOther.cTable[i];
+		piTable[i] = pcOther.piTable[i];
 	}
 }
 
@@ -100,7 +100,7 @@ void CTable::vShow() {
 
 void CTable::vFillTable() {
 	for (int i = 0; i < tableLength; i++) {
-		cTable[i] = i * i;
+		piTable[i] = i * i;
 	}
 }
 
@@ -112,7 +112,7 @@ CTable CTable::GetPairSumsTable() {
 	}
 
 	for (int i = 1; i < tableLength; i++) {
-		returnCTable.cTable[i - 1] = cTable[i - 1] + cTable[i];
+		returnCTable.piTable[i - 1] = piTable[i - 1] + piTable[i];
 	}
 
 	return returnCTable;
@@ -128,22 +128,52 @@ void CTable::vSetValueAt(int iOffset, int iNewVal) {
 		return;
 	}
 
-	cTable[iOffset] = iNewVal;
+	piTable[iOffset] = iNewVal;
 }
 
-int * CTable::operator+(CTable &table) {
+CTable & CTable::operator=(CTable &table) {
+
+	if (this == &table) return *this;
+
+	s_name = table.s_name;
+	tableLength = table.tableLength;
+	delete[] piTable;
+	piTable = new int[tableLength];
+	std::copy(table.piTable, table.piTable + table.tableLength, piTable);
+
+	return *this;
+}
+
+CTable CTable::operator+(CTable &table) {
 	int lenOfSecondTable = table.getTableLength();
 	int newLen = lenOfSecondTable + tableLength;
-	int * newTable = new int[newLen];
+	CTable newTable("mergedTable", newLen);
 
 	for (int i = 0; i < tableLength; i++) {
-		newTable[i] = cTable[i];
+		newTable.piTable[i] = piTable[i];
 	}
 
 	for (int i = 0; i < lenOfSecondTable; i++) {
-		newTable[i + tableLength] = table.cTable[i];
+		newTable.piTable[i + tableLength] = table.piTable[i];
 	}
 
 	return newTable;
+}
+
+CTable & CTable::operator/=(int divider) {
+	if (divider < 2) {
+		std::cout << CANT_JUMP << std::endl;
+		return *this;
+	}
+
+	int increment = 0;
+
+	for (int i = 0; i < tableLength; i += divider) {
+		piTable[increment++] = piTable[i];
+	}
+
+	bSetNewSize(increment);
+
+	return *this;
 
 }

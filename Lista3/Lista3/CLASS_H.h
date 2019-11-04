@@ -3,7 +3,10 @@ class CTable {
 public:
 
 	void vSetValueAt(int iOffset, int iNewVal);
-	int * operator+(CTable &table);
+	CTable operator+(CTable &table);
+	CTable & operator/=(int divider);
+	CTable & operator=(CTable &table);
+	int *piTable;
 
 	void vSetName(std::string sName);
 	bool bSetNewSize(int iTableLen);
@@ -21,7 +24,6 @@ public:
 
 private:
 
-	int *cTable;
 	std::string s_name;
 	int tableLength;
 	void vOverwriteTable(const CTable &pcOther);
