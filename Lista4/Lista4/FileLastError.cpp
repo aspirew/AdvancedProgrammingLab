@@ -48,12 +48,17 @@ void FileLastError::openFile(std::string fileName) {
 	lastError = false;
 	const char *fileNamecstr = fileName.c_str();
 	pFile = fopen(fileNamecstr, "r+");
-	if (pFile == NULL) lastError = true;
-	else lastError = true;
+	if (pFile == NULL) {
+		lastError = true;
+		std::cout << ERROR_WHILE_OPENING_FILE_NO_SUCH_FILE << std::endl;
+	}
 }
 
 void FileLastError::closeFile() {
 	lastError = false;
 	if (pFile != NULL) fclose(pFile);
-	else lastError = true;
+	else {
+		std::cout << ERROR_NO_FILE_OPENED << std::endl;
+		lastError = true;
+	}
 }

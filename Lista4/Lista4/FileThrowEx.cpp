@@ -1,12 +1,11 @@
 #include "FileThrowExHeader.h"
 
 FileThrowEx::FileThrowEx(std::string fileName) {
-	const char *fileNamecstr = fileName.c_str();
-	pFile = fopen(fileNamecstr, "r+");
+	openFile(fileName);
 }
 
 FileThrowEx::~FileThrowEx() {
-	if (pFile != NULL) fclose(pFile);
+	closeFile();
 }
 
 void FileThrowEx::printLine(std::string text) {
@@ -14,38 +13,50 @@ void FileThrowEx::printLine(std::string text) {
 	const char *cstr = text.c_str();
 
 	try {
-		fprintf(pFile, cstr);
-		fprintf(pFile, "\n");
+		if (pFile == NULL) throw ERROR_WHILE_ADDING_ONE_LINE; 
+		else{
+			fprintf(pFile, cstr);
+			fprintf(pFile, "\n");
+		}
 	}
-	catch(...){
-		std::cout << ERROR_WHILE_ADDING_ONE_LINE << std::endl;
+	catch(std::string e){
+		std::cout << e << std::endl;
 	}
 
-	}
+}
 
 void FileThrowEx::printManyLines(std::vector<std::string> text) {
 
-	for (int i = 0; i < text.size(); i++) {
-		printLine(text[i]);
+	try {
+		if (pFile == NULL) throw ERROR_WHILE_ADDING_MANY_LINES;
+		else {
+			for (int i = 0; i < text.size(); i++) {
+				printLine(text[i]);
+			}
+		}
 	}
-
+	catch(std::string e){
+		std::cout << e << std::endl;
+	}
 }
 
 void FileThrowEx::openFile(std::string fileName) {
 	const char *fileNamecstr = fileName.c_str();
 	try {
 		pFile = fopen(fileNamecstr, "r+");
+		if (pFile == NULL) throw ERROR_WHILE_OPENING_FILE_NO_SUCH_FILE;
 	}
-	catch (...) {
-		std::cout << ERROR_WHILE_OPENING_FILE_NO_SUCH_FILE << std::endl;
+	catch (std::string e) {
+		std::cout << e << std::endl;
 	}
 }
 
 void FileThrowEx::closeFile() {
 	try {
+		if (pFile == NULL) throw ERROR_NO_FILE_OPENED;
 		fclose(pFile);
 	}
-	catch (...) {
-		std::cout << ERROR_NO_FILE_OPENED << std::endl;
+	catch (std::string e) {
+		std::cout << e << std::endl;
 	}
 }
