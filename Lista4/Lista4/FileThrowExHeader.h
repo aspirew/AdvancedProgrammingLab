@@ -7,6 +7,7 @@ private:
 
 public:
 
+	FileThrowEx();
 	FileThrowEx(std::string fileName);
 	~FileThrowEx();
 

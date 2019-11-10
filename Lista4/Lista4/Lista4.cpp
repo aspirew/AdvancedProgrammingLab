@@ -25,15 +25,14 @@ void testingErrCodeFun(FileErrCode &toCheck, std::string fileName) {
 
 int main(){
 
-	FileLastError errorCatching1("plk.txt");
+	FileLastError errorCatching1;
 	//errorCatching1.printManyLines({ "icup", "succ", "CBT" });
 
-
-	FileThrowEx errorCatching2("plkk.txt");
+	FileThrowEx errorCatching2;
 	//errorCatching2.printManyLines({ "Crash team racing", "lets", "smash bros" });
 
-	FileErrCode errorCatching3("plkk.txt");
-	//std::cout << errorCatching3.printManyLines({ "MACINTOSH PLUS - FLORAL SHOPPE - 02", "scythelord", "vargfren" });
+	FileErrCode errorCatching3;
+	//std::cout << errorCatching3.printManyLines({ "MACINTOSH PLUS - FLORAL SHOPPE - 02", "scythelord", "katamari 05" });
 
 	testingLastErrFun(errorCatching1, "asd.txt");
 	std::cout << std::endl;

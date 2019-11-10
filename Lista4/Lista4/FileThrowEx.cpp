@@ -1,5 +1,8 @@
 #include "FileThrowExHeader.h"
 
+
+FileThrowEx::FileThrowEx(){}
+
 FileThrowEx::FileThrowEx(std::string fileName) {
 	openFile(fileName);
 }
@@ -49,6 +52,7 @@ void FileThrowEx::openFile(std::string fileName) {
 	catch (std::string e) {
 		std::cout << e << std::endl;
 	}
+
 }
 
 void FileThrowEx::closeFile() {

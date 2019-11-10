@@ -1,11 +1,17 @@
 #include "FileErrCodeHeader.h"
 
+FileErrCode::FileErrCode() {}
+
 FileErrCode::FileErrCode(std::string fileName) {
-	openFile(fileName);
+	if (!openFile(fileName)) {
+		std::cout << ERROR_WHILE_OPENING_FILE_NO_SUCH_FILE << std::endl;
+	}
 }
 
 FileErrCode::~FileErrCode() {
-	closeFile();
+	if (!closeFile()) {
+		std::cout << ERROR_NO_FILE_OPENED << std::endl;
+	}
 }
 
 bool FileErrCode::printLine(std::string text) {
