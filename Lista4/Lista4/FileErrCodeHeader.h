@@ -1,5 +1,5 @@
 #pragma once
-class FileErrCode : public FileErr {
+class FileErrCode {
 private:
 	FILE *pFile;
 public:

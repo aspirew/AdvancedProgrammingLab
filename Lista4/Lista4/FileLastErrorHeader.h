@@ -1,6 +1,6 @@
 #pragma once
 
-class FileLastError : public FileErr {
+class FileLastError{
 private:
 	static bool lastError;
 	FILE *pFile;

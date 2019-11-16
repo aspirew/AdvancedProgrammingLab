@@ -4,7 +4,7 @@ FileErrCode::FileErrCode() {}
 
 FileErrCode::FileErrCode(std::string fileName) {
 	if (!openFile(fileName)) {
-		std::cout << ERROR_WHILE_OPENING_FILE_NO_SUCH_FILE << std::endl;
+		std::cout << ERROR_WHILE_OPENING_FILE << std::endl;
 	}
 }
 
@@ -16,41 +16,39 @@ FileErrCode::~FileErrCode() {
 
 bool FileErrCode::printLine(std::string text) {
 
-	const char *cstr = text.c_str();
+	if (pFile == NULL) return FAILURE;
 
-	if (pFile == NULL) return false;
+	if (fprintf(pFile, "%s\n", text.c_str()) < 0) return FAILURE;
 
-	fprintf(pFile, cstr);
-	fprintf(pFile, "\n");
-	return true;
+	return SUCCESS;
 
 }
 
 bool FileErrCode::printManyLines(std::vector<std::string> text) {
 
-		if (pFile == NULL) return false;
+		if (pFile == NULL) return FAILURE;
 
 		for (int i = 0; i < text.size(); i++) {
-			if(printLine(text[i]) == false) return false;
+			if(printLine(text[i]) == false) return FAILURE;
 		}
 
-		return true;
+		return SUCCESS;
 
 }
 
 bool FileErrCode::openFile(std::string fileName) {
 	const char *fileNamecstr = fileName.c_str();
 
-		pFile = fopen(fileNamecstr, "r+");
-		if (pFile == NULL) return false;
-		return true;
+		pFile = fopen(fileNamecstr, "w+");
+		if (pFile == NULL) return FAILURE;
+		return SUCCESS;
 
 }
 
 bool FileErrCode::closeFile() {
 
-	if (pFile == NULL) return false;
+	if (pFile == NULL) return FAILURE;
 	fclose(pFile);
-	return true;
+	return SUCCESS;
 
 }

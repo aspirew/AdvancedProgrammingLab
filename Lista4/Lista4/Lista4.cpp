@@ -1,42 +1,78 @@
 ﻿#include "pch.h"
 #include "CONST.h"
-#include "FileErrorHeader.h"
 #include "FileLastError.cpp"
 #include "FileThrowEx.cpp"
 #include "FileErrCode.cpp"
 
-void testingLastErrFun(FileLastError &toCheck, std::string fileName) {
+void testingLastErrFun(std::string fileName) {
+
+	std::cout << "lastError: " << std::endl;
+
+	FileLastError errorCatching;
+
 	for (int i = 0; i < 10; i++) {
-		toCheck.openFile(fileName);
+		errorCatching.openFile(fileName);
+		errorCatching.printManyLines({ "abc", "xyz", "ooo" });
+		errorCatching.closeFile();
 	}
+
+	if (!(errorCatching.getLastError())) std::cout << TEST_SUCCESFUL << std::endl;
 }
 
-void testingThrowingFun(FileThrowEx &toCheck, std::string fileName) {
-	for (int i = 0; i < 10; i++) {
-		toCheck.openFile(fileName);
+void testingThrowingFun(std::string fileName) {
+
+	FileThrowEx errorCatching;
+	bool succ = true;
+
+	std::cout << "throwEx: " << std::endl;
+
+	try {
+		for (int i = 0; i < 10; i++) {
+			errorCatching.openFile(fileName);
+			errorCatching.printManyLines({ "abc", "xyz", "ooo" });
+			errorCatching.closeFile();
+		}
 	}
+	catch (std::string e) {
+		std::cout << e << std::endl;
+		succ = false;
+	}
+
+	if (succ) std::cout << TEST_SUCCESFUL << std::endl;
+
 }
 
-void testingErrCodeFun(FileErrCode &toCheck, std::string fileName) {
+void testingErrCodeFun(std::string fileName) {
+
+	FileErrCode errorCatching;
+
+	std::cout << "errorCode: " << std::endl;
+
+	bool succ = true;
+
 	for (int i = 0; i < 10; i++) {
-		if(!toCheck.openFile(fileName)) std::cout << ERROR_WHILE_OPENING_FILE_NO_SUCH_FILE << std::endl;
+		if (!errorCatching.openFile(fileName)) {
+			std::cout << ERROR_WHILE_OPENING_FILE << std::endl;
+			succ = false;
+		}
+		if (!errorCatching.printManyLines({ "abc", "xyz", "ooo" })) {
+			std::cout << ERROR_WHILE_ADDING_MANY_LINES << std::endl;
+			succ = false;
+		}
+		if (!errorCatching.closeFile()) {
+			std::cout << ERROR_NO_FILE_OPENED << std::endl;
+			succ = false;
+		}
 	}
+
+	if (succ) std::cout << TEST_SUCCESFUL << std::endl;
 }
 
 int main(){
 
-	FileLastError errorCatching1;
-	//errorCatching1.printManyLines({ "icup", "succ", "CBT" });
-
-	FileThrowEx errorCatching2;
-	//errorCatching2.printManyLines({ "Crash team racing", "lets", "smash bros" });
-
-	FileErrCode errorCatching3;
-	//std::cout << errorCatching3.printManyLines({ "MACINTOSH PLUS - FLORAL SHOPPE - 02", "scythelord", "katamari 05" });
-
-	testingLastErrFun(errorCatching1, "asd.txt");
+	testingLastErrFun("textFiles/lastError.txt");
 	std::cout << std::endl;
-	testingThrowingFun(errorCatching2, "plkk.txt");
+	testingThrowingFun("textFiles/throwException.txt");
 	std::cout << std::endl;
-	testingErrCodeFun(errorCatching3, "dddas.txt");
+	testingErrCodeFun("textFiles/errorCode.txt");
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-class FileThrowEx : public FileErr {
+class FileThrowEx{
 private:
 
 	FILE *pFile;
