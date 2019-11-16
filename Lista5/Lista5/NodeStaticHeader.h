@@ -19,7 +19,7 @@ public:
 
 	int getChildrenNumber() { return(children.size()); };
 	void addNewChild();
-	void addNewChild(NodeStatic * newChild);
+	void addNewChild(NodeStatic & newChild);
 	NodeStatic *getChild(int childOffset);
 	NodeStatic *getParent() { return parentNode; };
 	bool deleteChild(NodeStatic * child);
@@ -30,6 +30,6 @@ public:
 	void printAllBelow();
 	void printUp();
 
-	//NodeStatic & operator=(NodeStatic & node);
+	NodeStatic & operator=(NodeStatic & node);
 
 };

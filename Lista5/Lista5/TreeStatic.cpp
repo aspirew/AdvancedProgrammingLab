@@ -10,8 +10,9 @@ bool TreeStatic::moveSubtree(NodeStatic * parentNode, NodeStatic * newChildNode)
 
 	if (newChildNode->getParent()->deleteChild(newChildNode) == false) return false;
 
-	newChildNode->setParent(parentNode);
-	parentNode->addNewChild(newChildNode);
+	std::cout << newChildNode->getValue() << "SDAFASGA" << std::endl;
+
+	parentNode->addNewChild(*newChildNode);
 
 	return true;
 }
