@@ -2,7 +2,7 @@
 #include "NodeDynamic.cpp"
 class TreeDynamic {
 private:
-	NodeDynamic *root;
+	NodeDynamic *root = new NodeDynamic();
 
 public:
 	TreeDynamic() {};

@@ -35,9 +35,7 @@ void dynamicTreeTest() {
 
 void staticTreeTest() {
 
-	NodeStatic root;
-
-	TreeStatic staticTree = TreeStatic(&root);
+	TreeStatic staticTree;
 
 	staticTree.getRoot()->addNewChild();
 	staticTree.getRoot()->addNewChild();
@@ -65,11 +63,8 @@ void staticTreeTest() {
 
 void movingDynamicSubtreeTest() {
 
-	NodeDynamic root1;
-	NodeDynamic root2;
-
-	TreeDynamic tree1 = TreeDynamic(&root1);
-	TreeDynamic tree2 = TreeDynamic(&root2);
+	TreeDynamic tree1;
+	TreeDynamic tree2;
 
 	tree1.getRoot()->addNewChild();
 	tree1.getRoot()->addNewChild();
@@ -89,15 +84,15 @@ void movingDynamicSubtreeTest() {
 	std::cout << std::endl;
 	tree1.printTree();
 	std::cout << std::endl;
+
+	tree2.getRoot()->getChild(1)->getChild(0)->printUp();
 
 }
 
 void movingStaticSubtreeTest() {
-	NodeStatic root1;
-	NodeStatic root2;
 
-	TreeStatic tree1 = TreeStatic(&root1);
-	TreeStatic tree2 = TreeStatic(&root2);
+	TreeStatic tree1;
+	TreeStatic tree2;
 
 	tree1.getRoot()->addNewChild();
 	tree1.getRoot()->addNewChild();
@@ -122,6 +117,9 @@ void movingStaticSubtreeTest() {
 	std::cout << std::endl;
 	tree1.printTree();
 	std::cout << std::endl;
+	std::cout << std::endl;
+
+	tree2.getRoot()->getChild(1)->getChild(0)->printUp();
 }
 
 int main(){

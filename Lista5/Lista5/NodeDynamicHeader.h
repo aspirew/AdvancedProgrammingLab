@@ -16,6 +16,7 @@ public:
 	~NodeDynamic();
 
 	void setValue(int newVal) { val = newVal; };
+	int getValue() { return val; };
 
 	int getChildrenNumber() { return(children.size()); };
 	void addNewChild();
@@ -25,7 +26,7 @@ public:
 	void setParent(NodeDynamic * newParent) { parentNode = newParent; };
 	bool deleteChild(NodeDynamic * childNode);
 
-	void print() { std::cout << " " << val; };
+	void print() { std::cout << " value: " << val << " address: " << this << " parent value: " << ((parentNode != NULL) ? parentNode->getValue() : NULL) << " parent address: " << parentNode << std::endl; };
 	void printAllBelow();
 	void printUp();
 

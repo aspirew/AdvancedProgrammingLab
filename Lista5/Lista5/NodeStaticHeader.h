@@ -23,13 +23,16 @@ public:
 	NodeStatic *getChild(int childOffset);
 	NodeStatic *getParent() { return parentNode; };
 	bool deleteChild(NodeStatic * child);
+	void adoptChildren();
 	
 	void setParent(NodeStatic * newParent) { parentNode = newParent; };
 
-	void print() { std::cout << " " << val; };
+	void print() { 
+	std::cout << " value: " << val << " address: " << this << " parent value: " << ((parentNode != NULL) ? parentNode->getValue() : NULL) << " parent address: " << parentNode << std::endl; };
 	void printAllBelow();
 	void printUp();
 
-	NodeStatic & operator=(NodeStatic & node);
-
+	NodeStatic & operator=(const NodeStatic & node);
+	//bool operator==(NodeStatic & node);
+	//bool operator!=(NodeStatic & node);
 };
