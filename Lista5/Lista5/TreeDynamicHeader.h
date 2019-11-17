@@ -7,7 +7,7 @@ private:
 public:
 	TreeDynamic() {};
 	TreeDynamic(NodeDynamic * root) { this->root = root; }
-	~TreeDynamic() {};
+	~TreeDynamic() { delete root; };
 
 	bool moveSubtree(NodeDynamic * parentNode, NodeDynamic * newChildNode);
 	NodeDynamic * getRoot() { return root; };

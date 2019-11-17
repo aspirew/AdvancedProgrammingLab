@@ -8,7 +8,6 @@ private:
 	std::vector<NodeDynamic *> children;
 	NodeDynamic *parentNode;
 	int val;
-	void deleteAllNodes(NodeDynamic * currentNode);
 
 public:
 	NodeDynamic() { val = 0; parentNode = NULL; };
@@ -26,7 +25,8 @@ public:
 	void setParent(NodeDynamic * newParent) { parentNode = newParent; };
 	bool deleteChild(NodeDynamic * childNode);
 
-	void print() { std::cout << " value: " << val << " address: " << this << " parent value: " << ((parentNode != NULL) ? parentNode->getValue() : NULL) << " parent address: " << parentNode << std::endl; };
+	void print();
+	void extraPrint();
 	void printAllBelow();
 	void printUp();
 

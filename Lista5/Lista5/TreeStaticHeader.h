@@ -5,7 +5,6 @@ private:
 	NodeStatic root;
 public:
 	TreeStatic() {};
-	//TreeStatic(NodeStatic root) { this->root = root; }
 	~TreeStatic() {};
 
 	bool moveSubtree(NodeStatic * parentNode, NodeStatic * newChildNode);

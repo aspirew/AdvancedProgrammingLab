@@ -23,15 +23,24 @@ NodeDynamic * NodeDynamic::getChild(int childOffset) {
 	return children.at(childOffset);
 }
 
-void NodeDynamic::printAllBelow() {
+void NodeDynamic::print() {
+	std::cout << " value: " << val;
+}
+
+void NodeDynamic::extraPrint() {
 	print();
+	std::cout << " address: " << this << " parent value: " << ((parentNode != NULL) ? parentNode->getValue() : NULL) << " parent address: " << parentNode << std::endl;
+}
+
+void NodeDynamic::printAllBelow() {
+	extraPrint();
 	for (int i = 0; i < getChildrenNumber(); i++) {
 		children.at(i)->printAllBelow();
 	}
 }
 
 void NodeDynamic::printUp() {
-	print();
+	extraPrint();
 	if (parentNode != NULL) {
 		parentNode->printUp();
 	}

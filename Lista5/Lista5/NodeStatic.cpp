@@ -30,7 +30,7 @@ NodeStatic & NodeStatic::operator=(NodeStatic const &node) {
 //		return false;
 //	}
 //	for (int i = 0; i < getChildrenNumber(); i++) {
-//		if (children[i] != other.children[i]) {
+//		if (children.at(i) != other.children.at(i)) {
 //			return false;
 //		}
 //	}
@@ -47,7 +47,8 @@ void NodeStatic::addNewChild(NodeStatic & newChild) {
 	nodeToAdd = newChild;
 
 	children.push_back(nodeToAdd);
-	adoptChildren();
+	setParentToAllGrandchildren();
+	
 }
 
 NodeStatic * NodeStatic::getChild(int childOffset) {
@@ -61,15 +62,31 @@ void NodeStatic::adoptChildren() {
 	}
 }
 
-void NodeStatic::printAllBelow() {
+void NodeStatic::setParentToAllGrandchildren() {
+	for (int i = 0; i < getChildrenNumber(); i++) {
+		children.at(i).setParent(this);
+		children.at(i).setParentToAllGrandchildren();
+	}
+}
+
+void NodeStatic::print() {
+	std::cout << " value: " << val;
+}
+
+void NodeStatic::extraPrint(){
 	print();
+	std::cout << " address: " << this << " parent value: " << ((parentNode != NULL) ? parentNode->getValue() : NULL) << " parent address: " << parentNode << std::endl;
+}
+
+void NodeStatic::printAllBelow() {
+	extraPrint();
 	for (int i = 0; i < getChildrenNumber(); i++) {
 		children.at(i).printAllBelow();
 	}
 }
 
 void NodeStatic::printUp() {
-	print();
+	extraPrint();
 	if (parentNode != NULL) {
 		parentNode->printUp();
 	}
@@ -78,9 +95,17 @@ void NodeStatic::printUp() {
 bool NodeStatic::deleteChild(NodeStatic * child) {
 	for (int i = 0; i < getChildrenNumber(); i++) {
 		if (&children.at(i) == child) {
+			children.at(i).deleteAllChildren();
 			children.erase(children.begin() + i);
 			return true;
 		}
 	}
 	return false;
+}
+
+void NodeStatic::deleteAllChildren() {
+	for (int i = 0; i < getChildrenNumber(); i++) {
+		children.at(i).deleteAllChildren();
+		children.clear();
+	}
 }

@@ -8,7 +8,7 @@ bool TreeDynamic::moveSubtree(NodeDynamic * parentNode, NodeDynamic * newChildNo
 
 	if (parentNode == NULL || newChildNode == NULL) return false;
 
-	if(newChildNode->getParent()->deleteChild(newChildNode) == false ) return false;
+	if (newChildNode->getParent()->deleteChild(newChildNode) == false) return false;
 
 	parentNode->addNewChild(newChildNode);
 

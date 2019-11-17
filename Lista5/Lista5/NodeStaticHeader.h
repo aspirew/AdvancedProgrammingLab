@@ -23,12 +23,14 @@ public:
 	NodeStatic *getChild(int childOffset);
 	NodeStatic *getParent() { return parentNode; };
 	bool deleteChild(NodeStatic * child);
+	void deleteAllChildren();
 	void adoptChildren();
+	void setParentToAllGrandchildren();
 	
 	void setParent(NodeStatic * newParent) { parentNode = newParent; };
 
-	void print() { 
-	std::cout << " value: " << val << " address: " << this << " parent value: " << ((parentNode != NULL) ? parentNode->getValue() : NULL) << " parent address: " << parentNode << std::endl; };
+	void print();
+	void extraPrint();
 	void printAllBelow();
 	void printUp();
 
