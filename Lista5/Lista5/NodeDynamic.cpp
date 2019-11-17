@@ -1,7 +1,17 @@
 #include "NodeDynamicHeader.h"
 
+NodeDynamic::NodeDynamic() {
+	val = 0; 
+	parentNode = NULL;
+}
+
+NodeDynamic::NodeDynamic(NodeDynamic * parent) {
+	val = 0; 
+	parentNode = parent;
+}
+
 NodeDynamic::~NodeDynamic() {
-	std::cout << "deleting node with val: " << val << " and address: " << this << std::endl;
+	//std::cout << "deleting node with val: " << val << " and address: " << this << std::endl;
 	for (int i = 0; i < getChildrenNumber(); i++) {
 		delete children.at(i);
 	}
@@ -24,12 +34,13 @@ NodeDynamic * NodeDynamic::getChild(int childOffset) {
 }
 
 void NodeDynamic::print() {
-	std::cout << " value: " << val;
+	std::cout << " " << val;
 }
 
 void NodeDynamic::extraPrint() {
+	std::cout << VALUE_CAPTION;
 	print();
-	std::cout << " address: " << this << " parent value: " << ((parentNode != NULL) ? parentNode->getValue() : NULL) << " parent address: " << parentNode << std::endl;
+	std::cout << ADDRESS_CAPTION << this << PARENT_VALUE_CAPTION << ((parentNode != NULL) ? parentNode->getValue() : NULL) << PARENT_ADDRESS_CAPTION << parentNode << std::endl;
 }
 
 void NodeDynamic::printAllBelow() {

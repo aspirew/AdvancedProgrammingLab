@@ -1,6 +1,4 @@
 #pragma once
-#include <iostream>
-#include <vector>
 
 class NodeStatic {
 
@@ -10,8 +8,8 @@ private:
 	int val;
 
 public:
-	NodeStatic() { val = 0; parentNode = NULL; };
-	NodeStatic(NodeStatic * parent) { val = 0; parentNode = parent; };
+	NodeStatic();
+	NodeStatic(NodeStatic * parent);
 	~NodeStatic();
 
 	void setValue(int newVal) { val = newVal; };
@@ -25,7 +23,7 @@ public:
 	bool deleteChild(NodeStatic * child);
 	void deleteAllChildren();
 	void adoptChildren();
-	void setParentToAllGrandchildren();
+	void setParentToAllChildrenAndGrandchildren();
 	
 	void setParent(NodeStatic * newParent) { parentNode = newParent; };
 

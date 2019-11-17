@@ -1,5 +1,14 @@
 #include "NodeStaticHeader.h"
 
+NodeStatic::NodeStatic() {
+	val = 0; parentNode = NULL;
+}
+
+NodeStatic::NodeStatic(NodeStatic * parent) {
+	val = 0; 
+	parentNode = parent;
+}
+
 NodeStatic::~NodeStatic() {
 	//std::cout << "deleting node with val: " << val << " and address: " << this << std::endl;
 }
@@ -14,6 +23,8 @@ NodeStatic & NodeStatic::operator=(NodeStatic const &node) {
 	for (int i = 0; i < node.children.size(); i++) {
 		this->children.push_back(node.children.at(i));
 	}
+
+	setParentToAllChildrenAndGrandchildren();
 
 	return *this;
 }
@@ -47,7 +58,8 @@ void NodeStatic::addNewChild(NodeStatic & newChild) {
 	nodeToAdd = newChild;
 
 	children.push_back(nodeToAdd);
-	setParentToAllGrandchildren();
+	adoptChildren();
+	children.at(getChildrenNumber() - 1).setParentToAllChildrenAndGrandchildren();
 	
 }
 
@@ -62,20 +74,21 @@ void NodeStatic::adoptChildren() {
 	}
 }
 
-void NodeStatic::setParentToAllGrandchildren() {
+void NodeStatic::setParentToAllChildrenAndGrandchildren() {
 	for (int i = 0; i < getChildrenNumber(); i++) {
 		children.at(i).setParent(this);
-		children.at(i).setParentToAllGrandchildren();
+		children.at(i).setParentToAllChildrenAndGrandchildren();
 	}
 }
 
 void NodeStatic::print() {
-	std::cout << " value: " << val;
+	std::cout << " " << val;
 }
 
 void NodeStatic::extraPrint(){
+	std::cout << VALUE_CAPTION;
 	print();
-	std::cout << " address: " << this << " parent value: " << ((parentNode != NULL) ? parentNode->getValue() : NULL) << " parent address: " << parentNode << std::endl;
+	std::cout << ADDRESS_CAPTION << this << PARENT_VALUE_CAPTION << ((parentNode != NULL) ? parentNode->getValue() : NULL) << PARENT_ADDRESS_CAPTION << parentNode << std::endl;
 }
 
 void NodeStatic::printAllBelow() {
