@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include <iostream>
+#include "CONST_H.h"
 #include "TreeStatic.cpp"
 #include "TreeDynamic.cpp"
 
@@ -26,6 +26,8 @@ void dynamicTreeTest() {
 	dynamicTree.getRoot()->getChild(1)->getChild(1)->setValue(22);
 
 	dynamicTree.getRoot()->getChild(0)->getChild(1)->printUp();
+
+	std::cout << std::endl;
 
 	dynamicTree.printTree();
 
@@ -55,7 +57,9 @@ void staticTreeTest() {
 
 	staticTree.getRoot()->getChild(0)->getChild(1)->printUp();
 
-	//staticTree.printTree();
+	std::cout << std::endl;
+
+	staticTree.printTree();
 
 }
 
@@ -94,7 +98,7 @@ void movingDynamicSubtreeTest() {
 	tree1.printTree();
 	std::cout << std::endl;
 
-	tree2.getRoot()->getChild(1)->printUp();
+	tree2.getRoot()->getChild(0)->getChild(0)->getChild(0)->printUp();
 
 }
 
@@ -115,6 +119,12 @@ void movingStaticSubtreeTest() {
 	tree1.getRoot()->getChild(0)->getChild(0)->setValue(100);
 	tree1.getRoot()->getChild(0)->getChild(1)->setValue(101);
 
+	tree1.getRoot()->getChild(0)->getChild(0)->addNewChild();
+	tree1.getRoot()->getChild(0)->getChild(0)->addNewChild();
+
+	tree1.getRoot()->getChild(0)->getChild(0)->getChild(0)->setValue(1000);
+	tree1.getRoot()->getChild(0)->getChild(0)->getChild(1)->setValue(1001);
+
 	tree2.getRoot()->addNewChild();
 	tree2.getRoot()->addNewChild();
 
@@ -133,11 +143,27 @@ void movingStaticSubtreeTest() {
 	tree1.printTree();
 	std::cout << std::endl;
 
-	tree2.getRoot()->getChild(1)->getChild(0)->printUp();
+	tree2.getRoot()->getChild(1)->getChild(0)->getChild(0)->getChild(0)->printUp();
 
 }
 
 int main() {
+
+	std::cout << "staticTreeTest: " << std::endl << std::endl;
+
+	staticTreeTest();
+
+	std::cout << "\n\ndynamicTreeTest: " << std::endl << std::endl;
+
+	dynamicTreeTest();
+
+	std::cout << "\n\nmovingStaticSubtreeTest: " << std::endl << std::endl;
+
 	movingStaticSubtreeTest();
+
+	std::cout << "\n\nmovingDynamicSubtreeTest: " << std::endl << std::endl;
+
+	movingDynamicSubtreeTest();
+
 	
 }

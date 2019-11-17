@@ -10,8 +10,8 @@ private:
 	int val;
 
 public:
-	NodeDynamic() { val = 0; parentNode = NULL; };
-	NodeDynamic(NodeDynamic * parent) { val = 0; parentNode = parent; };
+	NodeDynamic();
+	NodeDynamic(NodeDynamic * parent);
 	~NodeDynamic();
 
 	void setValue(int newVal) { val = newVal; };
