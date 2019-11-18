@@ -10,6 +10,7 @@ private:
 public:
 	NodeStatic();
 	NodeStatic(NodeStatic * parent);
+	//NodeStatic(const NodeStatic & other);
 	~NodeStatic();
 
 	void setValue(int newVal) { val = newVal; };
@@ -31,6 +32,8 @@ public:
 	void extraPrint();
 	void printAllBelow();
 	void printUp();
+
+	NodeStatic * getRoot();
 
 	NodeStatic & operator=(const NodeStatic & node);
 	//bool operator==(NodeStatic & node);

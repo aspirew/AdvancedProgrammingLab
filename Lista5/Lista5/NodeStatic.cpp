@@ -9,6 +9,13 @@ NodeStatic::NodeStatic(NodeStatic * parent) {
 	parentNode = parent;
 }
 
+//NodeStatic::NodeStatic(const NodeStatic & other) {
+//	parentNode = other.parentNode;
+//	children = other.children;
+//	val = other.val;
+//	setParentToAllChildrenAndGrandchildren();
+//}
+
 NodeStatic::~NodeStatic() {
 	//std::cout << "deleting node with val: " << val << " and address: " << this << std::endl;
 }
@@ -92,14 +99,18 @@ void NodeStatic::extraPrint(){
 }
 
 void NodeStatic::printAllBelow() {
-	extraPrint();
-	for (int i = 0; i < getChildrenNumber(); i++) {
-		children.at(i).printAllBelow();
+	print();
+	if (getChildrenNumber() > 0) {
+		std::cout << " ( ";
+		for (int i = 0; i < getChildrenNumber(); i++) {
+			children.at(i).printAllBelow();
+		}
+		std::cout << " ) ";
 	}
 }
 
 void NodeStatic::printUp() {
-	extraPrint();
+	print();
 	if (parentNode != NULL) {
 		parentNode->printUp();
 	}
@@ -121,4 +132,11 @@ void NodeStatic::deleteAllChildren() {
 		children.at(i).deleteAllChildren();
 		children.clear();
 	}
+}
+
+NodeStatic * NodeStatic::getRoot() {
+	if (parentNode != NULL) {
+		return parentNode->getRoot();
+	}
+	else return this;
 }

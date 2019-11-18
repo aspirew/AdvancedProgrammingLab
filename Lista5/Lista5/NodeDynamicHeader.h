@@ -30,6 +30,6 @@ public:
 	void printAllBelow();
 	void printUp();
 
-	
+	NodeDynamic * getRoot();
 
 };

@@ -44,9 +44,13 @@ void NodeDynamic::extraPrint() {
 }
 
 void NodeDynamic::printAllBelow() {
-	extraPrint();
-	for (int i = 0; i < getChildrenNumber(); i++) {
-		children.at(i)->printAllBelow();
+	print();
+	if (getChildrenNumber() > 0) {
+		std::cout << " ( ";
+		for (int i = 0; i < getChildrenNumber(); i++) {
+			children.at(i)->printAllBelow();
+		}
+		std::cout << " ) ";
 	}
 }
 
@@ -65,4 +69,11 @@ bool NodeDynamic::deleteChild(NodeDynamic * child) {
 		}
 	}
 	return false;
+}
+
+NodeDynamic * NodeDynamic::getRoot() {
+	if (parentNode != NULL) {
+		return parentNode->getRoot();
+	}
+	else return this;
 }

@@ -147,23 +147,61 @@ void movingStaticSubtreeTest() {
 
 }
 
+void checkIfNodesBelongToSameStaticTree() {
+
+	TreeStatic tree1;
+	TreeStatic tree2;
+
+	tree1.getRoot()->addNewChild();
+	tree1.getRoot()->addNewChild();
+
+	tree2.getRoot()->addNewChild();
+	tree2.getRoot()->addNewChild();
+
+	std::cout << tree1.doBelongToSameTree(tree1.getRoot()->getChild(0), tree2.getRoot()->getChild(1));
+
+}
+
+void checkIfNodesBelongToSameDynamicTree() {
+
+	TreeDynamic tree1;
+	TreeDynamic tree2;
+
+	tree1.getRoot()->addNewChild();
+	tree1.getRoot()->addNewChild();
+
+	tree1.getRoot()->getChild(0)->addNewChild();
+	tree1.getRoot()->getChild(0)->addNewChild();
+
+	tree2.getRoot()->addNewChild();
+	tree2.getRoot()->addNewChild();
+
+	std::cout << tree1.doBelongToSameTree(tree1.getRoot()->getChild(0)->getChild(0), tree1.getRoot()->getChild(1));
+
+}
+
 int main() {
 
-	std::cout << "staticTreeTest: " << std::endl << std::endl;
+	std::cout << "staticTreeTest: \n\n";
 
 	staticTreeTest();
 
-	std::cout << "\n\ndynamicTreeTest: " << std::endl << std::endl;
+	std::cout << "\n\ndynamicTreeTest: \n\n";
 
 	dynamicTreeTest();
 
-	std::cout << "\n\nmovingStaticSubtreeTest: " << std::endl << std::endl;
+	std::cout << "\n\nmovingStaticSubtreeTest: \n\n";
 
 	movingStaticSubtreeTest();
 
-	std::cout << "\n\nmovingDynamicSubtreeTest: " << std::endl << std::endl;
+	std::cout << "\n\nmovingDynamicSubtreeTest: \n\n";
 
 	movingDynamicSubtreeTest();
+
+	std::cout << std::endl << std::endl;
+
+	checkIfNodesBelongToSameStaticTree();
+	checkIfNodesBelongToSameDynamicTree();
 
 	
 }

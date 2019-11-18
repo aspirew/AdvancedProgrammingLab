@@ -12,4 +12,5 @@ public:
 	bool moveSubtree(NodeDynamic * parentNode, NodeDynamic * newChildNode);
 	NodeDynamic * getRoot() { return root; };
 	void printTree();
+	bool doBelongToSameTree(NodeDynamic * node1, NodeDynamic * node2);
 };
