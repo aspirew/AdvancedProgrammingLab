@@ -8,7 +8,7 @@ private:
 	std::vector<NodeDynamic *> children;
 	NodeDynamic *parentNode;
 	T val;
-	void setDefaultValue();
+	void setDefaultKnownType();
 
 public:
 	NodeDynamic();
@@ -33,6 +33,6 @@ public:
 
 	NodeDynamic * getRoot();
 
-	void setDefaultKnownType();
+	int checkNumberOfLeaves();
 
 };

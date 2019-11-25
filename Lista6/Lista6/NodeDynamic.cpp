@@ -91,6 +91,19 @@ NodeDynamic<T> * NodeDynamic<T>::getRoot() {
 }
 
 template <typename T>
+int NodeDynamic<T>::checkNumberOfLeaves() {
+	if (getChildrenNumber() == 0) {
+		return 1;
+	}
+	int out = 0;
+	for (int i = 0; i < getChildrenNumber(); i++) {
+		out += children.at(i)->checkNumberOfLeaves();
+	}
+
+	return out;
+}
+
+template <typename T>
 void NodeDynamic<T>::setDefaultKnownType() {
 	val = NULL;
 }
@@ -102,21 +115,21 @@ void NodeDynamic<int>::setDefaultKnownType() {
 
 template <>
 void NodeDynamic<std::string>::setDefaultKnownType() {
-	val = "aa";
+	val = "";
 }
 
 template <>
 void NodeDynamic<char>::setDefaultKnownType() {
-	val = 'f';
+	val = '\0';
 }
 
 template <>
 void NodeDynamic<double>::setDefaultKnownType() {
-	val = 0.5;
+	val = 0.0;
 }
 
 template <>
 void NodeDynamic<float>::setDefaultKnownType() {
-	val = 0.1f;
+	val = 0.f;
 }
 

@@ -32,6 +32,11 @@ std::string TreeDynamic<T>::getKnownType() {
 	return type;
 }
 
+template <typename T>
+int TreeDynamic<T>::getNumberOfLeaves() {
+	return root->checkNumberOfLeaves();
+}
+
 //template <typename T>
 //std::string TreeDynamic<NodeDynamic<T>>::getKnownType() {
 //	return TEMPLATE_TYPES.NODE_DYNAMIC;

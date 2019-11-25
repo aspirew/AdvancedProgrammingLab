@@ -17,4 +17,6 @@ public:
 	bool doBelongToSameTree(T * node1, T * node2);
 
 	std::string getKnownType();
+
+	int getNumberOfLeaves();
 };
