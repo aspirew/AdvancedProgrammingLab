@@ -19,6 +19,12 @@ int main(){
 
 	std::cout << *ptr << *other << *other2;
 
+	int * pointerToStack;
+	int value = 5;
+	pointerToStack = &value;
+
+	//MySmartPointer<int> staticInt = MySmartPointer<int>(pointerToStack);
+
 	return 0;
     
 }
