@@ -14,7 +14,9 @@ public:
 	T& operator*() { return(*pointer); }
 	T* operator->() { return(pointer); }
 
-	void operator=(const MySmartPointer & otherSmartPointer);
+	MySmartPointer duplicate();
+
+	MySmartPointer operator=(const MySmartPointer & otherSmartPointer);
 
 private:
 	RefCounter *counter;

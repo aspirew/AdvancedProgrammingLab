@@ -11,19 +11,25 @@ int main(){
 	MySmartPointer<int> other = ptr;
 	MySmartPointer<int> other2 = MySmartPointer<int>(createInt(2));
 
-	std::cout << *ptr << *other << *other2 <<std::endl;
+	MySmartPointer<int> duplicatedPointer = other2.duplicate();
+
+	*duplicatedPointer = 10;
+
+	std::cout << *ptr << *other << *other2 << *duplicatedPointer << std::endl;
 
 	other = other2;
 	other2 = ptr;
 	other = ptr;
 
-	std::cout << *ptr << *other << *other2;
+	std::cout << *ptr << *other << *other2 << *duplicatedPointer;
 
 	int * pointerToStack;
-	int value = 5;
+	int value = 1;
 	pointerToStack = &value;
 
-	//MySmartPointer<int> staticInt = MySmartPointer<int>(pointerToStack);
+	/*MySmartPointer<int> staticInt = MySmartPointer<int>(pointerToStack);
+
+	std::cout << *staticInt;*/
 
 	return 0;
     

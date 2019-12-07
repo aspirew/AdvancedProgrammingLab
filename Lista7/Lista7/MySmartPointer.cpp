@@ -24,7 +24,9 @@ MySmartPointer<T>::~MySmartPointer(){
 }
 
 template <typename T>
-void MySmartPointer<T>::operator=(const MySmartPointer & otherSmartPointer) {
+MySmartPointer<T> MySmartPointer<T>::operator=(const MySmartPointer & otherSmartPointer) {
+
+	if (&otherSmartPointer == this) return *this;
 
 	if (counter->dec() == 0) {
 		delete pointer;
@@ -34,5 +36,11 @@ void MySmartPointer<T>::operator=(const MySmartPointer & otherSmartPointer) {
 	pointer = otherSmartPointer.pointer;
 	counter = otherSmartPointer.counter;
 	counter->add();
+
+	return *this;
 }
 
+template <typename T>
+MySmartPointer<T> MySmartPointer<T>::duplicate() {
+	return MySmartPointer(new T(*this->pointer));
+}
