@@ -1,7 +1,6 @@
 #pragma once
 #ifndef TAB_H
 #define TAB_H
-#include <iostream>
 #include "CONST_H.h"
 
 class Tab
@@ -16,6 +15,9 @@ public:
 
 	bool setSize(int newSize);
 	int getSize() { return(size); }
+
+	int getElement(int offset) { return tab[offset]; }
+
 private:
 	void copy(const Tab &other);
 
