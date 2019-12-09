@@ -19,14 +19,12 @@ void i_ms_test()
 void aTest(){
 	Tab tab1;
 	Tab tab2;
+	Tab tab3;
 
-	std::cout << tab1.getElement(0);
-	std::cout << tab2.getElement(0);
+	tab1 = tab2;
 
-	tab1 = std::move(tab2);
+	tab1 = std::move(tab3);
 
-	std::cout << tab1.getElement(0);
-	std::cout << tab2.getElement(0);
 }
 
 void bTest() {
@@ -47,7 +45,8 @@ void bTest() {
 	c_tab_0.vShow();
 	c_tab_1.vShow();
 
-	CTable mergedTab = std::move(c_tab_0 + c_tab_1 + c_tab_0);
+	CTable mergedTab = std::move(c_tab_0 + (c_tab_1 + c_tab_0));
+	//CTable mergedTab = (c_tab_0 + c_tab_1 + c_tab_0);
 
 	std::cout << "Polaczone tablice: " << std::endl;
 
@@ -57,9 +56,12 @@ void bTest() {
 
 	copiedTab.vShow();
 
+	std::cout << "Ilosc kopii: " << mergedTab.numberOfCopies << " | Ilosc przesuniec: " << mergedTab.numberOfMoves << std::endl;
+
 }
 
 int main()
 {
+	//aTest();
 	bTest();
 }

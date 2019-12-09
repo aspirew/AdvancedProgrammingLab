@@ -4,6 +4,9 @@
 class CTable {
 public:
 
+	static int numberOfCopies;
+	static int numberOfMoves;
+
 	void vSetValueAt(int iOffset, int iNewVal);
 	CTable operator+(CTable &table);
 	CTable & operator/=(int divider);

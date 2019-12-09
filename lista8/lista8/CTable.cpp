@@ -1,5 +1,8 @@
 #include "CTableHeader.h"
 
+int CTable::numberOfCopies = 0;
+int CTable::numberOfMoves = 0;
+
 CTable::CTable() {
 
 	vSetName(S_NAME);
@@ -30,6 +33,8 @@ CTable::CTable(const CTable &pcOther) {
 
 	vOverwriteTable(pcOther);
 
+	++numberOfCopies;
+
 	std::cout << "kopiuj: " << s_name << std::endl;
 }
 
@@ -38,6 +43,8 @@ CTable::CTable(CTable &&pcOther) {
 	tableLength = pcOther.tableLength;
 	piTable = pcOther.piTable;
 	pcOther.piTable = NULL;
+
+	++numberOfMoves;
 
 	std::cout << "przenies: " << s_name << std::endl;
 }
@@ -92,11 +99,8 @@ void CTable::vOverwriteTable(const CTable &pcOther) {
 
 CTable CTable::pcClone() {
 
-	CTable newTable = CTable(s_name, tableLength);
-	newTable.vOverwriteTable(*this);
-
-	//CTable newTable = CTable(*this);
-	return std::move(newTable);
+	//return CTable(*this);
+	return std::move(CTable(*this));
 }
 
 void CTable::vShow() {
@@ -121,6 +125,7 @@ CTable CTable::GetPairSumsTable() {
 		returnCTable.piTable[i - 1] = piTable[i - 1] + piTable[i];
 	}
 
+	//return returnCTable;
 	return std::move(returnCTable);
 }
 
@@ -141,6 +146,8 @@ CTable & CTable::operator=(CTable &table) {
 
 	if (this == &table) return *this;
 
+	++numberOfCopies;
+
 	s_name = table.s_name;
 	tableLength = table.tableLength;
 	delete[] piTable;
@@ -154,7 +161,7 @@ CTable & CTable::operator=(CTable &&other) {
 
 	if (piTable != NULL) delete[] piTable;
 
-	std::cout << "=move";
+	++numberOfMoves;
 
 	tableLength = other.tableLength;
 	piTable = other.piTable;
@@ -176,7 +183,8 @@ CTable CTable::operator+(CTable &table) {
 		newTable.piTable[i + tableLength] = table.piTable[i];
 	}
 
-	return std::move(newTable);
+	//return std::move(newTable);
+	return newTable;
 }
 
 CTable & CTable::operator/=(int divider) {
