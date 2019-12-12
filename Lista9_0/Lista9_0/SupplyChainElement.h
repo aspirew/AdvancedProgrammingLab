@@ -9,13 +9,12 @@ private:
 	double transportationCost;
 	double oneTimeCost;
 
-	std::vector<SupplyChainElement *> subjects;
-
+	int amountOfMaterial;
 
 public:
 
 	SupplyChainElement();
-	SupplyChainElement(int initialCost, int transportationCost, int oneTimeCost);
+	SupplyChainElement(double initialCost, double transportationCost, double oneTimeCost, int amntOfMaterial);
 	~SupplyChainElement();
 
 	double getInitialCost() { return initialCost; }
@@ -25,14 +24,9 @@ public:
 	double getOneTimeCost() { return oneTimeCost; }
 	void setOneTimeCost(double newVal) { oneTimeCost = newVal; }
 
+	void setValues(double init, double trans, double oneTime);
+	void setDefaultValues();
+
 	double overallCost() { return initialCost * transportationCost; }
-
-	void addSubject(SupplyChainElement *elem) {
-		subjects.push_back(elem);
-	}
-
-	SupplyChainElement * getSubject(int elem) {
-		return subjects[elem];
-	}
 
 };

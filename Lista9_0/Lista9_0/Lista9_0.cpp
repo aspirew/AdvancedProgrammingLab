@@ -8,7 +8,7 @@
 int main(){
 
 	MscnProblem mscn = MscnProblem(1,2,3,4);
-
+	mscn.printAll();
 	
 }
 

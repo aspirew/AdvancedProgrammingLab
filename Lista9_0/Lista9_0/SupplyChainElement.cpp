@@ -1,20 +1,25 @@
 #include "SupplyChainElement.h"
 
 SupplyChainElement::SupplyChainElement() {
-	initialCost = 1;
-	transportationCost = 0;
-	oneTimeCost = 0;
-	// TODO: constants
+	setDefaultValues();
+	amountOfMaterial = 0;
 }
 
-SupplyChainElement::SupplyChainElement(int initialCost, int transportationCost, int oneTimeCost) {
-	this->initialCost = initialCost;
-	this->transportationCost = transportationCost;
-	this->oneTimeCost = oneTimeCost;
+SupplyChainElement::SupplyChainElement(double initialCost, double transportationCost, double oneTimeCost, int amntOfMaterial) {
+	setValues(initialCost, transportationCost, oneTimeCost);
+	amountOfMaterial = amntOfMaterial;
 }
 
 SupplyChainElement::~SupplyChainElement() {
-	for (int i = 0; i < subjects.size(); i++) {
-		delete subjects[i];
-	}
+
+}
+
+void SupplyChainElement::setValues(double init, double trans, double oneTime) {
+	setIntitialCost(init);
+	setTransportationCost(trans);
+	setOneTimeCost(oneTime);
+}
+
+void SupplyChainElement::setDefaultValues() {
+	setValues(30, 2, 3); // TODO: constants
 }
