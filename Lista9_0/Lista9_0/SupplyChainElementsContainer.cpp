@@ -20,8 +20,19 @@ void SupplyChainElementsContainer::setAllChains(int D, int F, int M, int S) {
 	// TODO: destruktor
 }
 
-void SupplyChainElementsContainer::createObject() {
+void SupplyChainElementsContainer::changeNumberOfElementsInLayer(SupplyChainElement &elem, int currentSize, int newSize) {
+	SupplyChainElement * tmpTable;
 
+	int smallerNumber = (newSize < currentSize) ? newSize : currentSize;
+	tmpTable = new SupplyChainElement[newSize];
+
+	for (int i = 0; i < smallerNumber; i++) {
+		tmpTable[i] = elem[i];
+	}
+
+	elem = tmpTable;
+
+	delete tmpTable;
 }
 
 void SupplyChainElementsContainer::setValues(SupplyChainElement &elem, double initVal, double transVal, double oneTimeVal){

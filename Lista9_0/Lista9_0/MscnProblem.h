@@ -15,6 +15,11 @@ public:
 
 	void setValues();
 
+	void setNumbersOfDistributors(int number);
+	void setNumbersOfFactories(int number);
+	void setNumbersOfMagazines(int number);
+	void setNumbersOfStores(int number);
+
 	void setValuesToCDArray();
 	void setValuesToCFArray();
 	void setValuesToCMArray();
@@ -34,7 +39,7 @@ private:
 
 	//setValues
 
-	std::vector<double **> allElements; //TODO: destruktor
+	std::vector<double *> allElements; //TODO: destruktor
 
 	double * cd;
 	double * cf;

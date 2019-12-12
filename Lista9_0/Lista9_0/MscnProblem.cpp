@@ -3,18 +3,23 @@
 MscnProblem::MscnProblem() {
 	chainObjects = SupplyChainElementsContainer();
 	setValues();
-	//packToVector();
+	packToVector();
 }
 
 MscnProblem::MscnProblem(int D, int F, int M, int S) {
 	chainObjects = SupplyChainElementsContainer(D, F, M, S);
 	setValues();
-	//packToVector();
+	packToVector();
 }
 
-void MscnProblem::createCDArray() {
-
+void MscnProblem::setNumbersOfDistributors(int number) {
+	chainObjects.changeNumberOfDistributors(number);
+	setValuesToCDArray();
 }
+
+void setNumbersOfFactories(int number);
+void setNumbersOfMagazines(int number);
+void setNumbersOfStores(int number);
 
 void MscnProblem::setValuesToCDArray() {
 
@@ -59,18 +64,17 @@ void MscnProblem::setValues() {
 }
 
 void MscnProblem::packToVector() {
-	for (int i = 0; i < 3; i++) { //TODO: const!
-		allElements[i] = &cd;
-	}
+	allElements.push_back(cd);
+	allElements.push_back(cf);
+	allElements.push_back(cm);
 }
 
 void MscnProblem::printAll() {
-	/*for (int i = 0; i < allElements.size(); i++) {
-		for (int j = 1; i <= allElements[i][0]; j++) {
-			std::cout << allElements[i][j];
+
+	for (int i = 0; i < allElements.size(); i++) {
+		for (int j = 1; j <= allElements[i][0]; j++) {
+			std::cout << allElements[i][j] << " ";
 		}
 		std::cout << std::endl;
-	}*/
-
-	std::cout << allElements.at(0);
+	}
 }

@@ -14,7 +14,12 @@ public:
 	void setDefaultValuesToLayer(SupplyChainElement *elem, int size);
 	void setDefaultValuesToAll();
 
-	void changeSizeOfLayer(int newSize);
+	void changeNumberOfDistributors(int newSize) { changeNumberOfElementsInLayer(*distributors, numberOfDistributors, newSize); }
+	void changeNumberOfFactories(int newSize) { changeNumberOfElementsInLayer(*factories, numberOfDistributors, newSize); }
+	void changeNumberOfMagazines(int newSize) { changeNumberOfElementsInLayer(*magazines, numberOfDistributors, newSize); }
+	void changeNumberOfStores(int newSize) { changeNumberOfElementsInLayer(*stores, numberOfDistributors, newSize); }
+
+	void changeNumberOfElementsInLayer(SupplyChainElement &elem, int currentSize, int newSize);
 
 	void createObject();
 	void createObjects();
