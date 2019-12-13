@@ -1,6 +1,12 @@
 #include "mscnProblem.h"
 #include "CONST_H.h"
 
+struct MsncSolution {
+	Matrix<double> xd;
+	Matrix<double> xf;
+	Matrix<double> xm;
+};
+
 MscnProblem::MscnProblem() {
 
 	d = D_COUNT;
@@ -113,6 +119,118 @@ bool MscnProblem::setInVectorOfInts(int val, int x, std::vector<int> &vector) {
 double MscnProblem::getFromVectorOfInts(int x, std::vector<int> &vector) {
 	if (x < 0 || x >= vector.size())
 		return vector[x];
+}
+
+double MscnProblem::getKT(Matrix<double> &xd, Matrix<double> &xf, Matrix<double> &xm) {
+
+	double result = 0;
+
+	for (int i = 0; i < d; i++)
+		for (int j = 0; j < f; j++)
+			result += cd.getElem(i, j) * xd.getElem(i, j);
+
+	for (int i = 0; i < f; i++)
+		for (int j = 0; j < m; j++)
+			result += cf.getElem(i, j) * xf.getElem(i, j);
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < s; j++)
+			result += cm.getElem(i, j) * xm.getElem(i, j);
+
+	return result;
+}
+
+double MscnProblem::getKU(Matrix<double> &xd, Matrix<double> &xf, Matrix<double> &xm) {
+	double result = 0;
+
+	for (int i = 0; i < d; i++) {
+		double KUDF = 0;
+		for (int j = 0; j < f; j++) {
+			KUDF += xd.getElem(i, j);
+		}
+		result += eps(KUDF) * ud[i];
+	}
+
+	for (int i = 0; i < f; i++) {
+		double KUFM = 0;
+		for (int j = 0; j < m; j++) {
+			KUFM += xf.getElem(i, j);
+		}
+		result += eps(KUFM) * uf[i];
+	}
+
+	for (int i = 0; i < m; i++) {
+		double KUMS = 0;
+		for (int j = 0; j < s; j++) {
+			KUMS += xm.getElem(i, j);
+		}
+		result += eps(KUMS) * um[i];
+	}
+
+	return result;
+}
+
+int MscnProblem::eps(double x) {
+	if (x > 0) return 1;
+	else return 0;
+}
+
+double MscnProblem::getP(Matrix<double> &xm) {
+	double result = 0;
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < s; j++)
+			result += xm.getElem(i, j) * ps[j];
+
+	return result;
+}
+
+MscnSolution MscnProblem::getSolutionStructure(double *solution) {
+
+	Matrix<double> xd(d, f);
+	Matrix<double> xf(f, m);
+	Matrix<double> xm(m, s);
+
+	for (int i = 0; i < d; i++)
+		for (int j = 0; j < f; j++)
+			xd.setElem(solution[i*d + j], i, j);
+
+	for (int i = 0; i < f; i++)
+		for (int j = 0; j < m; j++)
+			xf.setElem(solution[d*f + i * f + j], i, j);
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < s; j++)
+			xm.setElem(solution[f*m + i * s + j], i, j);
+
+	return { xd, xf, xm };
+}
+
+double MscnProblem::getProfit(MscnSolution &s) {
+	return getP(s.xm) - getKT(s.xd, s.xf, s.xm) - getKU(s.xd, s.xf, s.xm);
+}
+
+int MscnProblem::checkIfSolutionIsValid(double *solution, int arrSize) {
+	if (solution == NULL) return ERROR_SOLUTION_IS_NULL;
+	int validSize = d * f + f * m + m * s;
+	if (arrSize != validSize) return ERROR_WRONG_SIZE;
+	for (int i = 0; i < arrSize; i++) {
+		if (solution[i] < 0) return ERROR_NEGATIVE_VALUES;
+	}
+
+	return SOLUTION_VALID;
+}
+
+double MscnProblem::getQuality(double *solution, int arrSize){
+
+	qualityErrorState = checkIfSolutionIsValid(solution, arrSize);
+
+	if (qualityErrorState != SOLUTION_VALID) return 0;
+
+	MscnSolution solutionStructure = getSolutionStructure(solution);
+
+	return getProfit(solutionStructure);
+
 }
 
 void MscnProblem::printAll() {

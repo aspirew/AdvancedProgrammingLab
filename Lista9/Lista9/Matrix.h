@@ -14,6 +14,8 @@ public:
 	T getElem(int y, int x);
 	bool setElem(double val, int y, int x);
 
+	int getFullSize() { return fullSize; }
+
 	void print();
 
 
@@ -23,7 +25,7 @@ public:
 	int width;
 	int fullSize;
 
-	double * allElements; //DESTRUKTOR
+	double ** allElements; //DESTRUKTOR
 
 	bool initializeMatrix(int heigth, int width);
 

@@ -2,7 +2,7 @@
 #include <vector>
 #include "Matrix.cpp"
 
-struct solution {
+struct MscnSolution {
 	Matrix<double> xd, xf, xm;
 };
 
@@ -42,13 +42,15 @@ public:
 	double getFromSs(int x);
 	double getFromPs(int x);
 
-	double getQuality(double *solution);
+	double getQuality(double *solution, int arrSize);
 	double constraintsSatisfied(double *solution);
+
+	int getQualityErrorState() { return qualityErrorState; }
 
 	void printAll();
 
 
-//private:
+private:
 
 	int d, f, m, s;
 
@@ -61,7 +63,19 @@ public:
 	bool setInVectorOfInts(int val, int x, std::vector<int> &vector);
 	double getFromVectorOfInts(int x, std::vector<int> &vector);
 
+	double getKT(Matrix<double> &xd, Matrix<double> &xf, Matrix<double> &xm);
+	double getKU(Matrix<double> &xd, Matrix<double> &xf, Matrix<double> &xm);
+	double getP(Matrix<double> &xm);
+
+	MscnSolution getSolutionStructure(double *solution);
+	double getProfit(MscnSolution &s);
+	int checkIfSolutionIsValid(double *solution, int arrSize);
+
+	int eps(double x);
+
 	Matrix<double> cd, cf, cm;
 	std::vector<double> ud, uf, um, sd, sf, sm, ss, ps;
 	std::vector<int> minxd, maxxd, minxf, maxxf, minxm, maxxm;
+
+	int qualityErrorState = 0;
 };
