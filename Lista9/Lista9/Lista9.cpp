@@ -7,15 +7,19 @@ int main(){
 	MscnProblem problem = MscnProblem();
 	std::cout << "initialized" << std::endl;
 
-	problem.setInCd(3, 1, 0);
-	problem.setInCd(8, 0, 2);
+	for (int i = 0; i < problem.d; i++) {
+		for (int j = 0; j < problem.f; j++) {
+			problem.setInCd(i+j, i, j);
+		}
+	}
+
 	problem.setInSd(6, 1);
 
 	problem.setCountOfD(3);
 
 	std::cout << "changed d" << std::endl;
 
-	//problem.setCountOfF(4);
+	problem.setCountOfF(2);
 
 	std::cout << "changed f" << std::endl;
 

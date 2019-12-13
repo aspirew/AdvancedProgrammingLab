@@ -38,12 +38,28 @@ bool Matrix<T>::resize(int heigth, int width) {
 
 	double * tmp = new double[heigth * width]();
 
-	int smallerWidth = (width < this->width) ? width : this->width;
 	int smallerHeigth = (heigth < this->heigth) ? heigth : this->heigth;
+	int smallerWidth = (width < this->width) ? width : this->width;
+	int sizeOfOffset = this->width - width;
+	int offset = 0;
 
-	for (int i = 0; i < smallerHeigth; i++) {
-		for (int j = 0; j < smallerWidth; j++) {
-			tmp[i * smallerWidth + j] = allElements[i * smallerWidth + j];
+	//TODO: get rid off redundant instructions
+
+	if (sizeOfOffset >= 0) {
+		for (int i = 0; i < smallerHeigth; i++) {
+			for (int j = 0; j < smallerWidth; j++) {
+				tmp[i * smallerWidth + j] = allElements[i * smallerWidth + j + offset];
+			}
+			offset += sizeOfOffset;
+		}
+	}
+
+	if (sizeOfOffset < 0) {
+		for (int i = 0; i < smallerHeigth; i++) {
+			for (int j = 0; j < smallerWidth; j++) {
+				tmp[i * smallerWidth + j - offset] = allElements[i * smallerWidth + j];
+			}
+			offset += sizeOfOffset;
 		}
 	}
 
