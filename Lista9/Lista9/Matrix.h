@@ -2,18 +2,30 @@
 #include <vector>
 
 template <typename T>
-class Matrix<T> {
+class Matrix {
 
 public:
 
 	Matrix();
-	Matrix(width, height);
+	Matrix(int heigth, int width);
+
+	bool resize(int heigth, int width);
+
+	T getElem(int y, int x);
+	bool setElem(double val, int y, int x);
+
+	void print();
 
 
-private:
+//private:
 
-	int height;
+	int heigth;
 	int width;
+	int fullSize;
 
-	std::vector<T> allElements;
+	double * allElements; //DESTRUKTOR
+
+	bool initializeMatrix(int heigth, int width);
+
+	bool correctSize(int y, int x);
 };
