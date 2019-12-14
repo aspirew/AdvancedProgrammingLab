@@ -2,11 +2,31 @@
 #include <vector>
 #include "Matrix.cpp"
 
+class MscnSolution {
+
+public:
+	Matrix<double> *xd, *xf, *xm;
+
+	MscnSolution(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm) {
+		this->xd = xd;
+		this->xf = xf;
+		this->xm = xm;
+	}
+
+	~MscnSolution() {
+		delete xd;
+		delete xf;
+		delete xm;
+	}
+
+};
+
+
 class MscnProblem {
 public:
 
 	MscnProblem();
-	~MscnProblem();
+	~MscnProblem() { std::cout << "problem out"; }
 
 	bool setCountOfD(int val);
 	bool setCountOfF(int val);
@@ -61,11 +81,11 @@ private:
 	double getKU(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm);
 	double getP(Matrix<double> *xm);
 
-	//MscnSolution * getSolutionStructure(double *solution);
-	//double getProfit(MscnSolution &s);
+	MscnSolution * getSolution(double *solution);
+	double getProfit(MscnSolution *sol);
 	int checkIfSolutionIsValid(double *solution, int arrSize);
 
-	bool constraintsCheck(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm);
+	bool constraintsCheck(MscnSolution *sol);
 
 	int eps(double x);
 

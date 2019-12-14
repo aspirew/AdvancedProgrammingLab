@@ -1,6 +1,5 @@
 #include "mscnProblem.h"
 #include "CONST_H.h"
-#include "MscnSolution.cpp"
 
 MscnProblem::MscnProblem() {
 
@@ -21,10 +20,6 @@ MscnProblem::MscnProblem() {
 	sm.resize(m);
 	ss.resize(s);
 	ps.resize(s);
-
-}
-
-MscnProblem::~MscnProblem() {
 
 }
 
@@ -174,38 +169,41 @@ int MscnProblem::eps(double x) {
 	else return 0;
 }
 
-double MscnProblem::getP(Matrix<double> *xm) {
-
+double MscnProblem::getP(Matrix<double> *sol) {
 	double result = 0;
 
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < s; j++)
-			result += xm->getElem(i, j) * ps[j];
+			result += sol->getElem(i, j) * ps[j];
 
 	return result;
-
 }
 
-//MscnSolution MscnProblem::getSolutionStructure(double *solution) {
-//
-//	Matrix<double> * xd = new Matrix<double>(d, f, "xd");
-//	Matrix<double> * xf = new Matrix<double>(f, m, "xf");
-//	Matrix<double> * xm = new Matrix<double>(m, s, "xm");
-//
-//	for (int i = 0; i < d; i++)
-//		for (int j = 0; j < f; j++)
-//			xd->setElem(solution[i*d + j], i, j);
-//
-//	for (int i = 0; i < f; i++)
-//		for (int j = 0; j < m; j++)
-//			xf->setElem(solution[d*f + i * f + j], i, j);
-//
-//	for (int i = 0; i < m; i++)
-//		for (int j = 0; j < s; j++)
-//			xm->setElem(solution[f*m + i * s + j], i, j);
-//
-//	return MscnSolution(xd, xf, xm);
-//}
+MscnSolution * MscnProblem::getSolution(double *solution) {
+
+	Matrix<double> * xd = new Matrix<double>(d, f, "xd");
+	Matrix<double> * xf = new Matrix<double>(f, m, "xf");
+	Matrix<double> * xm = new Matrix<double>(m, s, "xm");
+
+	for (int i = 0; i < d; i++)
+		for (int j = 0; j < f; j++)
+			xd->setElem(solution[i*d + j], i, j);
+
+	for (int i = 0; i < f; i++)
+		for (int j = 0; j < m; j++)
+			xf->setElem(solution[d*f + i * f + j], i, j);
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < s; j++)
+			xm->setElem(solution[f*m + i * s + j], i, j);
+
+
+	return new MscnSolution(xd, xf, xm);
+}
+
+double MscnProblem::getProfit(MscnSolution *sol) {
+	return getP(sol->xm) - getKT(sol->xd, sol->xf, sol->xm) - getKU(sol->xd, sol->xf, sol->xm);
+}
 
 int MscnProblem::checkIfSolutionIsValid(double *solution, int arrSize) {
 	if (solution == NULL) return ERROR_SOLUTION_IS_NULL;
@@ -224,24 +222,13 @@ double MscnProblem::getQuality(double *solution, int arrSize){
 
 	if (solutionErrorState != SOLUTION_VALID) return 0; //const
 
-	Matrix<double> * xd = new Matrix<double>(d, f, "xd");
-	Matrix<double> * xf = new Matrix<double>(f, m, "xf");
-	Matrix<double> * xm = new Matrix<double>(m, s, "xm");
+	MscnSolution * sol = getSolution(solution);
 
-	for (int i = 0; i < d; i++)
-		for (int j = 0; j < f; j++)
-			xd->setElem(solution[i*d + j], i, j);
+	double result = getProfit(sol);
 
-	for (int i = 0; i < f; i++)
-		for (int j = 0; j < m; j++)
-			xf->setElem(solution[d*f + i * f + j], i, j);
+	delete sol;
 
-	for (int i = 0; i < m; i++)
-		for (int j = 0; j < s; j++)
-			xm->setElem(solution[f*m + i * s + j], i, j);
-
-
-	return getP(xm) + getKU(xd, xf, xm) + getKT(xd, xf, xm);
+	return result;
 
 }
 
@@ -251,49 +238,39 @@ double MscnProblem::constraintsSatisfied(double *solution, int arrSize) {
 
 	if (solutionErrorState != SOLUTION_VALID) return 0; // const
 
-	Matrix<double> * xd = new Matrix<double>(d, f, "xd");
-	Matrix<double> * xf = new Matrix<double>(f, m, "xf");
-	Matrix<double> * xm = new Matrix<double>(m, s, "xm");
+	MscnSolution * sol = getSolution(solution);
 
-	for (int i = 0; i < d; i++)
-		for (int j = 0; j < f; j++)
-			xd->setElem(solution[i*d + j], i, j);
+	bool result = constraintsCheck(sol);
 
-	for (int i = 0; i < f; i++)
-		for (int j = 0; j < m; j++)
-			xf->setElem(solution[d*f + i * f + j], i, j);
+	delete sol;
 
-	for (int i = 0; i < m; i++)
-		for (int j = 0; j < s; j++)
-			xm->setElem(solution[f*m + i * s + j], i, j);
-
-	return constraintsCheck(xd, xf, xm);
+	return result;
 }
 
-bool MscnProblem::constraintsCheck(Matrix<double> * xd, Matrix<double> * xf, Matrix<double> * xm) {
+bool MscnProblem::constraintsCheck(MscnSolution *sol) {
 
 	for (int i = 0; i < d; i++) {
-		if (xd->sumOneRow(i) > sd[i]) return false;
+		if (sol->xd->sumOneRow(i) > sd[i]) return false;
 	}
 
 	for (int i = 0; i < f; i++) {
-		if (xf->sumOneRow(i) > sf[i]) return false;
+		if (sol->xf->sumOneRow(i) > sf[i]) return false;
 	}
 
 	for (int i = 0; i < m; i++) {
-		if (xm->sumOneRow(i) > sm[i]) return false;
+		if (sol->xm->sumOneRow(i) > sm[i]) return false;
 	}
 
 	for (int i = 0; i < s; i++) {
-		if (xm->sumOneCol(i) > ss[i]) return false;
+		if (sol->xm->sumOneCol(i) > ss[i]) return false;
 	}
 
 	for (int i = 0; i < f; i++) {
-		if (xd->sumOneCol(i) < xf->sumOneRow(i)) return false;
+		if (sol->xd->sumOneCol(i) < sol->xf->sumOneRow(i)) return false;
 	}
 
 	for (int i = 0; i < m; i++) {
-		if (xf->sumOneCol(i) < xm->sumOneRow(i)) return false;
+		if (sol->xf->sumOneCol(i) < sol->xm->sumOneRow(i)) return false;
 	}
 
 	return true;
