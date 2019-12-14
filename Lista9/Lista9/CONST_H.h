@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 
 const int D_COUNT = 2;
 const int F_COUNT = 3;

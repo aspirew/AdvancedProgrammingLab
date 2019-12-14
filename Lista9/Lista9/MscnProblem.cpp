@@ -119,6 +119,7 @@ double MscnProblem::getKT(Matrix<double> *xd, Matrix<double> *xf, Matrix<double>
 
 	double result = 0;
 
+
 	for (int i = 0; i < d; i++)
 		for (int j = 0; j < f; j++)
 			result += cd->getElem(i, j) * xd->getElem(i, j);
@@ -130,6 +131,8 @@ double MscnProblem::getKT(Matrix<double> *xd, Matrix<double> *xf, Matrix<double>
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < s; j++)
 			result += cm->getElem(i, j) * xm->getElem(i, j);
+
+	std::cout << "GETKT" << std::endl;
 
 	return result;
 }
@@ -161,6 +164,8 @@ double MscnProblem::getKU(Matrix<double> *xd, Matrix<double> *xf, Matrix<double>
 		result += eps(KUMS) * um[i];
 	}
 
+	std::cout << "GETKU" << std::endl;
+
 	return result;
 }
 
@@ -169,17 +174,19 @@ int MscnProblem::eps(double x) {
 	else return 0;
 }
 
-double MscnProblem::getP(Matrix<double> *sol) {
+double MscnProblem::getP(Matrix<double> *xm) {
 	double result = 0;
 
-	for (int i = 0; i < m; i++)
-		for (int j = 0; j < s; j++)
-			result += sol->getElem(i, j) * ps[j];
+	for (int i = 0; i < m; i++) 
+		for (int j = 0; j < s; j++) 
+			result += xm->getElem(i, j) * ps[j];
+
+	std::cout << "GETP" << std::endl;
 
 	return result;
 }
 
-MscnSolution * MscnProblem::getSolution(double *solution) {
+MscnSolution MscnProblem::getSolution(double *solution) {
 
 	Matrix<double> * xd = new Matrix<double>(d, f, "xd");
 	Matrix<double> * xf = new Matrix<double>(f, m, "xf");
@@ -198,11 +205,12 @@ MscnSolution * MscnProblem::getSolution(double *solution) {
 			xm->setElem(solution[f*m + i * s + j], i, j);
 
 
-	return new MscnSolution(xd, xf, xm);
+	return MscnSolution(xd, xf, xm);
 }
 
-double MscnProblem::getProfit(MscnSolution *sol) {
-	return getP(sol->xm) - getKT(sol->xd, sol->xf, sol->xm) - getKU(sol->xd, sol->xf, sol->xm);
+double MscnProblem::getProfit(MscnSolution sol) {
+
+	return getP(sol.xm) - getKT(sol.xd, sol.xf, sol.xm) - getKU(sol.xd, sol.xf, sol.xm);
 }
 
 int MscnProblem::checkIfSolutionIsValid(double *solution, int arrSize) {
@@ -222,13 +230,9 @@ double MscnProblem::getQuality(double *solution, int arrSize){
 
 	if (solutionErrorState != SOLUTION_VALID) return 0; //const
 
-	MscnSolution * sol = getSolution(solution);
+	MscnSolution sol = getSolution(solution);
 
-	double result = getProfit(sol);
-
-	delete sol;
-
-	return result;
+	return getP(sol.xm) - getKT(sol.xd, sol.xf, sol.xm) - getKU(sol.xd, sol.xf, sol.xm);
 
 }
 
@@ -238,44 +242,58 @@ double MscnProblem::constraintsSatisfied(double *solution, int arrSize) {
 
 	if (solutionErrorState != SOLUTION_VALID) return 0; // const
 
-	MscnSolution * sol = getSolution(solution);
+	MscnSolution sol = getSolution(solution);
 
-	bool result = constraintsCheck(sol);
-
-	delete sol;
-
-	return result;
+	return constraintsCheck(sol);
 }
 
-bool MscnProblem::constraintsCheck(MscnSolution *sol) {
+bool MscnProblem::constraintsCheck(MscnSolution &sol) {
 
 	for (int i = 0; i < d; i++) {
-		if (sol->xd->sumOneRow(i) > sd[i]) return false;
+		if (sol.xd->sumOneRow(i) > sd[i]) return false;
 	}
 
 	for (int i = 0; i < f; i++) {
-		if (sol->xf->sumOneRow(i) > sf[i]) return false;
+		if (sol.xf->sumOneRow(i) > sf[i]) return false;
 	}
 
 	for (int i = 0; i < m; i++) {
-		if (sol->xm->sumOneRow(i) > sm[i]) return false;
+		if (sol.xm->sumOneRow(i) > sm[i]) return false;
 	}
 
 	for (int i = 0; i < s; i++) {
-		if (sol->xm->sumOneCol(i) > ss[i]) return false;
+		if (sol.xm->sumOneCol(i) > ss[i]) return false;
 	}
 
 	for (int i = 0; i < f; i++) {
-		if (sol->xd->sumOneCol(i) < sol->xf->sumOneRow(i)) return false;
+		if (sol.xd->sumOneCol(i) < sol.xf->sumOneRow(i)) return false;
 	}
 
 	for (int i = 0; i < m; i++) {
-		if (sol->xf->sumOneCol(i) < sol->xm->sumOneRow(i)) return false;
+		if (sol.xf->sumOneCol(i) < sol.xm->sumOneRow(i)) return false;
 	}
 
 	return true;
 
 	//TODO: const
+}
+
+std::vector<MinMaxValues> MscnProblem::getMinMaxValues() {
+	std::vector<MinMaxValues> res;
+
+	for (int i = 0; i < d; i++)
+		for (int j = 0; j < f; j++)
+			res.push_back({ 0, sd[i] });
+
+	for (int i = 0; i < d; i++)
+		for (int j = 0; j < f; j++)
+			res.push_back({ 0, sf[i] });
+
+	for (int i = 0; i < d; i++)
+		for (int j = 0; j < f; j++)
+			res.push_back({ 0, std::max(sm[i], ss[i]) });
+
+	return res;
 }
 
 void MscnProblem::printAll() {

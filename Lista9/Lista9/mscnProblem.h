@@ -14,11 +14,17 @@ public:
 	}
 
 	~MscnSolution() {
+		std::cout << "DESTROY MSCNSOL";
 		delete xd;
 		delete xf;
 		delete xm;
 	}
 
+};
+
+struct MinMaxValues {
+	int min;
+	int max;
 };
 
 
@@ -64,6 +70,8 @@ public:
 
 	int getSolutionErrorState() { return solutionErrorState; }
 
+	std::vector<MinMaxValues> getMinMaxValues();
+
 	void printAll();
 
 
@@ -81,11 +89,11 @@ private:
 	double getKU(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm);
 	double getP(Matrix<double> *xm);
 
-	MscnSolution * getSolution(double *solution);
-	double getProfit(MscnSolution *sol);
+	MscnSolution getSolution(double *solution);
+	double getProfit(MscnSolution sol);
 	int checkIfSolutionIsValid(double *solution, int arrSize);
 
-	bool constraintsCheck(MscnSolution *sol);
+	bool constraintsCheck(MscnSolution &sol);
 
 	int eps(double x);
 
