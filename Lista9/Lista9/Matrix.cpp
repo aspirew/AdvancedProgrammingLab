@@ -7,8 +7,19 @@ Matrix<T>::Matrix() {
 }
 
 template <typename T>
-Matrix<T>::Matrix(int heigth, int width) {
+Matrix<T>::Matrix(int heigth, int width, std::string name) {
+	this->name = name;
 	initializeMatrix(heigth, width);
+}
+
+template <typename T>
+Matrix<T>::~Matrix() {
+
+	std::cout << "DESTROY: " << name;
+	for (int i = 0; i < heigth; i++) {
+		delete[] allElements[i];
+	}
+	delete[] allElements;
 }
 
 template <typename T>
@@ -82,6 +93,36 @@ bool Matrix<T>::setElem(double val, int y, int x) {
 	allElements[y][x] = val;
 
 	return true;
+}
+
+template <typename T>
+T Matrix<T>::sumOneRow(int row) {
+	T result = NULL;
+	for (int i = 0; i < width; i++) {
+		result += allElements[row][i];
+	}
+
+	return result;
+}
+
+template <typename T>
+T Matrix<T>::sumOneCol(int col) {
+	T result = NULL;
+	for (int i = 0; i < heigth; i++) {
+		result += allElements[i][col];
+	}
+
+	return result;
+}
+
+template <typename T>
+T Matrix<T>::sumWholeMat() {
+	T result;
+	for (int i = 0; i < heigth; i++) {
+		result += sumOneRow(i);
+	}
+
+	return result;
 }
 
 template <typename T>

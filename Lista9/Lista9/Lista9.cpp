@@ -3,7 +3,7 @@
 #include "mscnProblem.cpp"
 
 int main(){
-    
+
 	MscnProblem problem = MscnProblem();
 	std::cout << "initialized" << std::endl;
 

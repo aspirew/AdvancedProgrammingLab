@@ -2,14 +2,11 @@
 #include <vector>
 #include "Matrix.cpp"
 
-struct MscnSolution {
-	Matrix<double> xd, xf, xm;
-};
-
 class MscnProblem {
 public:
 
 	MscnProblem();
+	~MscnProblem();
 
 	bool setCountOfD(int val);
 	bool setCountOfF(int val);
@@ -43,9 +40,9 @@ public:
 	double getFromPs(int x);
 
 	double getQuality(double *solution, int arrSize);
-	double constraintsSatisfied(double *solution);
+	double constraintsSatisfied(double *solution, int arrSize);
 
-	int getQualityErrorState() { return qualityErrorState; }
+	int getSolutionErrorState() { return solutionErrorState; }
 
 	void printAll();
 
@@ -54,28 +51,27 @@ private:
 
 	int d, f, m, s;
 
-	bool setValueIn2DimMatrix(double val, int y, int x, Matrix<double> &matrix);
-	double getValueFrom2DimMatrix(int y, int x, Matrix<double> &matrix);
-
 	bool setInVectorOfDoubles(double val, int x, std::vector<double> &vector);
 	double getFromVectorOfDoubles(int x, std::vector<double> &vector);
 
 	bool setInVectorOfInts(int val, int x, std::vector<int> &vector);
 	double getFromVectorOfInts(int x, std::vector<int> &vector);
 
-	double getKT(Matrix<double> &xd, Matrix<double> &xf, Matrix<double> &xm);
-	double getKU(Matrix<double> &xd, Matrix<double> &xf, Matrix<double> &xm);
-	double getP(Matrix<double> &xm);
+	double getKT(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm);
+	double getKU(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm);
+	double getP(Matrix<double> *xm);
 
-	MscnSolution getSolutionStructure(double *solution);
-	double getProfit(MscnSolution &s);
+	//MscnSolution * getSolutionStructure(double *solution);
+	//double getProfit(MscnSolution &s);
 	int checkIfSolutionIsValid(double *solution, int arrSize);
+
+	bool constraintsCheck(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm);
 
 	int eps(double x);
 
-	Matrix<double> cd, cf, cm;
+	Matrix<double> * cd, * cf, * cm;
 	std::vector<double> ud, uf, um, sd, sf, sm, ss, ps;
 	std::vector<int> minxd, maxxd, minxf, maxxf, minxm, maxxm;
 
-	int qualityErrorState = 0;
+	int solutionErrorState = 0;
 };
