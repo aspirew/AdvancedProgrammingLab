@@ -1,30 +1,12 @@
 #pragma once
 #include <vector>
 #include "Matrix.cpp"
-
-class MscnSolution {
-
-public:
-	Matrix<double> *xd, *xf, *xm;
-
-	MscnSolution(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm) {
-		this->xd = xd;
-		this->xf = xf;
-		this->xm = xm;
-	}
-
-	~MscnSolution() {
-		std::cout << "DESTROY MSCNSOL";
-		delete xd;
-		delete xf;
-		delete xm;
-	}
-
-};
+#include "MscnSolution.cpp"
+#include "vectorOverload.cpp"
 
 struct MinMaxValues {
-	int min;
-	int max;
+	double min;
+	double max;
 };
 
 
@@ -32,7 +14,8 @@ class MscnProblem {
 public:
 
 	MscnProblem();
-	~MscnProblem() { std::cout << "problem out"; }
+	MscnProblem(std::istream &is);
+	~MscnProblem();
 
 	bool setCountOfD(int val);
 	bool setCountOfF(int val);
@@ -74,6 +57,9 @@ public:
 
 	void printAll();
 
+	void saveData(std::string const &path);
+
+	friend std::ostream& operator<<(std::ostream &os, const MscnProblem &p);
 
 private:
 
@@ -95,11 +81,17 @@ private:
 
 	bool constraintsCheck(MscnSolution &sol);
 
+	const Matrix<double> dereferCD() { return *cd; }
+	const Matrix<double> dereferCF() { return *cf; }
+	const Matrix<double> dereferCM() { return *cm; }
+
 	int eps(double x);
 
 	Matrix<double> * cd, * cf, * cm;
 	std::vector<double> ud, uf, um, sd, sf, sm, ss, ps;
 	std::vector<int> minxd, maxxd, minxf, maxxf, minxm, maxxm;
+
+	
 
 	int solutionErrorState = 0;
 };

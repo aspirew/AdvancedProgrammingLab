@@ -8,6 +8,7 @@ class Matrix {
 public:
 
 	Matrix();
+	Matrix(std::istream &is);
 	Matrix(int heigth, int width, std::string name);
 	~Matrix();
 
@@ -22,10 +23,12 @@ public:
 	T sumOneCol(int col);
 	T sumWholeMat();
 
+	friend std::ostream& operator<<(std::ostream &os, const Matrix<T> &mat);
+
 	void print();
 
 
-//private:
+private:
 
 	int heigth;
 	int width;
@@ -33,7 +36,7 @@ public:
 
 	std::string name;
 
-	double ** allElements; //DESTRUKTOR
+	double ** allElements;
 
 	bool initializeMatrix(int heigth, int width);
 

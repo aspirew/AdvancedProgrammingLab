@@ -2,8 +2,19 @@
 #include <iostream>
 
 template <typename T>
-Matrix<T>::Matrix() {
+Matrix<T>::Matrix() { }
 
+template <typename T>
+Matrix<T>::Matrix(std::istream &is) {
+	is >> width >> heigth;
+	initializeMatrix(heigth, width);
+
+	for (int i = 0; i < heigth; i++)
+		for (int j = 0; j < width; j++) {
+			T result;
+			is >> result;
+			setElem(result, i, j);
+		}
 }
 
 template <typename T>
@@ -15,7 +26,6 @@ Matrix<T>::Matrix(int heigth, int width, std::string name) {
 template <typename T>
 Matrix<T>::~Matrix() {
 
-	std::cout << "DESTROY: " << name;
 	for (int i = 0; i < heigth; i++) {
 		delete[] allElements[i];
 	}
@@ -123,6 +133,19 @@ T Matrix<T>::sumWholeMat() {
 	}
 
 	return result;
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream &os, const Matrix<T> &mat) {
+	
+	os << mat.width << " " << mat.heigth << "\n";
+	for (int i = 0; i < mat.heigth; i++) {
+		for (int j = 0; j < mat.width; j++) {
+			os << mat.getElem(i, j);
+		}
+		os << "\n";
+	}
+	return os;
 }
 
 template <typename T>

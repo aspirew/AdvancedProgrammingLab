@@ -23,6 +23,29 @@ MscnProblem::MscnProblem() {
 
 }
 
+MscnProblem::MscnProblem(std::istream &is) {
+
+	int dCount, fCount, mCount, sCount;
+	is >> dCount >> fCount >> mCount >> sCount;
+	d = dCount;
+	f = fCount;
+	m = mCount;
+	s = sCount;
+
+	cd = new Matrix<double>(is);
+	cf = new Matrix<double>(is);
+	cm = new Matrix<double>(is);
+
+	sd = deserializeVec<double>(is, d);
+
+}
+
+MscnProblem::~MscnProblem() {
+	delete cd;
+	delete cf;
+	delete cm;
+}
+
 bool MscnProblem::setCountOfD(int val) {
 
 	if (val < 1) return false;
@@ -132,8 +155,6 @@ double MscnProblem::getKT(Matrix<double> *xd, Matrix<double> *xf, Matrix<double>
 		for (int j = 0; j < s; j++)
 			result += cm->getElem(i, j) * xm->getElem(i, j);
 
-	std::cout << "GETKT" << std::endl;
-
 	return result;
 }
 
@@ -164,8 +185,6 @@ double MscnProblem::getKU(Matrix<double> *xd, Matrix<double> *xf, Matrix<double>
 		result += eps(KUMS) * um[i];
 	}
 
-	std::cout << "GETKU" << std::endl;
-
 	return result;
 }
 
@@ -180,8 +199,6 @@ double MscnProblem::getP(Matrix<double> *xm) {
 	for (int i = 0; i < m; i++) 
 		for (int j = 0; j < s; j++) 
 			result += xm->getElem(i, j) * ps[j];
-
-	std::cout << "GETP" << std::endl;
 
 	return result;
 }
@@ -294,6 +311,34 @@ std::vector<MinMaxValues> MscnProblem::getMinMaxValues() {
 			res.push_back({ 0, std::max(sm[i], ss[i]) });
 
 	return res;
+}
+
+void MscnProblem::saveData(std::string const &path){
+	std::ofstream file("Input.txt");
+	file << *this;
+	file.close();
+}
+
+std::ostream& operator<<(std::ostream &os, const MscnProblem &p){
+
+	os << "D " << p.d << "\n" << "F " << p.f << "\n";
+	os << "M " << p.m << "\n" << "S " << p.s << "\n";
+	os << "sd\n" << p.sd << "\n";
+	os << "sf\n" << p.sf << "\n";
+	os << "sm\n" << p.sm << "\n";
+	os << "ss\n" << p.ss << "\n";
+
+	os << "cd\n" << p.cd << "\n"; //TODO: czemu nie dzia³a :'''(((
+	os << "cf\n" << p.cf << "\n"; // dereferencja wywala b³¹d lol
+	os << "cm\n" << p.cm << "\n";
+
+	os << "ud\n" << p.ud << "\n";
+	os << "uf\n" << p.uf << "\n";
+	os << "um\n" << p.um << "\n";
+
+	os << "p\n" << p.ps << "\n";
+
+	return os;
 }
 
 void MscnProblem::printAll() {

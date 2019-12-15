@@ -11,4 +11,3 @@ MscnSolution::~MscnSolution() {
 	delete xf;
 	delete xm;
 }
-

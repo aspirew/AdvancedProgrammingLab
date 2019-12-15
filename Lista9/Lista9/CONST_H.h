@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <fstream>
 
 const int D_COUNT = 2;
 const int F_COUNT = 3;
