@@ -11,3 +11,13 @@ const int SOLUTION_VALID = 0;
 const int ERROR_SOLUTION_IS_NULL = 1;
 const int ERROR_WRONG_SIZE = 2;
 const int ERROR_NEGATIVE_VALUES = 3;
+
+struct MinMaxValues {
+	double min;
+	double max;
+
+	friend std::ostream& operator<<(std::ostream& os, const MinMaxValues& minmax){
+		os << minmax.min << " " << minmax.max;
+		return os;
+	}
+};

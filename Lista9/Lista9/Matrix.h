@@ -17,6 +17,8 @@ public:
 	T getElem(int y, int x);
 	bool setElem(double val, int y, int x);
 
+	int getWidth() { return width; }
+	int getHeigth() { return heigth; }
 	int getFullSize() { return fullSize; }
 
 	T sumOneRow(int row);
@@ -36,7 +38,7 @@ private:
 
 	std::string name;
 
-	double ** allElements;
+	T ** allElements;
 
 	bool initializeMatrix(int heigth, int width);
 

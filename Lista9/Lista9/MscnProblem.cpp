@@ -26,7 +26,9 @@ MscnProblem::MscnProblem() {
 MscnProblem::MscnProblem(std::istream &is) {
 
 	int dCount, fCount, mCount, sCount;
-	is >> dCount >> fCount >> mCount >> sCount;
+	std::string dummyS;
+
+	is >> dummyS >> dCount >> dummyS >> fCount >> dummyS >> mCount >> dummyS >> sCount >> dummyS;
 	d = dCount;
 	f = fCount;
 	m = mCount;
@@ -36,7 +38,14 @@ MscnProblem::MscnProblem(std::istream &is) {
 	cf = new Matrix<double>(is);
 	cm = new Matrix<double>(is);
 
+	is >> dummyS;
 	sd = deserializeVec<double>(is, d);
+	is >> dummyS;
+	sf = deserializeVec<double>(is, f);
+	is >> dummyS;
+	sm = deserializeVec<double>(is, f);
+	is >> dummyS;
+	ss = deserializeVec<double>(is, f);
 
 }
 
@@ -52,7 +61,7 @@ bool MscnProblem::setCountOfD(int val) {
 	d = val;
 	ud.resize(d);
 	sd.resize(d);
-	//cd->resize(d, f);
+	cd->resize(d, f);
 	return true;
 }
 
@@ -295,16 +304,18 @@ bool MscnProblem::constraintsCheck(MscnSolution &sol) {
 	//TODO: const
 }
 
-std::vector<MinMaxValues> MscnProblem::getMinMaxValues() {
+std::vector<MinMaxValues> MscnProblem::getMinMaxValues(std::vector<double> &constraint) {
 	std::vector<MinMaxValues> res;
 
 	for (int i = 0; i < d; i++)
 		for (int j = 0; j < f; j++)
-			res.push_back({ 0, sd[i] });
+			res.push_back({ 0, constraint[i] });
 
-	for (int i = 0; i < d; i++)
-		for (int j = 0; j < f; j++)
-			res.push_back({ 0, sf[i] });
+	return res;
+}
+
+std::vector<MinMaxValues> MscnProblem::getXMMinMaxValues() {
+	std::vector<MinMaxValues> res;
 
 	for (int i = 0; i < d; i++)
 		for (int j = 0; j < f; j++)
@@ -313,13 +324,41 @@ std::vector<MinMaxValues> MscnProblem::getMinMaxValues() {
 	return res;
 }
 
-void MscnProblem::saveData(std::string const &path){
-	std::ofstream file("Input.txt");
+
+bool MscnProblem::saveData(std::string const &path) {
+
+	FILE * pFile;
+	pFile = fopen(path.c_str(), "w+");
+
+	if (!pFile) return false;
+
+	std::ofstream file(pFile);
 	file << *this;
 	file.close();
+
+	return true;
 }
 
-std::ostream& operator<<(std::ostream &os, const MscnProblem &p){
+bool MscnProblem::saveSolution(double * solution, std::string const &path) {
+
+	FILE * pFile;
+	pFile = fopen(path.c_str(), "w+");
+
+	if (!pFile) return false;
+
+	std::ofstream file(pFile);
+	file << "D " << d << "\n";
+	file << "F " << f << "\n";
+	file << "M " << m << "\n";
+	file << "S " << s << "\n";
+	file << getSolution(solution);
+
+	fclose(pFile);
+
+	return true;
+}
+
+std::ostream& operator<<(std::ostream &os, MscnProblem &p){
 
 	os << "D " << p.d << "\n" << "F " << p.f << "\n";
 	os << "M " << p.m << "\n" << "S " << p.s << "\n";
@@ -328,15 +367,39 @@ std::ostream& operator<<(std::ostream &os, const MscnProblem &p){
 	os << "sm\n" << p.sm << "\n";
 	os << "ss\n" << p.ss << "\n";
 
-	os << "cd\n" << p.cd << "\n"; //TODO: czemu nie dzia³a :'''(((
-	os << "cf\n" << p.cf << "\n"; // dereferencja wywala b³¹d lol
-	os << "cm\n" << p.cm << "\n";
+	os << "cd\n";
+	for (int i = 0; i < p.cd->getHeigth(); i++) {
+		for (int j = 0; j < p.cd->getWidth(); j++) {
+			os << p.cd->getElem(i, j) << " ";
+		}
+		os << "\n";
+	}
+
+	os << "cf\n";
+	for (int i = 0; i < p.cf->getHeigth(); i++) {
+		for (int j = 0; j < p.cf->getWidth(); j++) {
+			os << p.cf->getElem(i, j) << " ";
+		}
+		os << "\n";
+	}
+
+	os << "cd\n";
+	for (int i = 0; i < p.cm->getHeigth(); i++) {
+		for (int j = 0; j < p.cm->getWidth(); j++) {
+			os << p.cm->getElem(i, j) << " ";
+		}
+		os << "\n";
+	}
 
 	os << "ud\n" << p.ud << "\n";
 	os << "uf\n" << p.uf << "\n";
 	os << "um\n" << p.um << "\n";
 
 	os << "p\n" << p.ps << "\n";
+
+	os << "xdminmax\n" << p.getMinMaxValues(p.sd) << "\n";
+	os << "xfminmax\n" << p.getMinMaxValues(p.sf) << "\n";
+	os << "xmminmax\n" << p.getXMMinMaxValues() << "\n";
 
 	return os;
 }

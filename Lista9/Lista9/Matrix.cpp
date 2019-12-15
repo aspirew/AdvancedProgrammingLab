@@ -137,6 +137,8 @@ T Matrix<T>::sumWholeMat() {
 
 template <typename T>
 std::ostream& operator<<(std::ostream &os, const Matrix<T> &mat) {
+
+	std::cout << "AAAAAAAAAAAAAAA" << mat.width << std::endl;
 	
 	os << mat.width << " " << mat.heigth << "\n";
 	for (int i = 0; i < mat.heigth; i++) {
@@ -147,6 +149,7 @@ std::ostream& operator<<(std::ostream &os, const Matrix<T> &mat) {
 	}
 	return os;
 }
+
 
 template <typename T>
 void Matrix<T>::print() {

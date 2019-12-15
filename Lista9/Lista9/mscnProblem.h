@@ -4,12 +4,6 @@
 #include "MscnSolution.cpp"
 #include "vectorOverload.cpp"
 
-struct MinMaxValues {
-	double min;
-	double max;
-};
-
-
 class MscnProblem {
 public:
 
@@ -53,13 +47,15 @@ public:
 
 	int getSolutionErrorState() { return solutionErrorState; }
 
-	std::vector<MinMaxValues> getMinMaxValues();
+	std::vector<MinMaxValues> getMinMaxValues(std::vector<double> &constraint);
+	std::vector<MinMaxValues> getXMMinMaxValues();
 
 	void printAll();
 
-	void saveData(std::string const &path);
+	bool saveData(std::string const &path);
+	bool saveSolution(double *solution, std::string const &path);
 
-	friend std::ostream& operator<<(std::ostream &os, const MscnProblem &p);
+	friend std::ostream& operator<<(std::ostream &os, MscnProblem &p);
 
 private:
 
@@ -89,9 +85,6 @@ private:
 
 	Matrix<double> * cd, * cf, * cm;
 	std::vector<double> ud, uf, um, sd, sf, sm, ss, ps;
-	std::vector<int> minxd, maxxd, minxf, maxxf, minxm, maxxm;
-
-	
 
 	int solutionErrorState = 0;
 };

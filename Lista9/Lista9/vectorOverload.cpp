@@ -2,9 +2,7 @@ template <typename T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& v)
 {
 	for (int i = 0; i < v.size(); ++i) {
-		os << v[i];
-		if (i != v.size() - 1)
-			os << " ";
+		os << v[i] << " ";
 	}
 	return os;
 }
@@ -20,3 +18,4 @@ std::vector<T> deserializeVec(std::istream &is, int size) {
 
 	return v;
 }
+
