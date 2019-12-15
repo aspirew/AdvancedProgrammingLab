@@ -5,9 +5,11 @@ template <typename T>
 Matrix<T>::Matrix() { }
 
 template <typename T>
-Matrix<T>::Matrix(std::istream &is) {
-	is >> width >> heigth;
+Matrix<T>::Matrix(int heigth, int width, std::istream &is) {
 	initializeMatrix(heigth, width);
+	std::string foo;
+
+	std::getline(is, foo, ' ');
 
 	for (int i = 0; i < heigth; i++)
 		for (int j = 0; j < width; j++) {
@@ -18,8 +20,7 @@ Matrix<T>::Matrix(std::istream &is) {
 }
 
 template <typename T>
-Matrix<T>::Matrix(int heigth, int width, std::string name) {
-	this->name = name;
+Matrix<T>::Matrix(int heigth, int width) {
 	initializeMatrix(heigth, width);
 }
 
@@ -45,9 +46,9 @@ bool Matrix<T>::initializeMatrix(int heigth, int width) {
 	this->heigth = heigth;
 	this->fullSize = heigth * width;
 
-	allElements = new double*[heigth]();
+	allElements = new T*[heigth]();
 	for (int i = 0; i < heigth; i++) {
-		allElements[i] = new double[width]();
+		allElements[i] = new T[width]();
 	}
 
 	return true;
@@ -137,8 +138,6 @@ T Matrix<T>::sumWholeMat() {
 
 template <typename T>
 std::ostream& operator<<(std::ostream &os, const Matrix<T> &mat) {
-
-	std::cout << "AAAAAAAAAAAAAAA" << mat.width << std::endl;
 	
 	os << mat.width << " " << mat.heigth << "\n";
 	for (int i = 0; i < mat.heigth; i++) {

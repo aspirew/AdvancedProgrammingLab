@@ -8,7 +8,7 @@ class MscnProblem {
 public:
 
 	MscnProblem();
-	MscnProblem(std::istream &is);
+	MscnProblem(std::string fileName);
 	~MscnProblem();
 
 	bool setCountOfD(int val);
@@ -44,6 +44,7 @@ public:
 
 	double getQuality(double *solution, int arrSize);
 	double constraintsSatisfied(double *solution, int arrSize);
+	int getValidSize() { return d * f + f * m + m * s; }
 
 	int getSolutionErrorState() { return solutionErrorState; }
 
@@ -55,9 +56,12 @@ public:
 	bool saveData(std::string const &path);
 	bool saveSolution(double *solution, std::string const &path);
 
+	void setRandomValues(int count);
+	void setRandomElementsCount(int maxDist);
+
 	friend std::ostream& operator<<(std::ostream &os, MscnProblem &p);
 
-private:
+//private:
 
 	int d, f, m, s;
 
@@ -72,14 +76,11 @@ private:
 	double getP(Matrix<double> *xm);
 
 	MscnSolution getSolution(double *solution);
+	MscnSolution getSolutionFromTxt(std::string fileName);
 	double getProfit(MscnSolution sol);
 	int checkIfSolutionIsValid(double *solution, int arrSize);
 
 	bool constraintsCheck(MscnSolution &sol);
-
-	const Matrix<double> dereferCD() { return *cd; }
-	const Matrix<double> dereferCF() { return *cf; }
-	const Matrix<double> dereferCM() { return *cm; }
 
 	int eps(double x);
 

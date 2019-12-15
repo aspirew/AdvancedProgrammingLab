@@ -17,7 +17,7 @@ std::ostream& operator<<(std::ostream &os, const MscnSolution &sol) {
 	//os << "xf" << *(sol.xf) << "\n";
 	//os << "xm" << *(sol.xm) << "\n";
 
-	os << "xd\n";
+	os << "xd \n";
 	for (int i = 0; i < sol.xd->getHeigth(); i++) {
 		for (int j = 0; j < sol.xd->getWidth(); j++) {
 			os << sol.xd->getElem(i, j) << " ";
@@ -25,7 +25,7 @@ std::ostream& operator<<(std::ostream &os, const MscnSolution &sol) {
 		os << "\n";
 	}
 
-	os << "xf\n";
+	os << "xf \n";
 	for (int i = 0; i < sol.xf->getHeigth(); i++) {
 		for (int j = 0; j < sol.xf->getWidth(); j++) {
 			os << sol.xf->getElem(i, j) << " ";
@@ -33,7 +33,7 @@ std::ostream& operator<<(std::ostream &os, const MscnSolution &sol) {
 		os << "\n";
 	}
 
-	os << "xm\n";
+	os << "xm \n";
 	for (int i = 0; i < sol.xm->getHeigth(); i++) {
 		for (int j = 0; j < sol.xm->getWidth(); j++) {
 			os << sol.xm->getElem(i, j) << " ";
@@ -45,7 +45,7 @@ std::ostream& operator<<(std::ostream &os, const MscnSolution &sol) {
 }
 
 std::ostream & saveData(std::ostream & os, const MscnSolution &sol){
-	os << "xd\n";
+	os << "xd \n";
 	for (int i = 0; i < sol.xd->getHeigth(); i++) {
 		for (int j = 0; j < sol.xd->getWidth(); j++) {
 			os << sol.xd->getElem(i, j) << " ";
@@ -53,7 +53,7 @@ std::ostream & saveData(std::ostream & os, const MscnSolution &sol){
 		os << "\n";
 	}
 
-	os << "xf\n";
+	os << "xf \n";
 	for (int i = 0; i < sol.xf->getHeigth(); i++) {
 		for (int j = 0; j < sol.xf->getWidth(); j++) {
 			os << sol.xf->getElem(i, j) << " ";
@@ -61,7 +61,7 @@ std::ostream & saveData(std::ostream & os, const MscnSolution &sol){
 		os << "\n";
 	}
 
-	os << "xm\n";
+	os << "xm \n";
 	for (int i = 0; i < sol.xm->getHeigth(); i++) {
 		for (int j = 0; j < sol.xm->getWidth(); j++) {
 			os << sol.xm->getElem(i, j) << " ";

@@ -1,5 +1,7 @@
 #include "mscnProblem.h"
 #include "CONST_H.h"
+#include <ctime>
+#include <cstdlib>
 
 MscnProblem::MscnProblem() {
 
@@ -8,9 +10,9 @@ MscnProblem::MscnProblem() {
 	m = M_COUNT;
 	s = S_COUNT;
 
-	cd = new Matrix<double>(d, f, "cd");
-	cf = new Matrix<double>(f, m, "cf");
-	cm = new Matrix<double>(m, s, "cm");
+	cd = new Matrix<double>(d, f);
+	cf = new Matrix<double>(f, m);
+	cm = new Matrix<double>(m, s);
 
 	ud.resize(d);
 	uf.resize(f);
@@ -23,30 +25,48 @@ MscnProblem::MscnProblem() {
 
 }
 
-MscnProblem::MscnProblem(std::istream &is) {
+MscnProblem::MscnProblem(std::string fileName) {
 
-	int dCount, fCount, mCount, sCount;
-	std::string dummyS;
+	FILE * pFile;
+	pFile = fopen(fileName.c_str(), "r+"); //const
 
-	is >> dummyS >> dCount >> dummyS >> fCount >> dummyS >> mCount >> dummyS >> sCount >> dummyS;
-	d = dCount;
-	f = fCount;
-	m = mCount;
-	s = sCount;
+	if (pFile) {
 
-	cd = new Matrix<double>(is);
-	cf = new Matrix<double>(is);
-	cm = new Matrix<double>(is);
+		std::ifstream is(fileName);
+		std::string dummyS;
 
-	is >> dummyS;
-	sd = deserializeVec<double>(is, d);
-	is >> dummyS;
-	sf = deserializeVec<double>(is, f);
-	is >> dummyS;
-	sm = deserializeVec<double>(is, f);
-	is >> dummyS;
-	ss = deserializeVec<double>(is, f);
+		std::getline(is, dummyS, ' ');
+		is >> d;
+		std::getline(is, dummyS, ' ');
+		is >> f;
+		std::getline(is, dummyS, ' ');
+		is >> m;
+		std::getline(is, dummyS, ' ');
+		is >> s;
 
+		std::getline(is, dummyS, ' ');
+		sd = deserializeVec<double>(is, d);
+		sf = deserializeVec<double>(is, f);
+		sm = deserializeVec<double>(is, f);
+		ss = deserializeVec<double>(is, f);
+
+		cd = new Matrix<double>(d, f, is);
+		std::getline(is, dummyS, ' ');
+		cf = new Matrix<double>(f, m, is);
+		std::getline(is, dummyS, ' ');
+		cm = new Matrix<double>(m, s, is);
+		std::getline(is, dummyS, ' ');
+
+		std::getline(is, dummyS, ' ');
+		ud = deserializeVec<double>(is, d);
+		uf = deserializeVec<double>(is, f);
+		um = deserializeVec<double>(is, m);
+		ps = deserializeVec<double>(is, s);
+
+		is.close();
+	}
+
+	fclose(pFile);
 }
 
 MscnProblem::~MscnProblem() {
@@ -214,9 +234,9 @@ double MscnProblem::getP(Matrix<double> *xm) {
 
 MscnSolution MscnProblem::getSolution(double *solution) {
 
-	Matrix<double> * xd = new Matrix<double>(d, f, "xd");
-	Matrix<double> * xf = new Matrix<double>(f, m, "xf");
-	Matrix<double> * xm = new Matrix<double>(m, s, "xm");
+	Matrix<double> * xd = new Matrix<double>(d, f);
+	Matrix<double> * xf = new Matrix<double>(f, m);
+	Matrix<double> * xm = new Matrix<double>(m, s);
 
 	for (int i = 0; i < d; i++)
 		for (int j = 0; j < f; j++)
@@ -234,6 +254,55 @@ MscnSolution MscnProblem::getSolution(double *solution) {
 	return MscnSolution(xd, xf, xm);
 }
 
+MscnSolution MscnProblem::getSolutionFromTxt(std::string fileName){
+
+	FILE * pFile;
+	pFile = fopen(fileName.c_str(), "r+");
+
+	if (!pFile) return MscnSolution();
+
+	std::ifstream is(pFile);
+
+	Matrix<double> * xd = new Matrix<double>(d, f);
+	Matrix<double> * xf = new Matrix<double>(f, m);
+	Matrix<double> * xm = new Matrix<double>(m, s);
+
+	std::string foo;
+	int fool, fool2;
+
+	std::getline(is, foo);
+	std::getline(is, foo);
+	std::getline(is, foo);
+	std::getline(is, foo);
+	std::getline(is, foo, ' ');
+
+	for (int i = 0; i < d; i++)
+		for (int j = 0; j < f; j++) {
+			double result;
+			is >> result;
+			xd->setElem(result, i, j);
+		}
+
+	for (int i = 0; i < f; i++)
+		for (int j = 0; j < m; j++) {
+			double result;
+			is >> result;
+			xd->setElem(result, i, j);
+		}
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < s; j++) {
+			double result;
+			is >> result;
+			xd->setElem(result, i, j);
+		}
+
+	is.close();
+	fclose(pFile);
+
+	return MscnSolution(xd, xf, xm);
+}
+
 double MscnProblem::getProfit(MscnSolution sol) {
 
 	return getP(sol.xm) - getKT(sol.xd, sol.xf, sol.xm) - getKU(sol.xd, sol.xf, sol.xm);
@@ -241,8 +310,7 @@ double MscnProblem::getProfit(MscnSolution sol) {
 
 int MscnProblem::checkIfSolutionIsValid(double *solution, int arrSize) {
 	if (solution == NULL) return ERROR_SOLUTION_IS_NULL;
-	int validSize = d * f + f * m + m * s;
-	if (arrSize != validSize) return ERROR_WRONG_SIZE;
+	if (arrSize != getValidSize()) return ERROR_WRONG_SIZE;
 	for (int i = 0; i < arrSize; i++) {
 		if (solution[i] < 0) return ERROR_NEGATIVE_VALUES;
 	}
@@ -362,12 +430,12 @@ std::ostream& operator<<(std::ostream &os, MscnProblem &p){
 
 	os << "D " << p.d << "\n" << "F " << p.f << "\n";
 	os << "M " << p.m << "\n" << "S " << p.s << "\n";
-	os << "sd\n" << p.sd << "\n";
-	os << "sf\n" << p.sf << "\n";
-	os << "sm\n" << p.sm << "\n";
-	os << "ss\n" << p.ss << "\n";
+	os << "sd \n" << p.sd << "\n";
+	os << "sf \n" << p.sf << "\n";
+	os << "sm \n" << p.sm << "\n";
+	os << "ss \n" << p.ss << "\n";
 
-	os << "cd\n";
+	os << "cd \n";
 	for (int i = 0; i < p.cd->getHeigth(); i++) {
 		for (int j = 0; j < p.cd->getWidth(); j++) {
 			os << p.cd->getElem(i, j) << " ";
@@ -375,7 +443,7 @@ std::ostream& operator<<(std::ostream &os, MscnProblem &p){
 		os << "\n";
 	}
 
-	os << "cf\n";
+	os << "cf \n";
 	for (int i = 0; i < p.cf->getHeigth(); i++) {
 		for (int j = 0; j < p.cf->getWidth(); j++) {
 			os << p.cf->getElem(i, j) << " ";
@@ -383,7 +451,7 @@ std::ostream& operator<<(std::ostream &os, MscnProblem &p){
 		os << "\n";
 	}
 
-	os << "cd\n";
+	os << "cd \n";
 	for (int i = 0; i < p.cm->getHeigth(); i++) {
 		for (int j = 0; j < p.cm->getWidth(); j++) {
 			os << p.cm->getElem(i, j) << " ";
@@ -391,17 +459,43 @@ std::ostream& operator<<(std::ostream &os, MscnProblem &p){
 		os << "\n";
 	}
 
-	os << "ud\n" << p.ud << "\n";
-	os << "uf\n" << p.uf << "\n";
-	os << "um\n" << p.um << "\n";
+	os << "ud \n" << p.ud << "\n";
+	os << "uf \n" << p.uf << "\n";
+	os << "um \n" << p.um << "\n";
 
-	os << "p\n" << p.ps << "\n";
+	os << "p \n" << p.ps << "\n";
 
-	os << "xdminmax\n" << p.getMinMaxValues(p.sd) << "\n";
-	os << "xfminmax\n" << p.getMinMaxValues(p.sf) << "\n";
-	os << "xmminmax\n" << p.getXMMinMaxValues() << "\n";
+	os << "xdminmax \n" << p.getMinMaxValues(p.sd) << "\n";
+	os << "xfminmax \n" << p.getMinMaxValues(p.sf) << "\n";
+	os << "xmminmax \n" << p.getXMMinMaxValues() << "\n";
 
 	return os;
+}
+
+void MscnProblem::setRandomValues(int count) {
+	srand(time(0));
+	for (int i = 0; i < count; i++) {
+		setInCd(rand() % 100, rand() % d, rand() % f);
+		setInCf(rand() % 100, rand() % f, rand() % m);
+		setInCm(rand() % 100, rand() % m, rand() % s);
+
+		setInPs(rand() % 100, rand() % s);
+		setInSd(rand() % 100, rand() % d);
+		setInSf(rand() % 100, rand() % f);
+		setInSm(rand() % 100, rand() % m);
+		setInSs(rand() % 100, rand() % s);
+		setInUd(rand() % 100, rand() % d);
+		setInUf(rand() % 100, rand() % f);
+		setInUm(rand() % 100, rand() % m);
+	}
+}
+
+void MscnProblem::setRandomElementsCount(int maxDist) {
+	srand(time(0));
+	setCountOfD(rand() % maxDist);
+	setCountOfF(rand() % maxDist*2);
+	setCountOfM(rand() % maxDist*3);
+	setCountOfS(rand() % maxDist*4);
 }
 
 void MscnProblem::printAll() {

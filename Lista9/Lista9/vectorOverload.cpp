@@ -16,6 +16,11 @@ std::vector<T> deserializeVec(std::istream &is, int size) {
 		v[i] = result;
 	}
 
+	std::string foo;
+
+	std::getline(is, foo, ' ');
+	std::getline(is, foo, ' ');
+
 	return v;
 }
 

@@ -8,8 +8,8 @@ class Matrix {
 public:
 
 	Matrix();
-	Matrix(std::istream &is);
-	Matrix(int heigth, int width, std::string name);
+	Matrix(int heigth, int width, std::istream &is);
+	Matrix(int heigth, int width);
 	~Matrix();
 
 	bool resize(int heigth, int width);
@@ -35,8 +35,6 @@ private:
 	int heigth;
 	int width;
 	int fullSize;
-
-	std::string name;
 
 	T ** allElements;
 
