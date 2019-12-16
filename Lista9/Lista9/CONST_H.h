@@ -1,6 +1,11 @@
 #pragma once
 #include <algorithm>
 #include <fstream>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
 
 const int D_COUNT = 2;
 const int F_COUNT = 3;
@@ -17,15 +22,5 @@ const int SOLUTION_NOT_VALID = 0;
 const bool CONSTRAINTS_SATISFIED = true;
 const bool CONSTRAINTS_NOT_SATISFIED = false;
 
-const std::string PROBLEM_FILE_NAME = "problem.txt";
-const std::string SOLUTION_FILE_NAME = "solution.txt";
-
-struct MinMaxValues {
-	double min;
-	double max;
-
-	friend std::ostream& operator<<(std::ostream& os, const MinMaxValues& minmax){
-		os << minmax.min << " " << minmax.max;
-		return os;
-	}
-};
+const std::string PROBLEM_FILE_NAME = "database/problem.txt";
+const std::string SOLUTION_FILE_NAME = "database/solution.txt";

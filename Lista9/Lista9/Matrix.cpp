@@ -1,5 +1,4 @@
 #include "Matrix.h"
-#include <iostream>
 
 template <typename T>
 Matrix<T>::Matrix() { }
@@ -61,9 +60,9 @@ bool Matrix<T>::resize(int heigth, int width) {
 
 	if (heigth == this->heigth && width == this->width) return true;
 
-	double ** tmp = new double*[heigth]();
+	T ** tmp = new T*[heigth]();
 	for (int i = 0; i < heigth; i++) {
-		tmp[i] = new double[width]();
+		tmp[i] = new T[width]();
 	}
 
 	int smallerHeigth = (heigth < this->heigth) ? heigth : this->heigth;
@@ -98,7 +97,7 @@ T Matrix<T>::getElem(int y, int x) {
 }
 
 template <typename T>
-bool Matrix<T>::setElem(double val, int y, int x) {
+bool Matrix<T>::setElem(T val, int y, int x) {
 	if (!correctSize(y, x)) return false;
 
 	allElements[y][x] = val;
@@ -147,15 +146,4 @@ std::ostream& operator<<(std::ostream &os, const Matrix<T> &mat) {
 		os << "\n";
 	}
 	return os;
-}
-
-
-template <typename T>
-void Matrix<T>::print() {
-	for (int i = 0; i < heigth; i++) {
-		for (int j = 0; j < width; j++) {
-			std::cout << allElements[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
 }

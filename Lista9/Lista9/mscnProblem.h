@@ -1,8 +1,9 @@
 #pragma once
-#include <vector>
 #include "Matrix.cpp"
 #include "MscnSolution.cpp"
 #include "vectorHelper.cpp"
+#include "MinMaxValues.h"
+#include "CONST_H.h"
 
 class MscnProblem {
 public:
@@ -16,31 +17,32 @@ public:
 	bool setCountOfM(int val);
 	bool setCountOfS(int val);
 
-	bool setInCd(double val, int y, int x);
-	bool setInCf(double val, int y, int x);
-	bool setInCm(double val, int y, int x);
+	bool setInCd(double val, int y, int x) { return cd->setElem(val, y, x); }
+	bool setInCf(double val, int y, int x) { return cf->setElem(val, y, x); }
+	bool setInCm(double val, int y, int x) { return cm->setElem(val, y, x); }
 
-	double getFromCd(int y, int x);
-	double getFromCf(int y, int x);
-	double getFromCm(int y, int x);
+	double getFromCd(int y, int x) { return cd->getElem(y, x); }
+	double getFromCf(int y, int x) { return cf->getElem(y, x); }
+	double getFromCm(int y, int x) { return cm->getElem(y, x); }
 
-	bool setInUd(double val, int x);
-	bool setInUf(double val, int x);
-	bool setInUm(double val, int x);
-	bool setInSd(double val, int x);
-	bool setInSf(double val, int x);
-	bool setInSm(double val, int x);
-	bool setInSs(double val, int x);
-	bool setInPs(double val, int x);
 
-	double getFromUd(int x);
-	double getFromUf(int x);
-	double getFromUm(int x);
-	double getFromSd(int x);
-	double getFromSf(int x);
-	double getFromSm(int x);
-	double getFromSs(int x);
-	double getFromPs(int x);
+	bool setInUd(double val, int x) { return setInVectorOfDoubles(val, x, ud); }
+	bool setInUf(double val, int x) { return setInVectorOfDoubles(val, x, uf); }
+	bool setInUm(double val, int x) { return setInVectorOfDoubles(val, x, um); }
+	bool setInSd(double val, int x) { return setInVectorOfDoubles(val, x, sd); }
+	bool setInSf(double val, int x) { return setInVectorOfDoubles(val, x, sf); }
+	bool setInSm(double val, int x) { return setInVectorOfDoubles(val, x, sm); }
+	bool setInSs(double val, int x) { return setInVectorOfDoubles(val, x, ss); }
+	bool setInPs(double val, int x) { return setInVectorOfDoubles(val, x, ps); }
+
+	double getFromUd(int x) { return getFromVectorOfDoubles(x, ud); }
+	double getFromUf(int x) { return getFromVectorOfDoubles(x, uf); }
+	double getFromUm(int x) { return getFromVectorOfDoubles(x, um); }
+	double getFromSd(int x) { return getFromVectorOfDoubles(x, sd); }
+	double getFromSf(int x) { return getFromVectorOfDoubles(x, sf); }
+	double getFromSm(int x) { return getFromVectorOfDoubles(x, sm); }
+	double getFromSs(int x) { return getFromVectorOfDoubles(x, ss); }
+	double getFromPs(int x) { return getFromVectorOfDoubles(x, ps); }
 
 	double getQuality(double *solution, int arrSize);
 	double constraintsSatisfied(double *solution, int arrSize);
@@ -51,8 +53,6 @@ public:
 	std::vector<MinMaxValues> getMinMaxValues(std::vector<double> &constraint);
 	std::vector<MinMaxValues> getXMMinMaxValues();
 
-	void printAll();
-
 	bool saveData(std::string const &path);
 	bool saveSolution(double *solution, std::string const &path);
 
@@ -61,9 +61,11 @@ public:
 
 	friend std::ostream& operator<<(std::ostream &os, MscnProblem &p);
 
-//private:
+private:
 
 	int d, f, m, s;
+
+	void initialize();
 
 	bool setInVectorOfDoubles(double val, int x, std::vector<double> &vector);
 	double getFromVectorOfDoubles(int x, std::vector<double> &vector);
@@ -77,7 +79,6 @@ public:
 
 	MscnSolution getSolution(double *solution);
 	MscnSolution getSolutionFromTxt(std::string fileName);
-	double getProfit(MscnSolution sol);
 	int checkIfSolutionIsValid(double *solution, int arrSize);
 
 	bool constraintsCheck(MscnSolution &sol);

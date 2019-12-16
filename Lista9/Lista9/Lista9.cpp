@@ -1,7 +1,6 @@
 #include "pch.h"
-#include <iostream>
 #include "mscnProblem.cpp"
-#include <sstream>
+//#include <vld.h>
 
 double * solution(int size) {
 	double * res = new double[size];
@@ -17,7 +16,23 @@ double * solution(int size) {
 void createAndSaveProblem() {
 	MscnProblem problem = MscnProblem();
 
-	problem.setRandomElementsCount(2);
+	double * sol = solution(problem.getValidSize());
+
+	std::cout << problem.getQuality(sol, problem.getValidSize()) << std::endl;
+	std::cout << problem.constraintsSatisfied(sol, problem.getValidSize()) << std::endl;
+
+	std::cout << problem;
+
+	problem.saveData(PROBLEM_FILE_NAME);
+	problem.saveSolution(sol, SOLUTION_FILE_NAME);
+
+	delete sol;
+}
+
+void createAndSaveProblemRandom() {
+	MscnProblem problem = MscnProblem();
+
+	problem.setRandomElementsCount(3);
 	problem.setRandomValues(20);
 
 	double * sol = solution(problem.getValidSize());
@@ -27,17 +42,29 @@ void createAndSaveProblem() {
 
 	std::cout << problem;
 
-	problem.saveData("Input.txt");
-	problem.saveSolution(sol, "Input2.txt");
+	problem.saveData(PROBLEM_FILE_NAME);
+	problem.saveSolution(sol, SOLUTION_FILE_NAME);
 
 	delete sol;
 }
 
-void readProblemFromTxt(std::string fileName) {
-	MscnProblem problem = MscnProblem(fileName);
-	std::cout << problem.getSolutionFromTxt("Input2.txt");
+void readProblemFromTxt(std::string problemFileName) {
+	MscnProblem problem = MscnProblem(problemFileName);
+	std::cout << problem << std::endl;
+}
+
+void checkResizing() {
+
+	MscnProblem problem = MscnProblem();
+	std::cout << problem << std::endl;
+
+	problem.setRandomElementsCount(4);
+
+	std::cout << problem << std::endl;
+
 }
 
 int main(){
-	readProblemFromTxt("Input.txt");
+	//createAndSaveProblemRandom();
+	//readProblemFromTxt(PROBLEM_FILE_NAME);
 }

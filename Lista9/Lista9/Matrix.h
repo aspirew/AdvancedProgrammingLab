@@ -1,6 +1,5 @@
 #pragma once
-#include <vector>
-#include <string>
+#include "CONST_H.h"
 
 template <typename T>
 class Matrix {
@@ -15,7 +14,7 @@ public:
 	bool resize(int heigth, int width);
 
 	T getElem(int y, int x);
-	bool setElem(double val, int y, int x);
+	bool setElem(T val, int y, int x);
 
 	int getWidth() { return width; }
 	int getHeigth() { return heigth; }
@@ -26,9 +25,6 @@ public:
 	T sumWholeMat();
 
 	friend std::ostream& operator<<(std::ostream &os, const Matrix<T> &mat);
-
-	void print();
-
 
 private:
 
