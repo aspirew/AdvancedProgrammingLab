@@ -100,7 +100,7 @@ T Matrix<T>::getElem(int y, int x) {
 template <typename T>
 bool Matrix<T>::setElem(double val, int y, int x) {
 	if (!correctSize(y, x)) return false;
-	
+
 	allElements[y][x] = val;
 
 	return true;

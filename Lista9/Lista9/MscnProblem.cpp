@@ -283,18 +283,24 @@ MscnSolution MscnProblem::getSolutionFromTxt(std::string fileName){
 			xd->setElem(result, i, j);
 		}
 
+	std::getline(is, foo, ' ');
+	std::getline(is, foo, ' ');
+
 	for (int i = 0; i < f; i++)
 		for (int j = 0; j < m; j++) {
 			double result;
 			is >> result;
-			xd->setElem(result, i, j);
+			xf->setElem(result, i, j);
 		}
+
+	std::getline(is, foo, ' ');
+	std::getline(is, foo, ' ');
 
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < s; j++) {
 			double result;
 			is >> result;
-			xd->setElem(result, i, j);
+			xm->setElem(result, i, j);
 		}
 
 	is.close();

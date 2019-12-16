@@ -2,7 +2,7 @@
 #include <vector>
 #include "Matrix.cpp"
 #include "MscnSolution.cpp"
-#include "vectorOverload.cpp"
+#include "vectorHelper.cpp"
 
 class MscnProblem {
 public:
