@@ -3,6 +3,7 @@
 #include "Matrix.cpp"
 #include "MscnSolution.cpp"
 #include "vectorHelper.cpp"
+#include "MinMaxValues.h"
 
 class MscnProblem {
 public:
@@ -48,20 +49,19 @@ public:
 
 	int getSolutionErrorState() { return solutionErrorState; }
 
-	std::vector<MinMaxValues> getMinMaxValues(std::vector<double> &constraint);
-	std::vector<MinMaxValues> getXMMinMaxValues();
-
-	void printAll();
+	MscnSolution getSolution(double *solution);
+	MscnSolution getSolutionFromTxt(std::string fileName);
 
 	bool saveData(std::string const &path);
 	bool saveSolution(double *solution, std::string const &path);
 
 	void setRandomValues(int count);
 	void setRandomElementsCount(int maxDist);
+	void setRandomMinMaxValues(int maxDist);
 
 	friend std::ostream& operator<<(std::ostream &os, MscnProblem &p);
 
-//private:
+private:
 
 	int d, f, m, s;
 
@@ -75,8 +75,6 @@ public:
 	double getKU(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm);
 	double getP(Matrix<double> *xm);
 
-	MscnSolution getSolution(double *solution);
-	MscnSolution getSolutionFromTxt(std::string fileName);
 	double getProfit(MscnSolution sol);
 	int checkIfSolutionIsValid(double *solution, int arrSize);
 
@@ -86,6 +84,7 @@ public:
 
 	Matrix<double> * cd, * cf, * cm;
 	std::vector<double> ud, uf, um, sd, sf, sm, ss, ps;
+	Matrix<MinMaxValues> * minmaxxd, * minmaxxf, * minmaxxm;
 
 	int solutionErrorState = 0;
 };

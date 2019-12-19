@@ -16,6 +16,18 @@ std::vector<T> deserializeVec(std::istream &is, int size) {
 		v[i] = result;
 	}
 
+	return v;
+}
+
+std::vector<MinMaxValues> deserializeVec(std::istream &is, int size) {
+	std::vector<MinMaxValues> v(size);
+	for (int i = 0; i < size; i++) {
+		double result1, result2;
+		is >> result1;
+		is >> result2;
+		v[i] = { result1, result2 };
+	}
+
 	std::string foo;
 
 	std::getline(is, foo, ' ');

@@ -23,45 +23,75 @@ MscnProblem::MscnProblem() {
 	ss.resize(s);
 	ps.resize(s);
 
+	minmaxxd = new Matrix<MinMaxValues>(d, f);
+	minmaxxf = new Matrix<MinMaxValues>(f, m);
+	minmaxxm = new Matrix<MinMaxValues>(m, s);
+
 }
 
 MscnProblem::MscnProblem(std::string fileName) {
 
 	FILE * pFile;
-	pFile = fopen(fileName.c_str(), "r+"); //const
+	pFile = fopen(fileName.c_str(), "r+");
 
 	if (pFile) {
 
 		std::ifstream is(fileName);
-		std::string dummyS;
-
-		std::getline(is, dummyS, ' ');
+		
+		is.ignore(256, ' ');
 		is >> d;
-		std::getline(is, dummyS, ' ');
+		is.ignore(256, ' ');
 		is >> f;
-		std::getline(is, dummyS, ' ');
+		is.ignore(256, ' ');
 		is >> m;
-		std::getline(is, dummyS, ' ');
+		is.ignore(256, ' ');
 		is >> s;
 
-		std::getline(is, dummyS, ' ');
+		is.ignore(256, ' ');
 		sd = deserializeVec<double>(is, d);
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
 		sf = deserializeVec<double>(is, f);
-		sm = deserializeVec<double>(is, f);
-		ss = deserializeVec<double>(is, f);
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
+		sm = deserializeVec<double>(is, m);
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
+		ss = deserializeVec<double>(is, s);
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
 
 		cd = new Matrix<double>(d, f, is);
-		std::getline(is, dummyS, ' ');
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
 		cf = new Matrix<double>(f, m, is);
-		std::getline(is, dummyS, ' ');
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
 		cm = new Matrix<double>(m, s, is);
-		std::getline(is, dummyS, ' ');
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
 
-		std::getline(is, dummyS, ' ');
 		ud = deserializeVec<double>(is, d);
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
 		uf = deserializeVec<double>(is, f);
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
 		um = deserializeVec<double>(is, m);
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
 		ps = deserializeVec<double>(is, s);
+
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
+
+		minmaxxd = new Matrix<MinMaxValues>(d, f, is);
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
+		minmaxxf = new Matrix<MinMaxValues>(f, m, is);
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
+		minmaxxm = new Matrix<MinMaxValues>(m, s, is);
 
 		is.close();
 	}
@@ -73,6 +103,9 @@ MscnProblem::~MscnProblem() {
 	delete cd;
 	delete cf;
 	delete cm;
+	delete minmaxxd;
+	delete minmaxxf;
+	delete minmaxxm;
 }
 
 bool MscnProblem::setCountOfD(int val) {
@@ -82,6 +115,7 @@ bool MscnProblem::setCountOfD(int val) {
 	ud.resize(d);
 	sd.resize(d);
 	cd->resize(d, f);
+	minmaxxd->resize(d, f);
 	return true;
 }
 
@@ -92,7 +126,9 @@ bool MscnProblem::setCountOfF(int val) {
 	uf.resize(f);
 	sf.resize(f);
 	cd->resize(d, f);
+	minmaxxd->resize(d, f);
 	cf->resize(f, m);
+	minmaxxf->resize(f, m);
 	return true;
 }
 
@@ -103,7 +139,9 @@ bool MscnProblem::setCountOfM(int val) {
 	um.resize(m);
 	sm.resize(m);
 	cf->resize(f, m);
+	minmaxxf->resize(f, m);
 	cm->resize(m, s);
+	minmaxxm->resize(m, s);
 	return true;
 }
 
@@ -114,6 +152,7 @@ bool MscnProblem::setCountOfS(int val) {
 	ss.resize(s);
 	ps.resize(s);
 	cm->resize(m, s);
+	minmaxxm->resize(m, s);
 	return true;
 }
 
@@ -321,6 +360,29 @@ int MscnProblem::checkIfSolutionIsValid(double *solution, int arrSize) {
 		if (solution[i] < 0) return ERROR_NEGATIVE_VALUES;
 	}
 
+	for (int i = 0; i < d; i++) {
+		for (int j = 0; j < f; j++) {
+			if (solution[i*f + j] < minmaxxd->getElem(i, j).min) return ERROR_NUMBER_TOO_SMALL;
+			if (solution[i*f + j] > minmaxxd->getElem(i, j).max) return ERROR_NUMBER_TOO_BIG;
+		}
+	}
+
+	for (int i = 0; i < f; i++) {
+		for (int j = 0; j < m; j++) {
+			if (solution[i*m + j] < minmaxxf->getElem(i, j).min) return ERROR_NUMBER_TOO_SMALL;
+			if (solution[i*m + j] > minmaxxf->getElem(i, j).max) return ERROR_NUMBER_TOO_BIG;
+		}
+	}
+
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < s; j++) {
+			if (solution[i*s + j] < minmaxxm->getElem(i, j).min) return ERROR_NUMBER_TOO_SMALL;
+			if (solution[i*s + j] > minmaxxm->getElem(i, j).max) return ERROR_NUMBER_TOO_BIG;
+		}
+	}
+
+	std::cout << "SOLUTION IS VALID";
+
 	return SOLUTION_VALID;
 }
 
@@ -328,7 +390,7 @@ double MscnProblem::getQuality(double *solution, int arrSize){
 
 	solutionErrorState = checkIfSolutionIsValid(solution, arrSize);
 
-	if (solutionErrorState != SOLUTION_VALID) return 0; //const
+	if (solutionErrorState != SOLUTION_VALID) return SOLUTION_NOT_VALID;
 
 	MscnSolution sol = getSolution(solution);
 
@@ -340,7 +402,7 @@ double MscnProblem::constraintsSatisfied(double *solution, int arrSize) {
 
 	solutionErrorState = checkIfSolutionIsValid(solution, arrSize);
 
-	if (solutionErrorState != SOLUTION_VALID) return 0; // const
+	if (solutionErrorState != SOLUTION_VALID) return SOLUTION_NOT_VALID;
 
 	MscnSolution sol = getSolution(solution);
 
@@ -350,52 +412,32 @@ double MscnProblem::constraintsSatisfied(double *solution, int arrSize) {
 bool MscnProblem::constraintsCheck(MscnSolution &sol) {
 
 	for (int i = 0; i < d; i++) {
-		if (sol.xd->sumOneRow(i) > sd[i]) return false;
+		if (sol.xd->sumOneRow(i) > sd[i]) return CONSTRAINTS_NOT_SATISFIED;
 	}
 
 	for (int i = 0; i < f; i++) {
-		if (sol.xf->sumOneRow(i) > sf[i]) return false;
+		if (sol.xf->sumOneRow(i) > sf[i]) return CONSTRAINTS_NOT_SATISFIED;
 	}
 
 	for (int i = 0; i < m; i++) {
-		if (sol.xm->sumOneRow(i) > sm[i]) return false;
+		if (sol.xm->sumOneRow(i) > sm[i]) return CONSTRAINTS_NOT_SATISFIED;
 	}
 
 	for (int i = 0; i < s; i++) {
-		if (sol.xm->sumOneCol(i) > ss[i]) return false;
+		if (sol.xm->sumOneCol(i) > ss[i]) return CONSTRAINTS_NOT_SATISFIED;
 	}
 
 	for (int i = 0; i < f; i++) {
-		if (sol.xd->sumOneCol(i) < sol.xf->sumOneRow(i)) return false;
+		if (sol.xd->sumOneCol(i) < sol.xf->sumOneRow(i)) return CONSTRAINTS_NOT_SATISFIED;
 	}
 
 	for (int i = 0; i < m; i++) {
-		if (sol.xf->sumOneCol(i) < sol.xm->sumOneRow(i)) return false;
+		if (sol.xf->sumOneCol(i) < sol.xm->sumOneRow(i)) return CONSTRAINTS_NOT_SATISFIED;
 	}
 
-	return true;
+	return CONSTRAINTS_SATISFIED;
 
 	//TODO: const
-}
-
-std::vector<MinMaxValues> MscnProblem::getMinMaxValues(std::vector<double> &constraint) {
-	std::vector<MinMaxValues> res;
-
-	for (int i = 0; i < d; i++)
-		for (int j = 0; j < f; j++)
-			res.push_back({ 0, constraint[i] });
-
-	return res;
-}
-
-std::vector<MinMaxValues> MscnProblem::getXMMinMaxValues() {
-	std::vector<MinMaxValues> res;
-
-	for (int i = 0; i < d; i++)
-		for (int j = 0; j < f; j++)
-			res.push_back({ 0, std::max(sm[i], ss[i]) });
-
-	return res;
 }
 
 
@@ -457,7 +499,7 @@ std::ostream& operator<<(std::ostream &os, MscnProblem &p){
 		os << "\n";
 	}
 
-	os << "cd \n";
+	os << "cm \n";
 	for (int i = 0; i < p.cm->getHeigth(); i++) {
 		for (int j = 0; j < p.cm->getWidth(); j++) {
 			os << p.cm->getElem(i, j) << " ";
@@ -471,9 +513,29 @@ std::ostream& operator<<(std::ostream &os, MscnProblem &p){
 
 	os << "p \n" << p.ps << "\n";
 
-	os << "xdminmax \n" << p.getMinMaxValues(p.sd) << "\n";
-	os << "xfminmax \n" << p.getMinMaxValues(p.sf) << "\n";
-	os << "xmminmax \n" << p.getXMMinMaxValues() << "\n";
+	os << "minmaxxd \n";
+	for (int i = 0; i < p.minmaxxd->getHeigth(); i++) {
+		for (int j = 0; j < p.minmaxxd->getWidth(); j++) {
+			os << p.minmaxxd->getElem(i, j) << " ";
+		}
+		os << "\n";
+	}
+
+	os << "minmaxxf \n";
+	for (int i = 0; i < p.minmaxxf->getHeigth(); i++) {
+		for (int j = 0; j < p.minmaxxf->getWidth(); j++) {
+			os << p.minmaxxf->getElem(i, j) << " ";
+		}
+		os << "\n";
+	}
+
+	os << "minmaxxm \n";
+	for (int i = 0; i < p.minmaxxm->getHeigth(); i++) {
+		for (int j = 0; j < p.minmaxxm->getWidth(); j++) {
+			os << p.minmaxxm->getElem(i, j) << " ";
+		}
+		os << "\n";
+	}
 
 	return os;
 }
@@ -504,49 +566,32 @@ void MscnProblem::setRandomElementsCount(int maxDist) {
 	setCountOfS(rand() % maxDist*4);
 }
 
-void MscnProblem::printAll() {
-	std::cout << "Ilosc D: " << d << std::endl;
-	std::cout << "cd: " << std::endl;
-	cd->print();
-	std::cout << std::endl << "ud: ";
-	for (int i = 0; i < ud.size(); i++)
-		std::cout << ud[i] << " ";
-	std::cout << std::endl << "sd: ";
-	for (int i = 0; i < sd.size(); i++)
-		std::cout << sd[i] << " ";
-	std::cout << std::endl << std::endl;
+void MscnProblem::setRandomMinMaxValues(int maxMin){
+	double min = 0;
+	double max = 0;
 
-	std::cout << "Ilosc F: " << f << std::endl;
-	std::cout << "cf: " << std::endl;
-	cf->print();
-	std::cout << std::endl << "uf: ";
-	for (int i = 0; i < uf.size(); i++)
-		std::cout << uf[i] << " ";
-	std::cout << std::endl << "sd: ";
-	for (int i = 0; i < sf.size(); i++)
-		std::cout << sf[i] << " ";
-	std::cout << std::endl << std::endl;
+	for (int i = 0; i < d; i++) {
+		for (int j = 0; j < f; j++) {
+			min = rand() % maxMin;
+			max = 50 + rand() % maxMin;
+			minmaxxd->setElem({ min, max }, i, j);
+		}
+	}
 
-	std::cout << "Ilosc M: " << m << std::endl;
-	std::cout << "cm: " << std::endl;
-	cm->print();
-	std::cout << std::endl << "um: ";
-	for (int i = 0; i < um.size(); i++)
-		std::cout << um[i] << " ";
-	std::cout << std::endl << "sm: ";
-	for (int i = 0; i < sm.size(); i++)
-		std::cout << sm[i] << " ";
-	std::cout << std::endl << std::endl;
+	for (int i = 0; i < f; i++) {
+		for (int j = 0; j < m; j++) {
+			min = rand() % maxMin;
+			max = 50 + rand() % maxMin;
+			minmaxxf->setElem({ min, max }, i, j);
+		}
+	}
 
-	std::cout << "Ilosc S: " << s << std::endl;
-	std::cout << std::endl << "ss: ";
-	for (int i = 0; i < ss.size(); i++)
-		std::cout << ss[i] << " ";
-	std::cout << std::endl << "ps: ";
-	for (int i = 0; i < ps.size(); i++)
-		std::cout << ps[i] << " ";
-	std::cout << std::endl << std::endl;
-	
-	std::cout << std::endl;
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < s; j++) {
+			min = rand() % maxMin;
+			max = 50 + rand() % maxMin;
+			minmaxxm->setElem({ min, max }, i, j);
+		}
+	}
 
 }

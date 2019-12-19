@@ -1,5 +1,6 @@
 #include "Matrix.h"
 #include <iostream>
+#include "MinMaxValues.h"
 
 template <typename T>
 Matrix<T>::Matrix() { }
@@ -7,15 +8,26 @@ Matrix<T>::Matrix() { }
 template <typename T>
 Matrix<T>::Matrix(int heigth, int width, std::istream &is) {
 	initializeMatrix(heigth, width);
-	std::string foo;
-
-	std::getline(is, foo, ' ');
 
 	for (int i = 0; i < heigth; i++)
 		for (int j = 0; j < width; j++) {
 			T result;
 			is >> result;
 			setElem(result, i, j);
+		}
+}
+
+Matrix<MinMaxValues>::Matrix(int heigth, int width, std::istream &is) {
+	initializeMatrix(heigth, width);
+
+	double min = 0;
+	double max = 0;
+
+	for (int i = 0; i < heigth; i++)
+		for (int j = 0; j < width; j++) {
+			is >> min;
+			is >> max;
+			setElem({ min, max }, i, j);
 		}
 }
 
@@ -61,9 +73,9 @@ bool Matrix<T>::resize(int heigth, int width) {
 
 	if (heigth == this->heigth && width == this->width) return true;
 
-	double ** tmp = new double*[heigth]();
+	T ** tmp = new T*[heigth]();
 	for (int i = 0; i < heigth; i++) {
-		tmp[i] = new double[width]();
+		tmp[i] = new T[width]();
 	}
 
 	int smallerHeigth = (heigth < this->heigth) ? heigth : this->heigth;
@@ -98,7 +110,7 @@ T Matrix<T>::getElem(int y, int x) {
 }
 
 template <typename T>
-bool Matrix<T>::setElem(double val, int y, int x) {
+bool Matrix<T>::setElem(T val, int y, int x) {
 	if (!correctSize(y, x)) return false;
 
 	allElements[y][x] = val;
@@ -137,6 +149,17 @@ T Matrix<T>::sumWholeMat() {
 }
 
 template <typename T>
+double * Matrix<T>::toDouble() {
+	double * res = new double[heigth*width];
+	for (int i = 0; i < heigth; i++) {
+		for (int j = 0; j < width; j++) {
+			res[i*width+j] = getElem(i, j);
+		}
+	}
+	return res;
+}
+
+template <typename T>
 std::ostream& operator<<(std::ostream &os, const Matrix<T> &mat) {
 	
 	os << mat.width << " " << mat.heigth << "\n";
@@ -149,13 +172,3 @@ std::ostream& operator<<(std::ostream &os, const Matrix<T> &mat) {
 	return os;
 }
 
-
-template <typename T>
-void Matrix<T>::print() {
-	for (int i = 0; i < heigth; i++) {
-		for (int j = 0; j < width; j++) {
-			std::cout << allElements[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
-}

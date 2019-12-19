@@ -13,6 +13,8 @@ public:
 
 	~MscnSolution();
 
+	double * toDouble();
+
 	friend std::ostream& operator<<(std::ostream &os, const MscnSolution &p);
 
 };

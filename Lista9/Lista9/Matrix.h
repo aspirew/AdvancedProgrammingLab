@@ -15,7 +15,7 @@ public:
 	bool resize(int heigth, int width);
 
 	T getElem(int y, int x);
-	bool setElem(double val, int y, int x);
+	bool setElem(T val, int y, int x);
 
 	int getWidth() { return width; }
 	int getHeigth() { return heigth; }
@@ -25,10 +25,9 @@ public:
 	T sumOneCol(int col);
 	T sumWholeMat();
 
+	double * toDouble();
+
 	friend std::ostream& operator<<(std::ostream &os, const Matrix<T> &mat);
-
-	void print();
-
 
 private:
 
