@@ -16,13 +16,12 @@ double * solution(int size) {
 
 void createAndSaveProblem() {
 	MscnProblem problem = MscnProblem();
-	problem.setRandomElementsCount(2);
+
+	problem.setRandomMinMaxValues(50);
 
 	double * sol = solution(problem.getValidSize());
 
 	std::cout << problem;
-
-	std::cout << "Quality: " << problem.getQuality(sol, problem.getValidSize());
 
 	problem.saveData(PROBLEM_FILE_NAME);
 	problem.saveSolution(sol, SOLUTION_FILE_NAME);
@@ -62,6 +61,12 @@ void readProblemFromTxt(std::string fileName) {
 	std::cout << "SOLUTION: " << std::endl;
 
 	std::cout << solution;
+
+	double * solDbl = solution.toDouble();
+
+	std::cout << "QUALITY: " << problem.getQuality(solDbl, problem.getValidSize());
+
+	delete solDbl;
 }
 
 void checkResize() {
@@ -81,7 +86,7 @@ void checkResize() {
 
 int main(){
 	//createAndSaveProblem();
-	createAndSaveProblemRandom();
+	//createAndSaveProblemRandom();
 	readProblemFromTxt(PROBLEM_FILE_NAME);
 	//checkResize();
 }

@@ -17,7 +17,8 @@ public:
 	T getElem(int y, int x);
 	bool setElem(T val, int y, int x);
 
-	int getWidth() { return width; }
+	int getWidth() { 
+		return width; }
 	int getHeigth() { return heigth; }
 	int getFullSize() { return fullSize; }
 

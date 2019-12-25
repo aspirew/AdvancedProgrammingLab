@@ -278,17 +278,19 @@ MscnSolution MscnProblem::getSolution(double *solution) {
 	Matrix<double> * xm = new Matrix<double>(m, s);
 
 	for (int i = 0; i < d; i++)
-		for (int j = 0; j < f; j++)
-			xd->setElem(solution[i*d + j], i, j);
+		for (int j = 0; j < f; j++) {
+			xd->setElem(solution[i*f + j], i, j);
+		}
 
 	for (int i = 0; i < f; i++)
-		for (int j = 0; j < m; j++)
-			xf->setElem(solution[d*f + i * f + j], i, j);
+		for (int j = 0; j < m; j++) {
+			xf->setElem(solution[d*f + i * m + j], i, j);
+		}
 
 	for (int i = 0; i < m; i++)
-		for (int j = 0; j < s; j++)
-			xm->setElem(solution[f*m + i * s + j], i, j);
-
+		for (int j = 0; j < s; j++) {
+			xm->setElem(solution[d*f + f * m + i * s + j], i, j);
+		}
 
 	return MscnSolution(xd, xf, xm);
 }
@@ -369,19 +371,17 @@ int MscnProblem::checkIfSolutionIsValid(double *solution, int arrSize) {
 
 	for (int i = 0; i < f; i++) {
 		for (int j = 0; j < m; j++) {
-			if (solution[i*m + j] < minmaxxf->getElem(i, j).min) return ERROR_NUMBER_TOO_SMALL;
-			if (solution[i*m + j] > minmaxxf->getElem(i, j).max) return ERROR_NUMBER_TOO_BIG;
+			if (solution[d*f + i*m + j] < minmaxxf->getElem(i, j).min) return ERROR_NUMBER_TOO_SMALL;
+			if (solution[d*f + i*m + j] > minmaxxf->getElem(i, j).max) return ERROR_NUMBER_TOO_BIG;
 		}
 	}
 
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < s; j++) {
-			if (solution[i*s + j] < minmaxxm->getElem(i, j).min) return ERROR_NUMBER_TOO_SMALL;
-			if (solution[i*s + j] > minmaxxm->getElem(i, j).max) return ERROR_NUMBER_TOO_BIG;
+			if (solution[d*f + f*m + i*s + j] < minmaxxm->getElem(i, j).min) return ERROR_NUMBER_TOO_SMALL;
+			if (solution[d*f + f*m + i*s + j] > minmaxxm->getElem(i, j).max) return ERROR_NUMBER_TOO_BIG;
 		}
 	}
-
-	std::cout << "SOLUTION IS VALID";
 
 	return SOLUTION_VALID;
 }
@@ -437,7 +437,6 @@ bool MscnProblem::constraintsCheck(MscnSolution &sol) {
 
 	return CONSTRAINTS_SATISFIED;
 
-	//TODO: const
 }
 
 

@@ -14,10 +14,21 @@ MscnSolution::~MscnSolution() {
 
 double * MscnSolution::toDouble() {
 	double * res = new double[xd->getFullSize() + xf->getFullSize() + xm->getFullSize()];
+	int xdSize = xd->getWidth()*xd->getHeigth();
+	int xfSize = xf->getWidth()*xf->getHeigth();
+	int xmSize = xm->getWidth()*xm->getHeigth();
 
-	std::copy(xd->toDouble(), xd->toDouble() + xd->getWidth()*xd->getHeigth(), res);
-	std::copy(xf->toDouble(), xf->toDouble() + xf->getWidth()*xf->getHeigth(), res);
-	std::copy(xm->toDouble(), xm->toDouble() + xm->getWidth()*xm->getHeigth(), res);
+	double * xdd = xd->toDouble();
+	double * xff = xf->toDouble();
+	double * xmm = xm->toDouble();
+
+	std::copy(xdd, xdd + xdSize, res);
+	std::copy(xff, xff + xfSize, res + xdSize);
+	std::copy(xmm, xmm + xmSize, res + xdSize + xfSize);
+
+	delete xdd;
+	delete xff;
+	delete xmm;
 
 	return res;
 }
