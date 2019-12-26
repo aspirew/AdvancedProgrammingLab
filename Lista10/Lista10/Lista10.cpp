@@ -1,0 +1,96 @@
+#include "pch.h"
+#include <iostream>
+#include "mscnProblem.cpp"
+#include "Random.cpp"
+//#include "vld.h"
+
+double * solution(int size) {
+	double * res = new double[size];
+
+	srand(time(0));
+	for (int i = 0; i < size; i++) {
+		res[i] = 50.4;
+	}
+
+	return res;
+}
+
+void createAndSaveProblem() {
+	MscnProblem problem = MscnProblem();
+
+	problem.setRandomMinMaxValues(50);
+
+	double * sol = solution(problem.getValidSize());
+
+	std::cout << problem;
+
+	problem.saveData(PROBLEM_FILE_NAME);
+	problem.saveSolution(sol, SOLUTION_FILE_NAME);
+
+	delete sol;
+
+}
+
+void createAndSaveProblemRandom() {
+	MscnProblem problem = MscnProblem();
+
+	problem.setRandomElementsCount(2);
+	problem.setRandomValues(20);
+	problem.setRandomMinMaxValues(50);
+
+	double * sol = solution(problem.getValidSize());
+
+	std::cout << "Quality: " << problem.getQuality(sol, problem.getValidSize()) << std::endl;
+	std::cout << "Constraints: " << problem.constraintsSatisfied(sol, problem.getValidSize()) << std::endl;
+
+	//std::cout << problem;
+
+	problem.saveData(PROBLEM_FILE_NAME);
+	problem.saveSolution(sol, SOLUTION_FILE_NAME);
+
+	delete sol;
+}
+
+void readProblemFromTxt(std::string fileName) {
+	MscnProblem problem = MscnProblem(fileName);
+	MscnSolution solution = problem.getSolutionFromTxt(SOLUTION_FILE_NAME);
+
+	std::cout << "PROBLEM: ";
+
+	std::cout << problem;
+
+	std::cout << "SOLUTION: " << std::endl;
+
+	std::cout << solution;
+
+	double * solDbl = solution.toDouble();
+
+	std::cout << "QUALITY: " << problem.getQuality(solDbl, problem.getValidSize());
+
+	delete solDbl;
+}
+
+void checkResize() {
+	MscnProblem problem = MscnProblem();
+
+	problem.setRandomElementsCount(6);
+	problem.setRandomValues(100);
+	problem.setRandomMinMaxValues(50);
+
+	std::cout << problem << std::endl;
+
+	problem.setRandomElementsCount(2);
+
+	std::cout << problem;
+
+}
+
+int main() {
+	//createAndSaveProblem();
+	//createAndSaveProblemRandom();
+	//readProblemFromTxt(PROBLEM_FILE_NAME);
+	//checkResize();
+	Random<int> rnd = Random<int>(time(NULL), -10, 5);
+
+	std::cout << rnd.generateNumber() << std::endl;
+}
