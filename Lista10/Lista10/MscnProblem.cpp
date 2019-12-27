@@ -301,6 +301,31 @@ MscnSolution MscnProblem::getSolution(double *solution) {
 	return MscnSolution(xd, xf, xm);
 }
 
+MscnSolution MscnProblem::generateRandomSolution(){
+
+	Matrix<double> * xd = new Matrix<double>(d, f);
+	Matrix<double> * xf = new Matrix<double>(f, m);
+	Matrix<double> * xm = new Matrix<double>(m, s);
+
+	for (int i = 0; i < d; i++)
+		for (int j = 0; j < f; j++) {
+			xd->setElem(rnd.generateDouble(minmaxxd->getElem(i, j).min, minmaxxd->getElem(i,j).max), i, j);
+		}
+
+	for (int i = 0; i < f; i++)
+		for (int j = 0; j < m; j++) {
+			xf->setElem(rnd.generateDouble(minmaxxf->getElem(i, j).min, minmaxxf->getElem(i, j).max), i, j);
+		}
+
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < s; j++) {
+			xm->setElem(rnd.generateDouble(minmaxxm->getElem(i, j).min, minmaxxm->getElem(i, j).max), i, j);
+		}
+
+	return MscnSolution(xd, xf, xm);
+
+}
+
 MscnSolution MscnProblem::getSolutionFromTxt(std::string fileName){
 
 	FILE * pFile;
@@ -546,8 +571,9 @@ std::ostream& operator<<(std::ostream &os, MscnProblem &p){
 
 void MscnProblem::generateInstance(int instanceSeed) {
 
-	rnd.setSeed(instanceSeed);
-
+	if (instanceSeed != 0) {
+		rnd.setSeed(instanceSeed);
+	}
 	for (int i = 0; i < d; i++) {
 		setInSd(rnd.generateDouble(RAND_S_MIN, RAND_S_MAX), i);
 		setInUd(rnd.generateDouble(RAND_U_MIN, RAND_U_MAX), i);
@@ -589,27 +615,42 @@ void MscnProblem::setRandomMinMaxValues(int maxMin){
 	double min = 0;
 	double max = 0;
 
-	for (int i = 0; i < d; i++) {
-		for (int j = 0; j < f; j++) {
-			min = rnd.generateDouble(121, 160);
-			max = rnd.generateDouble(160, 190);
-			minmaxxd->setElem({ min, max }, i, j);
-		}
-	}
-
-	for (int i = 0; i < f; i++) {
-		for (int j = 0; j < m; j++) {
-			min = rnd.generateDouble(21, 35);
-			max = rnd.generateDouble(35, 60);
-			minmaxxf->setElem({ min, max }, i, j);
-		}
-	}
+	double minBound = 0;
+	double minBoundForXF = 0;
+	double minBoundForXD = 0;
 
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < s; j++) {
-			min = rnd.generateDouble(1, 5);
-			max = rnd.generateDouble(5, 10);
+			min = rnd.generateDouble(0, maxMin/2);
+			max = rnd.generateDouble(maxMin/2, maxMin);
+			minBound += max;
 			minmaxxm->setElem({ min, max }, i, j);
+		}
+		if (minBoundForXF <= minBound) minBoundForXF = minBound;
+		minBound = 0;
+	}
+
+	minBoundForXF /= f;
+	minBound = 0;
+
+	for (int i = 0; i < f; i++) {
+		for (int j = 0; j < m; j++) {
+			min = rnd.generateDouble(minBoundForXF, minBoundForXF+maxMin/2);
+			max = rnd.generateDouble(minBoundForXF + maxMin / 2, minBoundForXF + maxMin);
+			minBound += max;
+			minmaxxf->setElem({ min, max }, i, j);
+		}
+		if (minBoundForXD <= minBound) minBoundForXD = minBound;
+		minBound = 0;
+	}
+
+	minBoundForXD /= d;
+
+	for (int i = 0; i < d; i++) {
+		for (int j = 0; j < f; j++) {
+			min = rnd.generateDouble(minBoundForXD, minBoundForXD + maxMin / 2);
+			max = rnd.generateDouble(minBoundForXD + maxMin / 2, minBoundForXD + maxMin);
+			minmaxxd->setElem({ min, max }, i, j);
 		}
 	}
 

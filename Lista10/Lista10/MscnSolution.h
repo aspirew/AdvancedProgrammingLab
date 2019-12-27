@@ -11,10 +11,14 @@ public:
 
 	MscnSolution(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm);
 
+	MscnSolution(MscnSolution const &sol);
+
 	~MscnSolution();
 
 	double * toDouble();
 
 	friend std::ostream& operator<<(std::ostream &os, const MscnSolution &p);
+
+	void operator=(const MscnSolution &sol);
 
 };

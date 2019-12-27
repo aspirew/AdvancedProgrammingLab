@@ -10,6 +10,7 @@ public:
 	Matrix();
 	Matrix(int heigth, int width, std::istream &is);
 	Matrix(int heigth, int width);
+	Matrix(Matrix<T> &mat);
 	~Matrix();
 
 	bool resize(int heigth, int width);
@@ -17,8 +18,7 @@ public:
 	T getElem(int y, int x);
 	bool setElem(T val, int y, int x);
 
-	int getWidth() { 
-		return width; }
+	int getWidth() { return width; }
 	int getHeigth() { return heigth; }
 	int getFullSize() { return fullSize; }
 
@@ -27,6 +27,8 @@ public:
 	T sumWholeMat();
 
 	double * toDouble();
+
+	void operator=(const Matrix<T> &mat);
 
 	friend std::ostream& operator<<(std::ostream &os, const Matrix<T> &mat);
 

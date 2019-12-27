@@ -8,29 +8,28 @@ public:
 	RandomSearch(MscnProblem *problem) { setProblem(problem); }
 	~RandomSearch() { delete problem; }
 	void setProblem(MscnProblem *problem) { this->problem = problem; }
-	double * findBestSolution() { //TODO: move to cpp
-
-		Random rnd;
+	MscnSolution findBestSolution(int instanceSeed) { //TODO: move to cpp
 
 		int bestQuality = INT_MIN;
 		int solSize = problem->getValidSize();
+		MscnSolution sol;
+		MscnSolution bestSol;
 
-		double * sol = new double[solSize];
-		double * bestSol = new double[solSize];
+		if(instanceSeed != 0)
+			if (!problem->setRandomClassSeed(instanceSeed)) return bestSol;
 
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100000; i++) {
 
-			sol = generateSolution(rnd);
+			sol = problem->generateRandomSolution();
 
-			int currentQuality = problem->getQuality(sol, solSize);
+			int currentQuality = problem->getQuality(sol.toDouble(), solSize);
 
-			if (problem->getSolutionErrorState() == SOLUTION_VALID && problem->constraintsSatisfied(sol, solSize)) {
+			if (problem->getSolutionErrorState() == SOLUTION_VALID && problem->constraintsSatisfied(sol.toDouble(), solSize)) {
 				if (currentQuality > bestQuality) {
 					bestSol = sol;
 					bestQuality = currentQuality;
 				}
 			}
-
 		}
 
 		return bestSol;
@@ -39,31 +38,5 @@ public:
 
 private:
 	MscnProblem * problem;
-	double * generateSolution(Random &rnd) { //TODO: move to cpp
 
-		double * sol = new double[problem->getValidSize()];
-
-		for (int i = 0; i < problem->getMinMaxXd()->getHeigth(); i++) {
-			for (int j = 0; j < problem->getMinMaxXd()->getWidth(); j++) {
-				int index = i * problem->getMinMaxXd()->getWidth() + j;
-				sol[index] = rnd.generateDouble(problem->getMinMaxXd()->getElem(i, j).min, problem->getMinMaxXd()->getElem(i, j).max);
-			}
-		}
-
-		for (int i = 0; i < problem->getMinMaxXf()->getHeigth(); i++) {
-			for (int j = 0; j < problem->getMinMaxXf()->getWidth(); j++) {
-				int index = problem->getMinMaxXd()->getHeigth() * problem->getMinMaxXd()->getWidth() + i * problem->getMinMaxXf()->getWidth() + j;
-				sol[index] = rnd.generateDouble(problem->getMinMaxXf()->getElem(i, j).min, problem->getMinMaxXf()->getElem(i, j).max);
-			}
-		}
-
-		for (int i = 0; i < problem->getMinMaxXm()->getHeigth(); i++) {
-			for (int j = 0; j < problem->getMinMaxXm()->getWidth(); j++) {
-				int index = problem->getMinMaxXd()->getHeigth() * problem->getMinMaxXd()->getWidth() + problem->getMinMaxXf()->getHeigth() * problem->getMinMaxXf()->getWidth() + i * problem->getMinMaxXm()->getWidth() + j;
-				sol[index] = rnd.generateDouble(problem->getMinMaxXm()->getElem(i, j).min, problem->getMinMaxXm()->getElem(i, j).max);
-			}
-		}
-
-		return sol;
-	}
 };

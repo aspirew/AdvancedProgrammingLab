@@ -33,3 +33,5 @@ const int RAND_U_MIN = 1;
 const int RAND_U_MAX = 5;
 const int RAND_P_MIN = 60;
 const int RAND_P_MAX = 600;
+
+const unsigned int DEFAULT_SEED = 1577381086;

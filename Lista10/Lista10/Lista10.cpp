@@ -106,13 +106,14 @@ void randomSearchTest() {
 	MscnProblem * problem = new MscnProblem();
 
 	problem->setRandomElementsCount(2);
-	problem->generateInstance(time(NULL));
+	problem->generateInstance(0);
 	problem->setRandomMinMaxValues(20);
 
 	RandomSearch randSearch = RandomSearch(problem);
 	std::cout << *(problem) << std::endl;
-	std::cout << problem->getSolution(randSearch.findBestSolution()) << std::endl;
-	std::cout << problem->getQuality(randSearch.findBestSolution(), problem->getValidSize());
+	MscnSolution sol = randSearch.findBestSolution(0);
+	std::cout << problem->getSolution(sol.toDouble()) << std::endl;
+	std::cout << problem->getQuality(sol.toDouble(), problem->getValidSize());
 
 }
 

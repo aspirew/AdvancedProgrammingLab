@@ -36,6 +36,26 @@ Matrix<T>::Matrix(int heigth, int width) {
 	initializeMatrix(heigth, width);
 }
 
+template<typename T>
+Matrix<T>::Matrix(Matrix<T> &mat){
+	for (int i = 0; i < heigth; i++) {
+		delete[] allElements[i];
+	}
+	delete[] allElements;
+
+	heigth = mat.heigth;
+	width = mat.width;
+	fullSize = mat.fullSize;
+
+	allElements = new T*[heigth]();
+	for (int i = 0; i < heigth; i++) {
+		allElements[i] = new T[width]();
+		for (int j = 0; j < width; j++) {
+			allElements[i][j] = mat.allElements[i][j];
+		}
+	}
+}
+
 template <typename T>
 Matrix<T>::~Matrix() {
 
@@ -157,6 +177,28 @@ double * Matrix<T>::toDouble() {
 		}
 	}
 	return res;
+}
+
+template<typename T>
+void Matrix<T>::operator=(const Matrix<T> &mat){
+
+	for (int i = 0; i < heigth; i++) {
+		delete[] allElements[i];
+	}
+	delete[] allElements;
+
+	heigth = mat.heigth;
+	width = mat.width;
+	fullSize = mat.fullSize;
+
+	allElements = new T*[heigth]();
+	for (int i = 0; i < heigth; i++) {
+		allElements[i] = new T[width]();
+		for (int j = 0; j < width; j++) {
+			allElements[i][j] = mat.allElements[i][j];
+		}
+	}
+
 }
 
 template <typename T>

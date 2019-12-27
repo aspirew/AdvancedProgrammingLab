@@ -6,6 +6,12 @@ MscnSolution::MscnSolution(Matrix<double> *xd, Matrix<double> *xf, Matrix<double
 	this->xm = xm;
 }
 
+MscnSolution::MscnSolution(MscnSolution const & sol){
+	this->xd = new Matrix<double>(*(sol.xd));
+	this->xf = new Matrix<double>(*(sol.xf));
+	this->xm = new Matrix<double>(*(sol.xm));
+}
+
 MscnSolution::~MscnSolution() {
 	delete xd;
 	delete xf;
@@ -13,6 +19,7 @@ MscnSolution::~MscnSolution() {
 }
 
 double * MscnSolution::toDouble() {
+
 	double * res = new double[xd->getFullSize() + xf->getFullSize() + xm->getFullSize()];
 	int xdSize = xd->getWidth()*xd->getHeigth();
 	int xfSize = xf->getWidth()*xf->getHeigth();
@@ -31,6 +38,12 @@ double * MscnSolution::toDouble() {
 	delete xmm;
 
 	return res;
+}
+
+void MscnSolution::operator=(const MscnSolution & sol){
+	this->xd = new Matrix<double>(*(sol.xd));
+	this->xf = new Matrix<double>(*(sol.xf));
+	this->xm = new Matrix<double>(*(sol.xm));
 }
 
 std::ostream& operator<<(std::ostream &os, const MscnSolution &sol) {

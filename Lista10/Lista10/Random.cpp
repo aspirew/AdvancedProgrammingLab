@@ -35,6 +35,12 @@ bool Random::setSeedFromTxt(std::string fileName){
 
 }
 
+bool Random::setSeed(int seed) {
+	if (seed < 0) return false;
+	this->seed = seed;
+	return true;
+}
+
 bool Random::saveSeed(std::string fileName) {
 
 	FILE * pFile;

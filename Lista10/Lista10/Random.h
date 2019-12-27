@@ -3,12 +3,12 @@
 
 class Random {
 public:
-	Random() { randInit(time(NULL)); }
+	Random() { randInit(DEFAULT_SEED); }
 	Random(int seed) { randInit(seed); }
 	
 	void randInit(int seed);
 
-	void setSeed(int seed) { this->seed = seed; }
+	bool setSeed(int seed);
 	bool saveSeed(std::string fileName);
 	double generateDouble(double leftBoundary, double rightBoundary);
 	double generateInt(int leftBoundary, int rightBoundary);
