@@ -1,5 +1,11 @@
 #include "MscnSolution.h"
 
+MscnSolution::MscnSolution() {
+	this->xd = new Matrix<double>(1, 1);
+	this->xf = new Matrix<double>(1, 1);
+	this->xm = new Matrix<double>(1, 1);
+}
+
 MscnSolution::MscnSolution(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm) {
 	this->xd = xd;
 	this->xf = xf;
@@ -41,8 +47,11 @@ double * MscnSolution::toDouble() {
 }
 
 void MscnSolution::operator=(const MscnSolution & sol){
+	delete xd;
 	this->xd = new Matrix<double>(*(sol.xd));
+	delete xf;
 	this->xf = new Matrix<double>(*(sol.xf));
+	delete xm;
 	this->xm = new Matrix<double>(*(sol.xm));
 }
 

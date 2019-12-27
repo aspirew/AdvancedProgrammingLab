@@ -92,5 +92,5 @@ private:
 
 	int solutionErrorState = 0;
 	
-	Random rnd;
+	Random rnd = Random();
 };

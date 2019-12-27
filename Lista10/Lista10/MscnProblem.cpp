@@ -28,8 +28,6 @@ MscnProblem::MscnProblem() {
 	minmaxxf = new Matrix<MinMaxValues>(f, m);
 	minmaxxm = new Matrix<MinMaxValues>(m, s);
 
-	rnd = Random();
-
 }
 
 MscnProblem::MscnProblem(std::string fileName) {

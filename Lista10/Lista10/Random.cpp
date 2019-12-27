@@ -38,6 +38,8 @@ bool Random::setSeedFromTxt(std::string fileName){
 bool Random::setSeed(int seed) {
 	if (seed < 0) return false;
 	this->seed = seed;
+	std::mt19937 gen(seed);
+	generator = gen;
 	return true;
 }
 

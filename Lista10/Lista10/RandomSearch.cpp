@@ -1,57 +1,38 @@
 #include "RandomSearch.h"
+#include "Random.h"
+#include <chrono>
 
-//double * RandomSearch::findBestSolution() {
-//
-//	Random rnd;
-//
-//	int bestQuality = INT_MIN;
-//	int solSize = problem->getValidSize();
-//
-//	double * sol = new double[solSize];
-//	double * bestSol;
-//
-//	for (int i = 0; i < 100; i++) {
-//
-//		sol = generateSolution(rnd);
-//		int currentQuality = problem->getQuality(sol, solSize);
-//
-//		if (problem->getSolutionErrorState() == SOLUTION_VALID && problem->constraintsSatisfied(sol, solSize)) {
-//			if (currentQuality > bestQuality) {
-//				bestSol = sol;
-//				bestQuality = currentQuality;
-//			}
-//		}
-//
-//	}
-//
-//	return bestSol;
-//	
-//}
+MscnSolution RandomSearch::findBestSolution(int instanceSeed, int time) {
 
-/*double * RandomSearch::generateSolution(Random &rnd) {
+	int bestQuality = INT_MIN;
+	int solSize = problem->getValidSize();
+	MscnSolution sol;
+	MscnSolution bestSol;
 
-	double * sol = new double[problem->getValidSize()];
+	if (instanceSeed != 0)
+		if (!problem->setRandomClassSeed(instanceSeed)) return bestSol;
 
-	for (int i = 0; i < problem->getMinMaxXd()->getHeigth(); i++) {
-		for (int j = 0; j < problem->getMinMaxXd()->getWidth(); j++) {
-			int index = i * problem->getMinMaxXd()->getWidth() + j;
-			sol[index] = rnd.generateDouble(problem->getMinMaxXd()->getElem(i, j).min, problem->getMinMaxXd()->getElem(i, j).max);
+	auto t1 = std::chrono::high_resolution_clock::now();
+	auto t2 = std::chrono::high_resolution_clock::now();
+
+	do {
+		sol = problem->generateRandomSolution();
+
+		double * solParsed = sol.toDouble();
+		int currentQuality = problem->getQuality(solParsed, solSize);
+
+		if (problem->getSolutionErrorState() == SOLUTION_VALID && problem->constraintsSatisfied(solParsed, solSize)) {
+			if (currentQuality > bestQuality) {
+				bestSol = sol;
+				bestQuality = currentQuality;
+			}
 		}
-	}
+		delete solParsed;
+		t2 = std::chrono::high_resolution_clock::now();
+	} while (std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count() < time);
 
-	for (int i = 0; i < problem->getMinMaxXf()->getHeigth(); i++) {
-		for (int j = 0; j < problem->getMinMaxXf()->getWidth(); j++) {
-			int index = problem->getMinMaxXd()->getHeigth() * problem->getMinMaxXd()->getWidth() + i * problem->getMinMaxXf()->getWidth() + j;
-			sol[index] = rnd.generateDouble(problem->getMinMaxXf()->getElem(i, j).min, problem->getMinMaxXf()->getElem(i, j).max);
-		}
-	}
+	
 
-	for (int i = 0; i < problem->getMinMaxXm()->getHeigth(); i++) {
-		for (int j = 0; j < problem->getMinMaxXm()->getWidth(); j++) {
-			int index = problem->getMinMaxXd()->getHeigth() * problem->getMinMaxXd()->getWidth() + problem->getMinMaxXf()->getHeigth() * problem->getMinMaxXf()->getWidth() + i * problem->getMinMaxXm()->getWidth() + j;
-			sol[index] = rnd.generateDouble(problem->getMinMaxXm()->getElem(i, j).min, problem->getMinMaxXm()->getElem(i, j).max);
-		}
-	}
+	return bestSol;
 
-	return sol;
-}*/
+}

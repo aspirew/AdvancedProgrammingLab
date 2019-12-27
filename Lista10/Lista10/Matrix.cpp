@@ -38,6 +38,7 @@ Matrix<T>::Matrix(int heigth, int width) {
 
 template<typename T>
 Matrix<T>::Matrix(Matrix<T> &mat){
+
 	for (int i = 0; i < heigth; i++) {
 		delete[] allElements[i];
 	}
@@ -125,8 +126,9 @@ bool Matrix<T>::resize(int heigth, int width) {
 
 template <typename T>
 T Matrix<T>::getElem(int y, int x) {
-	if(correctSize(y, x)) 
+	//if (correctSize(y, x)) {
 		return allElements[y][x];
+	//}
 }
 
 template <typename T>

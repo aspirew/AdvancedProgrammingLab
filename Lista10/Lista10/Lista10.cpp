@@ -2,7 +2,7 @@
 #include <iostream>
 #include "mscnProblem.cpp"
 #include "Random.h"
-#include "RandomSearch.h"
+#include "RandomSearch.cpp"
 //#include "vld.h"
 
 double * solution(int size) {
@@ -55,7 +55,7 @@ void createAndSaveProblemRandom() {
 	problem.generateInstance(time(NULL));
 	problem.setRandomMinMaxValues(20);
 
-	double * sol = solution(problem.getValidSize());
+	double * sol = problem.generateRandomSolution().toDouble();
 
 	std::cout << "Quality: " << problem.getQuality(sol, problem.getValidSize()) << std::endl;
 	std::cout << "Constraints: " << problem.constraintsSatisfied(sol, problem.getValidSize()) << std::endl;
@@ -102,7 +102,8 @@ void checkResize() {
 
 }
 
-void randomSearchTest() {
+void randomSearchTest(int exTime) {
+
 	MscnProblem * problem = new MscnProblem();
 
 	problem->setRandomElementsCount(2);
@@ -111,9 +112,12 @@ void randomSearchTest() {
 
 	RandomSearch randSearch = RandomSearch(problem);
 	std::cout << *(problem) << std::endl;
-	MscnSolution sol = randSearch.findBestSolution(0);
-	std::cout << problem->getSolution(sol.toDouble()) << std::endl;
-	std::cout << problem->getQuality(sol.toDouble(), problem->getValidSize());
+	MscnSolution sol = randSearch.findBestSolution(0, exTime);
+	double * parsedSol = sol.toDouble();
+	std::cout << problem->getSolution(parsedSol) << std::endl;
+	std::cout << problem->getQuality(parsedSol, problem->getValidSize());
+
+	delete parsedSol;
 
 }
 
@@ -122,7 +126,7 @@ int main() {
 	//createAndSaveProblemRandom();
 	//readProblemFromTxt(PROBLEM_FILE_NAME);
 	//checkResize();
-	randomSearchTest();
+	randomSearchTest(1);
 	//Random rnd = Random(time(NULL));
 
 	//std::cout << rnd.generateDouble(-10, 5) << std::endl;

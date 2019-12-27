@@ -7,7 +7,7 @@ public:
 
 	Matrix<double> *xd, *xf, *xm;
 
-	MscnSolution() {};
+	MscnSolution();
 
 	MscnSolution(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm);
 
