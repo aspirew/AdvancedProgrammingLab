@@ -4,6 +4,7 @@
 #include "MscnSolution.cpp"
 #include "vectorHelper.cpp"
 #include "MinMaxValues.h"
+#include "Random.h"
 
 class MscnProblem {
 public:
@@ -55,9 +56,14 @@ public:
 	bool saveData(std::string const &path);
 	bool saveSolution(double *solution, std::string const &path);
 
-	void setRandomValues(int count);
 	void setRandomElementsCount(int maxDist);
 	void setRandomMinMaxValues(int maxDist);
+
+	void generateInstance(int instanceSeed);
+
+	Matrix<MinMaxValues> * getMinMaxXd() { return minmaxxd; }
+	Matrix<MinMaxValues> * getMinMaxXf() { return minmaxxf; }
+	Matrix<MinMaxValues> * getMinMaxXm() { return minmaxxm; }
 
 	friend std::ostream& operator<<(std::ostream &os, MscnProblem &p);
 
@@ -87,4 +93,6 @@ private:
 	Matrix<MinMaxValues> * minmaxxd, * minmaxxf, * minmaxxm;
 
 	int solutionErrorState = 0;
+	
+	Random rnd;
 };

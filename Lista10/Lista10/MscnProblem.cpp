@@ -2,6 +2,7 @@
 #include "CONST_H.h"
 #include <ctime>
 #include <cstdlib>
+#include "Random.cpp"
 
 MscnProblem::MscnProblem() {
 
@@ -26,6 +27,8 @@ MscnProblem::MscnProblem() {
 	minmaxxd = new Matrix<MinMaxValues>(d, f);
 	minmaxxf = new Matrix<MinMaxValues>(f, m);
 	minmaxxm = new Matrix<MinMaxValues>(m, s);
+
+	rnd = Random();
 
 }
 
@@ -95,6 +98,9 @@ MscnProblem::MscnProblem(std::string fileName) {
 
 		is.close();
 	}
+
+	rnd = Random();
+	rnd.setSeedFromTxt(SEED_FILE_NAME);
 
 	fclose(pFile);
 }
@@ -401,7 +407,7 @@ double MscnProblem::constraintsSatisfied(double *solution, int arrSize) {
 
 	solutionErrorState = checkIfSolutionIsValid(solution, arrSize);
 
-	if (solutionErrorState != SOLUTION_VALID) return SOLUTION_NOT_VALID;
+	if (solutionErrorState != SOLUTION_VALID) return CONSTRAINTS_NOT_SATISFIED;
 
 	MscnSolution sol = getSolution(solution);
 
@@ -426,7 +432,7 @@ bool MscnProblem::constraintsCheck(MscnSolution &sol) {
 		if (sol.xm->sumOneCol(i) > ss[i]) return CONSTRAINTS_NOT_SATISFIED;
 	}
 
-	for (int i = 0; i < f; i++) {
+	for (int i = 0; i < f; i++) { //TODO: Check why almost never satisfied (change x values?)
 		if (sol.xd->sumOneCol(i) < sol.xf->sumOneRow(i)) return CONSTRAINTS_NOT_SATISFIED;
 	}
 
@@ -538,30 +544,45 @@ std::ostream& operator<<(std::ostream &os, MscnProblem &p){
 	return os;
 }
 
-void MscnProblem::setRandomValues(int count) {
-	srand(time(0));
-	for (int i = 0; i < count; i++) {
-		setInCd(rand() % 100 + 1.6, rand() % d, rand() % f);
-		setInCf(rand() % 100 + 2.9, rand() % f, rand() % m);
-		setInCm(rand() % 100 + 0.3, rand() % m, rand() % s);
+void MscnProblem::generateInstance(int instanceSeed) {
 
-		setInPs(rand() % 100 + 0.3, rand() % s);
-		setInSd(rand() % 100 + 0.8, rand() % d);
-		setInSf(rand() % 100 + 1.6, rand() % f);
-		setInSm(rand() % 100 + 5.7, rand() % m);
-		setInSs(rand() % 100, rand() % s);
-		setInUd(rand() % 100 + 6.6, rand() % d);
-		setInUf(rand() % 100 + 1.0, rand() % f);
-		setInUm(rand() % 100 + 4.3, rand() % m);
+	rnd.setSeed(instanceSeed);
+
+	for (int i = 0; i < d; i++) {
+		setInSd(rnd.generateDouble(RAND_S_MIN, RAND_S_MAX), i);
+		setInUd(rnd.generateDouble(RAND_U_MIN, RAND_U_MAX), i);
+		for (int j = 0; j < f; j++) {
+			setInCd(rnd.generateDouble(RAND_C_MIN, RAND_C_MAX), i, j);
+		}
+	}
+
+	for (int i = 0; i < f; i++) {
+		setInSf(rnd.generateDouble(RAND_S_MIN, RAND_S_MAX), i);
+		setInUf(rnd.generateDouble(RAND_U_MIN, RAND_U_MAX), i);
+		for (int j = 0; j < m; j++) {
+			setInCf(rnd.generateDouble(RAND_C_MIN, RAND_C_MAX), i, j);
+		}
+	}
+
+	for (int i = 0; i < m; i++) {
+		setInSm(rnd.generateDouble(RAND_S_MIN, RAND_S_MAX), i);
+		setInUm(rnd.generateDouble(RAND_U_MIN, RAND_U_MAX), i);
+		for (int j = 0; j < s; j++) {
+			setInCm(rnd.generateDouble(RAND_C_MIN, RAND_C_MAX), i, j);
+		}
+	}
+
+	for (int i = 0; i < s; i++) {
+		setInPs(rnd.generateDouble(RAND_P_MIN, RAND_P_MAX), i);
+		setInSs(rnd.generateDouble(RAND_S_MIN, RAND_S_MAX), i);
 	}
 }
 
 void MscnProblem::setRandomElementsCount(int maxDist) {
-	srand(time(0));
-	setCountOfD(rand() % maxDist);
-	setCountOfF(rand() % maxDist*2);
-	setCountOfM(rand() % maxDist*3);
-	setCountOfS(rand() % maxDist*4);
+	setCountOfD(rnd.generateInt(1, maxDist));
+	setCountOfF(rnd.generateInt(1, maxDist*2));
+	setCountOfM(rnd.generateInt(1, maxDist*3));
+	setCountOfS(rnd.generateInt(1, maxDist*4));
 }
 
 void MscnProblem::setRandomMinMaxValues(int maxMin){
@@ -570,24 +591,24 @@ void MscnProblem::setRandomMinMaxValues(int maxMin){
 
 	for (int i = 0; i < d; i++) {
 		for (int j = 0; j < f; j++) {
-			min = rand() % maxMin;
-			max = 50 + rand() % maxMin;
+			min = rnd.generateDouble(121, 160);
+			max = rnd.generateDouble(160, 190);
 			minmaxxd->setElem({ min, max }, i, j);
 		}
 	}
 
 	for (int i = 0; i < f; i++) {
 		for (int j = 0; j < m; j++) {
-			min = rand() % maxMin;
-			max = 50 + rand() % maxMin;
+			min = rnd.generateDouble(21, 35);
+			max = rnd.generateDouble(35, 60);
 			minmaxxf->setElem({ min, max }, i, j);
 		}
 	}
 
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < s; j++) {
-			min = rand() % maxMin;
-			max = 50 + rand() % maxMin;
+			min = rnd.generateDouble(1, 5);
+			max = rnd.generateDouble(5, 10);
 			minmaxxm->setElem({ min, max }, i, j);
 		}
 	}

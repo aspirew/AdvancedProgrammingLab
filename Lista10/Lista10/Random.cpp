@@ -1,26 +1,23 @@
 #include "Random.h"
-#include <random>
 
-template <typename T>
-Random<T>::Random(int seed, T leftBoundary, T rightBoundary) {
+void Random::randInit(int seed) {
 	this->seed = seed;
-	this->leftBoundary = leftBoundary;
-	this->rightBoundary = rightBoundary;
+	std::mt19937 gen(seed);
+	generator = gen;
 }
 
-template <typename T>
-T Random<T>::generateNumber() {
-	std::mt19937 gen(seed); 
-	using dist = std::conditional_t<
-		std::is_integral<T>::value,
-		std::uniform_int_distribution<T>,
-		std::uniform_real_distribution<T>
-	>;
-	return dist{ leftBoundary, rightBoundary }(gen);
+double Random::generateDouble(double leftBoundary, double rightBoundary) {
+	std::uniform_real_distribution<> dist(leftBoundary, rightBoundary);
+	return dist(generator);
 }
 
-template <typename T>
-bool Random<T>::setSeedFromTxt(std::string fileName){
+double Random::generateInt(int leftBoundary, int rightBoundary) {
+	std::uniform_int_distribution<> dist(leftBoundary, rightBoundary);
+	return dist(generator);
+}
+
+
+bool Random::setSeedFromTxt(std::string fileName){
 
 	FILE * pFile;
 	pFile = fopen(fileName.c_str(), "r+");
@@ -38,8 +35,7 @@ bool Random<T>::setSeedFromTxt(std::string fileName){
 
 }
 
-template <typename T>
-bool Random<T>::saveSeed(std::string fileName) {
+bool Random::saveSeed(std::string fileName) {
 
 	FILE * pFile;
 	pFile = fopen(fileName.c_str(), "w+");

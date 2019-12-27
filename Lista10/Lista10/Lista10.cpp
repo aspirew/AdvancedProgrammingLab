@@ -1,15 +1,15 @@
 #include "pch.h"
 #include <iostream>
 #include "mscnProblem.cpp"
-#include "Random.cpp"
+#include "Random.h"
+#include "RandomSearch.h"
 //#include "vld.h"
 
 double * solution(int size) {
 	double * res = new double[size];
 
-	srand(time(0));
 	for (int i = 0; i < size; i++) {
-		res[i] = 50.4;
+		res[i] = 50.0;
 	}
 
 	return res;
@@ -31,19 +31,36 @@ void createAndSaveProblem() {
 
 }
 
+int seedFromTxt(std::string fileName) {
+	FILE * pFile;
+	pFile = fopen(fileName.c_str(), "r+");
+
+	if (!pFile) return 0;
+
+	std::ifstream is(pFile);
+
+	int res = 0;
+	is >> res;
+
+	is.close();
+	fclose(pFile);
+
+	return res;
+}
+
 void createAndSaveProblemRandom() {
 	MscnProblem problem = MscnProblem();
 
 	problem.setRandomElementsCount(2);
-	problem.setRandomValues(20);
-	problem.setRandomMinMaxValues(50);
+	problem.generateInstance(time(NULL));
+	problem.setRandomMinMaxValues(20);
 
 	double * sol = solution(problem.getValidSize());
 
 	std::cout << "Quality: " << problem.getQuality(sol, problem.getValidSize()) << std::endl;
 	std::cout << "Constraints: " << problem.constraintsSatisfied(sol, problem.getValidSize()) << std::endl;
 
-	//std::cout << problem;
+	std::cout << problem;
 
 	problem.saveData(PROBLEM_FILE_NAME);
 	problem.saveSolution(sol, SOLUTION_FILE_NAME);
@@ -74,7 +91,7 @@ void checkResize() {
 	MscnProblem problem = MscnProblem();
 
 	problem.setRandomElementsCount(6);
-	problem.setRandomValues(100);
+	problem.generateInstance(time(NULL));
 	problem.setRandomMinMaxValues(50);
 
 	std::cout << problem << std::endl;
@@ -85,12 +102,28 @@ void checkResize() {
 
 }
 
+void randomSearchTest() {
+	MscnProblem * problem = new MscnProblem();
+
+	problem->setRandomElementsCount(2);
+	problem->generateInstance(time(NULL));
+	problem->setRandomMinMaxValues(20);
+
+	RandomSearch randSearch = RandomSearch(problem);
+	std::cout << *(problem) << std::endl;
+	std::cout << problem->getSolution(randSearch.findBestSolution()) << std::endl;
+	std::cout << problem->getQuality(randSearch.findBestSolution(), problem->getValidSize());
+
+}
+
 int main() {
 	//createAndSaveProblem();
 	//createAndSaveProblemRandom();
 	//readProblemFromTxt(PROBLEM_FILE_NAME);
 	//checkResize();
-	Random<int> rnd = Random<int>(time(NULL), -10, 5);
+	randomSearchTest();
+	//Random rnd = Random(time(NULL));
 
-	std::cout << rnd.generateNumber() << std::endl;
+	//std::cout << rnd.generateDouble(-10, 5) << std::endl;
+	//std::cout << rnd.generateInt(-10, 5) << std::endl;
 }

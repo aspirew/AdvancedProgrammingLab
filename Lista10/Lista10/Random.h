@@ -1,21 +1,20 @@
 #pragma once
 #include "CONST_H.h"
 
-template <typename T>
 class Random {
 public:
-	Random(int seed, T leftBoundary, T rightBoundary);
-	~Random() { }
+	Random() { randInit(time(NULL)); }
+	Random(int seed) { randInit(seed); }
+	
+	void randInit(int seed);
 
 	void setSeed(int seed) { this->seed = seed; }
 	bool saveSeed(std::string fileName);
-	void setLeftBoundary(T bound) { leftBoundary = bound; }
-	void setRightBoundary(T bound) { rightBoundary = bound; }
-	T generateNumber();
+	double generateDouble(double leftBoundary, double rightBoundary);
+	double generateInt(int leftBoundary, int rightBoundary);
 	bool setSeedFromTxt(std::string fileName);
 
 private:
 	unsigned int seed;
-	T leftBoundary;
-	T rightBoundary;
+	std::mt19937 generator;
 };
