@@ -51,7 +51,7 @@ public:
 	int getSolutionErrorState() { return solutionErrorState; }
 
 	MscnSolution getSolution(double *solution);
-	MscnSolution generateRandomSolution();
+	MscnSolution generateRandomSolution(int seed);
 	MscnSolution getSolutionFromTxt(std::string fileName);
 
 	bool saveData(std::string const &path);
@@ -62,6 +62,8 @@ public:
 
 	void generateInstance(int instanceSeed);
 	bool setRandomClassSeed(int seed) { return rnd.setSeed(seed); }
+
+  std::vector<MinMaxValues> getAllMinMaxValues();
 
 	friend std::ostream& operator<<(std::ostream &os, MscnProblem &p);
 

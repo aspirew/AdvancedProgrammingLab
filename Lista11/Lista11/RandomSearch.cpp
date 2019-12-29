@@ -16,7 +16,7 @@ MscnSolution RandomSearch::findBestSolution(int instanceSeed, int time) {
 	auto t2 = std::chrono::high_resolution_clock::now();
 
 	do {
-		sol = problem->generateRandomSolution();
+		sol = problem->generateRandomSolution(0);
 
 		double * solParsed = sol.toDouble();
 		int currentQuality = problem->getQuality(solParsed, solSize);
@@ -30,8 +30,6 @@ MscnSolution RandomSearch::findBestSolution(int instanceSeed, int time) {
 		delete solParsed;
 		t2 = std::chrono::high_resolution_clock::now();
 	} while (std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count() < time);
-
-	
 
 	return bestSol;
 

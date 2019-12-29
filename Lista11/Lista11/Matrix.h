@@ -16,6 +16,7 @@ public:
 	bool resize(int heigth, int width);
 
 	T getElem(int y, int x);
+  T getElemByOneDimIndex(int index);
 	bool setElem(T val, int y, int x);
 
 	int getWidth() { return width; }

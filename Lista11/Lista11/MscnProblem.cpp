@@ -299,11 +299,14 @@ MscnSolution MscnProblem::getSolution(double *solution) {
 	return MscnSolution(xd, xf, xm);
 }
 
-MscnSolution MscnProblem::generateRandomSolution(){
+MscnSolution MscnProblem::generateRandomSolution(int seed){
 
 	Matrix<double> * xd = new Matrix<double>(d, f);
 	Matrix<double> * xf = new Matrix<double>(f, m);
 	Matrix<double> * xm = new Matrix<double>(m, s);
+
+  if (seed != 0)
+    if (rnd.setSeed(seed)) return MscnSolution(xd, xf, xm);
 
 	for (int i = 0; i < d; i++)
 		for (int j = 0; j < f; j++) {
@@ -600,6 +603,32 @@ void MscnProblem::generateInstance(int instanceSeed) {
 		setInPs(rnd.generateDouble(RAND_P_MIN, RAND_P_MAX), i);
 		setInSs(rnd.generateDouble(RAND_S_MIN, RAND_S_MAX), i);
 	}
+}
+
+std::vector<MinMaxValues> MscnProblem::getAllMinMaxValues() {
+
+  std::vector<MinMaxValues> res;
+  int iterator = 0;
+
+  for (int i = 0; i < d; i++) {
+    for (int j = 0; j < f; j++) {
+      res.push_back(minmaxxd->getElem(i, j));
+    }
+  }
+
+  for (int i = 0; i < f; i++) {
+    for (int j = 0; j < m; j++) {
+      res.push_back(minmaxxf->getElem(i, j));
+    }
+  }
+
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < s; j++) {
+      res.push_back(minmaxxm->getElem(i, j));
+    }
+  }
+
+  return res;
 }
 
 void MscnProblem::setRandomElementsCount(int maxDist) {

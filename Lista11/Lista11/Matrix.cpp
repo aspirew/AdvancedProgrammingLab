@@ -126,9 +126,22 @@ bool Matrix<T>::resize(int heigth, int width) {
 
 template <typename T>
 T Matrix<T>::getElem(int y, int x) {
-	//if (correctSize(y, x)) {
+	if (correctSize(y, x)) {
 		return allElements[y][x];
-	//}
+	}
+}
+
+template<typename T>
+T Matrix<T>::getElemByOneDimIndex(int index) {
+  int indexY = 0;
+  if (index >= 0 && heigth*width < index) {
+    while (index >= width) {
+      index = index - width;
+      indexY++;
+    }
+    return allElements[indexY][index];
+  }
+
 }
 
 template <typename T>

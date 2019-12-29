@@ -5,7 +5,8 @@
 #include "RandomSearch.cpp"
 #include "DiffEvol.h"
 #include "DiffIndividual.h"
-//#include "vld.h"
+#include "DiffEvolution.cpp"
+#include "vld.h"
 
 double * solution(int size) {
 	double * res = new double[size];
@@ -57,7 +58,7 @@ void createAndSaveProblemRandom() {
 	problem.generateInstance(time(NULL));
 	problem.setRandomMinMaxValues(20);
 
-	double * sol = problem.generateRandomSolution().toDouble();
+	double * sol = problem.generateRandomSolution(0).toDouble();
 
 	std::cout << "Quality: " << problem.getQuality(sol, problem.getValidSize()) << std::endl;
 	std::cout << "Constraints: " << problem.constraintsSatisfied(sol, problem.getValidSize()) << std::endl;
@@ -130,15 +131,15 @@ void diffEvolTest() {
   problem->generateInstance(0);
   problem->setRandomMinMaxValues(20);
 
-  RandomSearch randSearch = RandomSearch(problem);
+  //RandomSearch randSearch = RandomSearch(problem);
   DiffEvol evol = DiffEvol(problem);
 
   std::cout << *(problem) << std::endl;
 
-  MscnSolution sol = randSearch.findBestSolution(0, 1);
-  double * parsedSol = sol.toDouble();
-  std::cout << "RANDSEARCH: " << problem->getQuality(parsedSol, problem->getValidSize()) << std::endl;
-  delete parsedSol;
+  //MscnSolution sol = randSearch.findBestSolution(0, 1);
+ // double * parsedSol = sol.toDouble();
+  //std::cout << "RANDSEARCH: " << problem->getQuality(parsedSol, problem->getValidSize()) << std::endl;
+  //delete parsedSol;
 
   std::cout << "DIFFEVOL: " << evol.getBestFound().getFitness();
 
@@ -150,9 +151,28 @@ int main() {
 	//readProblemFromTxt(PROBLEM_FILE_NAME);
 	//checkResize();
 	//randomSearchTest(1);
-  diffEvolTest();
+  //diffEvolTest();
 	//Random rnd = Random(time(NULL));
 
 	//std::cout << rnd.generateDouble(-10, 5) << std::endl;
 	//std::cout << rnd.generateInt(-10, 5) << std::endl;
+
+  MscnProblem * problem = new MscnProblem();
+
+  problem->setRandomElementsCount(2);
+  problem->generateInstance(0);
+  problem->setRandomMinMaxValues(20);
+
+  DiffEvolution evol = DiffEvolution(problem);
+  std::vector<DiffInd> ind = evol.getBestFound();
+
+  std::cout << ind[0].getFitness() << std::endl;
+  std::cout << ind[1].getFitness() << std::endl;
+  std::cout << ind[2].getFitness() << std::endl;
+  std::cout << ind[3].getFitness() << std::endl;
+  std::cout << ind[4].getFitness();
+
+  delete problem;
+
+
 }
