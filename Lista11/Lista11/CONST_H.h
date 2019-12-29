@@ -35,3 +35,6 @@ const int RAND_P_MIN = 60;
 const int RAND_P_MAX = 600;
 
 const unsigned int DEFAULT_SEED = 1577381086;
+
+const int DEFAULT_MAX_ITER = 100;
+const int DEFAULT_POPULATION_NUMBER = 1;

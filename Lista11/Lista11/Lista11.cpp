@@ -3,6 +3,8 @@
 #include "mscnProblem.cpp"
 #include "Random.h"
 #include "RandomSearch.cpp"
+#include "DiffEvol.h"
+#include "DiffIndividual.h"
 //#include "vld.h"
 
 double * solution(int size) {
@@ -121,12 +123,34 @@ void randomSearchTest(int exTime) {
 
 }
 
+void diffEvolTest() {
+  MscnProblem * problem = new MscnProblem();
+
+  problem->setRandomElementsCount(2);
+  problem->generateInstance(0);
+  problem->setRandomMinMaxValues(20);
+
+  RandomSearch randSearch = RandomSearch(problem);
+  DiffEvol evol = DiffEvol(problem);
+
+  std::cout << *(problem) << std::endl;
+
+  MscnSolution sol = randSearch.findBestSolution(0, 1);
+  double * parsedSol = sol.toDouble();
+  std::cout << "RANDSEARCH: " << problem->getQuality(parsedSol, problem->getValidSize()) << std::endl;
+  delete parsedSol;
+
+  std::cout << "DIFFEVOL: " << evol.getBestFound().getFitness();
+
+}
+
 int main() {
 	//createAndSaveProblem();
 	//createAndSaveProblemRandom();
 	//readProblemFromTxt(PROBLEM_FILE_NAME);
 	//checkResize();
-	randomSearchTest(1);
+	//randomSearchTest(1);
+  diffEvolTest();
 	//Random rnd = Random(time(NULL));
 
 	//std::cout << rnd.generateDouble(-10, 5) << std::endl;

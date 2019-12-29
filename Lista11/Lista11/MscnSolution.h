@@ -5,7 +5,7 @@ class MscnSolution {
 
 public:
 
-	Matrix<double> *xd, *xf, *xm;
+  Matrix<double> *xd, *xf, *xm;
 
 	MscnSolution();
 
@@ -20,5 +20,8 @@ public:
 	friend std::ostream& operator<<(std::ostream &os, const MscnSolution &p);
 
 	void operator=(const MscnSolution &sol);
+	bool operator==(const MscnSolution &sol);
+
+
 
 };

@@ -55,6 +55,35 @@ void MscnSolution::operator=(const MscnSolution & sol){
 	this->xm = new Matrix<double>(*(sol.xm));
 }
 
+bool MscnSolution::operator==(const MscnSolution & sol) {
+
+  if (xd->getHeigth() != sol.xd->getHeigth() || xd->getWidth() != sol.xd->getWidth()) return false;
+
+  for (int i = 0; i < xd->getHeigth(); i++) {
+    for (int j = 0; j < xd->getWidth(); j++) {
+      if (xd->getElem(i, j) != sol.xd->getElem(i, j)) return false;
+    }
+  }
+
+  if (xf->getHeigth() != sol.xf->getHeigth() || xf->getWidth() != sol.xf->getWidth()) return false;
+
+  for (int i = 0; i < xf->getHeigth(); i++) {
+    for (int j = 0; j < xf->getWidth(); j++) {
+      if (xf->getElem(i, j) != sol.xf->getElem(i, j)) return false;
+    }
+  }
+
+  if (xm->getHeigth() != sol.xm->getHeigth() || xm->getWidth() != sol.xm->getWidth()) return false;
+
+  for (int i = 0; i < xm->getHeigth(); i++) {
+    for (int j = 0; j < xm->getWidth(); j++) {
+      if (xm->getElem(i, j) != sol.xm->getElem(i, j)) return false;
+    }
+  }
+
+  return true;
+}
+
 std::ostream& operator<<(std::ostream &os, const MscnSolution &sol) {
 	//os << "xd" << *(sol.xd) << "\n";
 	//os << "xf" << *(sol.xf) << "\n";
