@@ -43,19 +43,20 @@ std::vector<DiffInd> DiffEvolution::getBestFound(int maxIteration, int populatio
       newInd = DiffInd(0, new double[genotypeSize], genotypeSize);
 
       for (int geneOffset = 0; geneOffset < genotypeSize; geneOffset++) {
-        if (r.generateDouble(0, 1) < 1) {
+        if (r.generateDouble(0, 1) < DEFAULT_CROSS_PROB) {
           double newVal = 0;
           newVal = baseInd.getFromGenotype(geneOffset) + 1 * (addInd0.getFromGenotype(geneOffset) - addInd1.getFromGenotype(geneOffset));
           if (!isCorrectValue(newVal, geneOffset)) newVal = fixValue(newVal, geneOffset);
-          newInd.setGenotypeAt(geneOffset, newVal);
+          newInd.setGenotypeAt(geneOffset, newVal); 
         }
         else {
           newInd.setGenotypeAt(geneOffset, population[i].getFromGenotype(geneOffset));
         }
       }
         newInd.setFitness(problem->getQuality(newInd.getGenotype(), genotypeSize));
+		std::cout << population[i].getFitness() << " | " << newInd.getFitness() << std::endl;
         if (newInd.getFitness() >= population[i].getFitness()) {
-         //std::cout << population[i].getFitness() << " | " << newInd.getFitness() << std::endl;          
+                   
           population[i] = newInd;
         }
     }

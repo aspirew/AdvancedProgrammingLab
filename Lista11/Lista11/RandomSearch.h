@@ -9,7 +9,7 @@ public:
 	void setProblem(MscnProblem *problem) { this->problem = problem; }
 	MscnSolution findBestSolution(int instanceSeed, int time);
 
-//private:
+private:
 	MscnProblem * problem;
 
 };
