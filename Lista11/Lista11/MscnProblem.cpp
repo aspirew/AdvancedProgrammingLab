@@ -458,7 +458,7 @@ bool MscnProblem::constraintsCheck(MscnSolution &sol) {
 		if (sol.xm->sumOneCol(i) > ss[i]) return CONSTRAINTS_NOT_SATISFIED;
 	}
 
-	for (int i = 0; i < f; i++) { //TODO: Check why almost never satisfied (change x values?)
+	for (int i = 0; i < f; i++) {
 		if (sol.xd->sumOneCol(i) < sol.xf->sumOneRow(i)) return CONSTRAINTS_NOT_SATISFIED;
 	}
 
@@ -629,6 +629,19 @@ std::vector<MinMaxValues> MscnProblem::getAllMinMaxValues() {
   }
 
   return res;
+}
+
+MinMaxValues MscnProblem::getMinMaxValueBy1DimIndex(int index){
+
+	if (index >= d*f + f * m) {
+		index -= d * f + f * m;
+		return minmaxxm->getElemByOneDimIndex(index);
+	}
+	else if (index >= d*f) {
+		index -= d * f;
+		return minmaxxf->getElemByOneDimIndex(index);
+	}
+	else return minmaxxd->getElemByOneDimIndex(index);
 }
 
 void MscnProblem::setRandomElementsCount(int maxDist) {

@@ -64,6 +64,7 @@ public:
 	bool setRandomClassSeed(int seed) { return rnd.setSeed(seed); }
 
   std::vector<MinMaxValues> getAllMinMaxValues();
+  MinMaxValues getMinMaxValueBy1DimIndex(int index);
 
 	friend std::ostream& operator<<(std::ostream &os, MscnProblem &p);
 

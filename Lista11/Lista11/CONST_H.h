@@ -39,3 +39,4 @@ const unsigned int DEFAULT_SEED = 1577381086;
 const int DEFAULT_MAX_ITER = 10000;
 const int DEFAULT_POPULATION_NUMBER = 1;
 const double DEFAULT_CROSS_PROB = 0.3;
+const double DIFF_WEIGTH = 0.5;

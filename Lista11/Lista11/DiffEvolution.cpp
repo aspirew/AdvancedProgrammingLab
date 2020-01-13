@@ -42,21 +42,21 @@ std::vector<DiffInd> DiffEvolution::getBestFound(int maxIteration, int populatio
 
       newInd = DiffInd(0, new double[genotypeSize], genotypeSize);
 
-      for (int geneOffset = 0; geneOffset < genotypeSize; geneOffset++) {
-        if (r.generateDouble(0, 1) < DEFAULT_CROSS_PROB) {
-          double newVal = 0;
-          newVal = baseInd.getFromGenotype(geneOffset) + 1 * (addInd0.getFromGenotype(geneOffset) - addInd1.getFromGenotype(geneOffset));
-          if (!isCorrectValue(newVal, geneOffset)) newVal = fixValue(newVal, geneOffset);
-          newInd.setGenotypeAt(geneOffset, newVal); 
-        }
-        else {
-          newInd.setGenotypeAt(geneOffset, population[i].getFromGenotype(geneOffset));
-        }
-      }
+	  for (int geneOffset = 0; geneOffset < genotypeSize; geneOffset++) {
+		  if (r.generateDouble(0, 1) < DEFAULT_CROSS_PROB) {
+			  double newVal = 0;
+			  newVal = baseInd.getFromGenotype(geneOffset) + DIFF_WEIGTH * (addInd0.getFromGenotype(geneOffset) - addInd1.getFromGenotype(geneOffset));
+			  if (!isCorrectValue(newVal, geneOffset)) newVal = fixValue(newVal, geneOffset);
+			  newInd.setGenotypeAt(geneOffset, newVal);
+		  }	  
+		  else {
+			  newInd.setGenotypeAt(geneOffset, population[i].getFromGenotype(geneOffset));
+		  }
+	  }
         newInd.setFitness(problem->getQuality(newInd.getGenotype(), genotypeSize));
-		std::cout << population[i].getFitness() << " | " << newInd.getFitness() << std::endl;
-        if (newInd.getFitness() >= population[i].getFitness()) {
-                   
+		//std::cout << problem->constraintsSatisfied(newInd.getGenotype(), genotypeSize);
+		//std::cout << population[i].getFitness() << " | " << newInd.getFitness() << std::endl;
+        if (newInd.getFitness() >= population[i].getFitness()) {    
           population[i] = newInd;
         }
     }
@@ -87,16 +87,18 @@ bool DiffEvolution::areDiffrent(DiffInd &diff0, DiffInd &diff1, DiffInd &diff2, 
 }
 
 bool DiffEvolution::isCorrectValue(double val, int index) {
-  std::vector<MinMaxValues> tmp = problem->getAllMinMaxValues();
-  if (tmp[index].min > val || tmp[index].max < val) return false;
+	MinMaxValues tmp = problem->getMinMaxValueBy1DimIndex(index);
+	
+	//std::cout << "MIN: " << tmp.min << " | MAX: " << tmp.max << std::endl;
+  if (tmp.min > val || tmp.max < val) return false;
   return true;
 }
 
 double DiffEvolution::fixValue(double val, int index) {
-  std::vector<MinMaxValues> tmp = problem->getAllMinMaxValues();
-  //if (tmp[index].min < val) return tmp[index].min;
-  //else return tmp[index].min;
-  return (tmp[index].min + tmp[index].max) / 2;
+  MinMaxValues tmp = problem->getMinMaxValueBy1DimIndex(index);
+  //if (tmp.min < val) return tmp.min;
+  //else return tmp.min;
+  return (tmp.min + tmp.max) / 2;
 }
 
 DiffInd DiffEvolution::getRandomInd() {

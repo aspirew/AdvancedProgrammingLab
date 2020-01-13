@@ -133,14 +133,8 @@ T Matrix<T>::getElem(int y, int x) {
 
 template<typename T>
 T Matrix<T>::getElemByOneDimIndex(int index) {
-  int indexY = 0;
-  if (index >= 0 && heigth*width < index) {
-    while (index >= width) {
-      index = index - width;
-      indexY++;
-    }
-    return allElements[indexY][index];
-  }
+
+	return allElements[index / width][index%width];
 
 }
 

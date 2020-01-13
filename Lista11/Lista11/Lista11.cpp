@@ -4,7 +4,7 @@
 #include "Random.h"
 #include "RandomSearch.cpp"
 #include "DiffEvolution.cpp"
-//#include "vld.h"
+#include "vld.h"
 
 double * solution(int size) {
 	double * res = new double[size];
@@ -112,13 +112,32 @@ void randomSearchTest(int exTime) {
 	problem->setRandomMinMaxValues(20);
 
 	RandomSearch randSearch = RandomSearch(problem);
-	std::cout << *(problem) << std::endl;
+	//std::cout << *(problem) << std::endl;
 	MscnSolution sol = randSearch.findBestSolution(0, exTime);
 	double * parsedSol = sol.toDouble();
-	std::cout << problem->getSolution(parsedSol) << std::endl;
-	std::cout << problem->getQuality(parsedSol, problem->getValidSize());
+	//std::cout << problem->getSolution(parsedSol) << std::endl;
+	std::cout << "Quality of randomSearch: " << problem->getQuality(parsedSol, problem->getValidSize()) << std::endl;
 
+	delete problem;
 	delete parsedSol;
+
+}
+
+void diffEvolTest(int iterations) {
+
+	MscnProblem * problem = new MscnProblem();
+
+	problem->setRandomElementsCount(2);
+	problem->generateInstance(0);
+	problem->setRandomMinMaxValues(20);
+
+	DiffEvolution evol = DiffEvolution(problem);
+	std::vector<DiffInd> ind = evol.getBestFound(iterations, 1);
+
+	std::cout << "Quality of DiffEvol: " << ind[0].getFitness() << std::endl;
+
+
+	delete problem;
 
 }
 
@@ -127,26 +146,8 @@ int main() {
 	//createAndSaveProblemRandom();
 	//readProblemFromTxt(PROBLEM_FILE_NAME);
 	//checkResize();
-	randomSearchTest(17);
-  //diffEvolTest();
-	//Random rnd = Random(time(NULL));
-
-	//std::cout << rnd.generateDouble(-10, 5) << std::endl;
-	//std::cout << rnd.generateInt(-10, 5) << std::endl;
-
-  //MscnProblem * problem = new MscnProblem();
-
-  //problem->setRandomElementsCount(2);
-  //problem->generateInstance(0);
-  //problem->setRandomMinMaxValues(20);
-
-  //DiffEvolution evol = DiffEvolution(problem);
-  //std::vector<DiffInd> ind = evol.getBestFound();
-
-  //std::cout << ind[0].getFitness() << std::endl;
-
-
-  //delete problem;
+	diffEvolTest(100000);
+	randomSearchTest(30);
 
 
 }
