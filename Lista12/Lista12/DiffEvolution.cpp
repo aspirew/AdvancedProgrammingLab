@@ -3,28 +3,39 @@
 #include "RandomSearch.h"
 #include "MinMaxValues.h"
 
-DiffEvolution::DiffEvolution() {
+DiffEvolution::DiffEvolution(std::vector<MinMaxValues> allMinMaxValues) {
 	crossProb = DEFAULT_CROSS_PROB;
 	diffWeigth = DIFF_WEIGTH;
   problem = new MscnProblem();
   r = Random();
   crossProb = DEFAULT_CROSS_PROB;
+  this->allMinMaxValues = allMinMaxValues;
+	if (allMinMaxValues.size() != problem->getSize()) allMinMaxValues.resize(problem->getSize());
+
 }
 
-DiffEvolution::DiffEvolution(MscnProblem * problem, double cp, double dw) {
-	
+DiffEvolution::DiffEvolution(Problem * problem, double cp, double dw, std::vector<MinMaxValues> allMinMaxValues, int time) : Optimizer(problem, time) {
+
+	this->allMinMaxValues = allMinMaxValues;
+
+	if (allMinMaxValues.size() != problem->getSize()) allMinMaxValues.resize(problem->getSize());
+
 	if (cp > 1 || cp <= 0) crossProb = DEFAULT_CROSS_PROB;
 	else crossProb = cp;
 
 	if (dw > 1 || dw <= 0) diffWeigth = DIFF_WEIGTH;
 	else diffWeigth = dw;
 	
-  this->problem = problem;
   r = Random();
   crossProb = DEFAULT_CROSS_PROB;
+
 }
 
-DiffEvolution::DiffEvolution(MscnProblem * problem, int seed, double cp, double dw) {
+DiffEvolution::DiffEvolution(Problem * problem, int seed, double cp, double dw, std::vector<MinMaxValues> allMinMaxValues, int time) : Optimizer(problem, time) {
+
+	this->allMinMaxValues = allMinMaxValues;
+
+	if (allMinMaxValues.size() != problem->getSize()) allMinMaxValues.resize(problem->getSize());
 
 	if (cp > 1 || cp <= 0) crossProb = DEFAULT_CROSS_PROB;
 	else crossProb = cp;
@@ -32,23 +43,28 @@ DiffEvolution::DiffEvolution(MscnProblem * problem, int seed, double cp, double 
 	if (dw > 1 || dw <= 0) diffWeigth = DIFF_WEIGTH;
 	else diffWeigth = dw;
 
-  this->problem = problem;
   r = Random(seed);
   crossProb = DEFAULT_CROSS_PROB;
 }
 
-DiffInd DiffEvolution::getBestFound() {
-  return getBestFound(DEFAULT_MAX_ITER, DEFAULT_POPULATION_NUMBER);
+DiffInd * DiffEvolution::getBestFound() {
+  return getBestFound(DEFAULT_TIME, DEFAULT_POPULATION_NUMBER);
 }
 
-DiffInd DiffEvolution::getBestFound(int maxIteration, int populationNumber) {
+DiffInd * DiffEvolution::getBestFound(int time, int populationNumber) {
+	timer.setTime(time);
+	return getBestFound(populationNumber);
+}
 
-  int iterations = 0;
-  int genotypeSize = problem->getValidSize();
+DiffInd * DiffEvolution::getBestFound(int populationNumber) {
+
+  int genotypeSize = problem->getSize();
   DiffInd baseInd, addInd0, addInd1, newInd;
   std::vector<DiffInd> population = initPopulation(populationNumber);
 
-  while (iterations < maxIteration) {
+  timer.startTimer();
+
+  do{
     for (int i = 0; i < populationNumber; i++) {
       do {
         baseInd = getRandomInd();
@@ -76,21 +92,34 @@ DiffInd DiffEvolution::getBestFound(int maxIteration, int populationNumber) {
           population[i] = newInd;
         }
     }
-	iterations++;
-  }
+  } while (!timer.hasTimePassed());
 
   double bestSol = 0;
-  DiffInd bestInd;
+  DiffInd * bestInd = new DiffInd();
 
   for (int i = 0; i < population.size(); i++) {
 	  if (population[i].getFitness() > bestSol) {
+		  delete bestInd;
 		  bestSol = population[i].getFitness();
-		  bestInd = population[i];
+		  bestInd = new DiffInd(population[i]);
 	  }
   }
 
   return bestInd;
 
+}
+
+void DiffEvolution::setMinMaxValues(std::vector<MinMaxValues> allMinMaxValues){
+	this->allMinMaxValues = allMinMaxValues;
+}
+
+double DiffEvolution::getBestScore(){
+	return getBestFound()->getFitness();
+}
+
+double * DiffEvolution::solveProblem(Problem * problem){
+	setProblem(problem);
+	return getBestFound()->getGenotype();
 }
 
 std::vector<DiffInd> DiffEvolution::initPopulation(int populationNumber) {
@@ -99,9 +128,10 @@ std::vector<DiffInd> DiffEvolution::initPopulation(int populationNumber) {
 
   for (int i = 0; i < populationNumber; i++) {
     //MscnSolution sol = rs.findBestSolution(0, 1);
-    double * tmpSol = problem->generateRandomSolution(0).toDouble();
-    double tmpFit = problem->getQuality(tmpSol, problem->getValidSize());
-    population[i] = DiffInd(tmpFit, tmpSol, problem->getValidSize());
+	double * tmpSol = problem->generateRandSolution();
+    double tmpFit = problem->getQuality(tmpSol, problem->getSize());
+    population[i] = DiffInd(tmpFit, tmpSol, problem->getSize());
+
   }
 
   return population;
@@ -113,7 +143,7 @@ bool DiffEvolution::areDiffrent(DiffInd &diff0, DiffInd &diff1, DiffInd &diff2, 
 }
 
 bool DiffEvolution::isCorrectValue(double val, int index) {
-	MinMaxValues tmp = problem->getMinMaxValueBy1DimIndex(index);
+	MinMaxValues tmp = allMinMaxValues[index];
 	
 	//std::cout << "MIN: " << tmp.min << " | MAX: " << tmp.max << std::endl;
   if (tmp.min > val || tmp.max < val) return false;
@@ -121,7 +151,7 @@ bool DiffEvolution::isCorrectValue(double val, int index) {
 }
 
 double DiffEvolution::fixValue(double val, int index) {
-  MinMaxValues tmp = problem->getMinMaxValueBy1DimIndex(index);
+  MinMaxValues tmp = allMinMaxValues[index];
   //if (tmp.min < val) return tmp.min;
   //else return tmp.min;
   return (tmp.min + tmp.max) / 2;
@@ -129,14 +159,9 @@ double DiffEvolution::fixValue(double val, int index) {
 
 DiffInd DiffEvolution::getRandomInd() {
 
-	bool constraints = true;
-	double * sol = new double[0];
-	int genotypeSize = problem->getValidSize();
-	do {
-		delete sol;
-		sol = problem->generateRandomSolution(0).toDouble();
-		constraints = problem->constraintsSatisfied(sol, genotypeSize);
-	} while (problem->getSolutionErrorState() != SOLUTION_VALID || !constraints);
+	double * sol = problem->generateRandSolution();
+	int genotypeSize = problem->getSize();
 
-  return DiffInd(problem->getQuality(sol, genotypeSize), sol, genotypeSize);
+	return DiffInd(problem->getQuality(sol, genotypeSize), sol, genotypeSize);
+
 }

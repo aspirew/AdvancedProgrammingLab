@@ -5,8 +5,9 @@
 #include "vectorHelper.cpp"
 #include "MinMaxValues.h"
 #include "Random.h"
+#include "Problem.h"
 
-class MscnProblem {
+class MscnProblem : public Problem {
 public:
 
 	MscnProblem();
@@ -44,24 +45,25 @@ public:
 	double getFromSs(int x);
 	double getFromPs(int x);
 
+	
 	double getQuality(double *solution, int arrSize);
-	double constraintsSatisfied(double *solution, int arrSize);
-	int getValidSize() { return d * f + f * m + m * s; }
-
-	int getSolutionErrorState() { return solutionErrorState; }
+	int constraintsSatisfied(double *solution, int arrSize);
 
 	MscnSolution getSolution(double *solution);
 	MscnSolution generateRandomSolution(int seed);
 	MscnSolution getSolutionFromTxt(std::string fileName);
 
+	double * generateRandSolution() { return generateRandomSolution(0).toDouble(); }
+	int getSize() { return d * f + f * m + m * s; }
+
 	bool saveData(std::string const &path);
 	bool saveSolution(double *solution, std::string const &path);
 
 	void setRandomElementsCount(int maxDist);
+	void setCorrectRandomMinMaxValues(int maxDist);
 	void setRandomMinMaxValues(int maxDist);
 
 	void generateInstance(int instanceSeed);
-	bool setRandomClassSeed(int seed) { return rnd.setSeed(seed); }
 
   std::vector<MinMaxValues> getAllMinMaxValues();
   MinMaxValues getMinMaxValueBy1DimIndex(int index);
@@ -85,7 +87,7 @@ private:
 	double getProfit(MscnSolution sol);
 	int checkIfSolutionIsValid(double *solution, int arrSize);
 
-	bool constraintsCheck(MscnSolution &sol);
+	int constraintsCheck(MscnSolution &sol);
 
 	int eps(double x);
 
@@ -93,9 +95,10 @@ private:
 	std::vector<double> ud, uf, um, sd, sf, sm, ss, ps;
 	Matrix<MinMaxValues> * minmaxxd, * minmaxxf, * minmaxxm;
 
-	int solutionErrorState = 0;
-	
-	Random rnd = Random();
-
 	void generateMatrix(int width, int heigth, Matrix<MinMaxValues> * minmax, Matrix<double> * x);
+	void decrementValuesInX(int size, Matrix<double> * x, std::vector<double> * s, Matrix<MinMaxValues> * minmax);
+
+	void fixSolution(double *solution, int arrSize);
+	void fixSolutionForConstraints(MscnSolution * sol, int err);
+
 };

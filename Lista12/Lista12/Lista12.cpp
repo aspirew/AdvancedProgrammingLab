@@ -21,7 +21,7 @@ void createAndSaveProblem() {
 
 	problem.setRandomMinMaxValues(50);
 
-	double * sol = solution(problem.getValidSize());
+	double * sol = solution(problem.getSize());
 
 	std::cout << problem;
 
@@ -58,8 +58,8 @@ void createAndSaveProblemRandom() {
 
 	double * sol = problem.generateRandomSolution(0).toDouble();
 
-	std::cout << "Quality: " << problem.getQuality(sol, problem.getValidSize()) << std::endl;
-	std::cout << "Constraints: " << problem.constraintsSatisfied(sol, problem.getValidSize()) << std::endl;
+	std::cout << "Quality: " << problem.getQuality(sol, problem.getSize()) << std::endl;
+	std::cout << "Constraints: " << problem.constraintsSatisfied(sol, problem.getSize()) << std::endl;
 
 	std::cout << problem;
 
@@ -83,7 +83,7 @@ void readProblemFromTxt(std::string fileName) {
 
 	double * solDbl = solution.toDouble();
 
-	std::cout << "QUALITY: " << problem.getQuality(solDbl, problem.getValidSize());
+	std::cout << "QUALITY: " << problem.getQuality(solDbl, problem.getSize());
 
 	delete solDbl;
 }
@@ -111,15 +111,14 @@ void randomSearchTest(int exTime) {
 	problem->generateInstance(0);
 	problem->setRandomMinMaxValues(20);
 
-	RandomSearch randSearch = RandomSearch(problem);
+	RandomSearch randSearch = RandomSearch(problem, exTime);
 	//std::cout << *(problem) << std::endl;
-	MscnSolution sol = randSearch.findBestSolution(0, exTime);
-	double * parsedSol = sol.toDouble();
+	double * sol = randSearch.findBestSolution(0);
 	//std::cout << problem->getSolution(parsedSol) << std::endl;
-	std::cout << "Quality of randomSearch: " << problem->getQuality(parsedSol, problem->getValidSize()) << std::endl;
+	std::cout << "Quality of randomSearch: " << problem->getQuality(sol, problem->getSize()) << std::endl;
 
 	delete problem;
-	delete parsedSol;
+	delete sol;
 
 }
 
@@ -131,12 +130,57 @@ void diffEvolTest(int iterations, int populationNumber) {
 	problem->generateInstance(0);
 	problem->setRandomMinMaxValues(20);
 
-	DiffEvolution evol = DiffEvolution(problem, 0.5, 0.1);
-	DiffInd ind = evol.getBestFound(iterations, populationNumber);
+	std::cout << *(problem);
 
-	std::cout << "Quality of DiffEvol: " << ind.getFitness() << std::endl;
+	DiffEvolution evol = DiffEvolution(problem, 0.5, 0.1, problem->getAllMinMaxValues(), 10);
+	DiffInd * ind = evol.getBestFound(iterations, populationNumber);
 
+	std::cout << "Quality of DiffEvol: " << ind->getFitness() << std::endl;
 
+	delete problem;
+
+}
+
+double optimizerTest(Optimizer * optimizer) {
+	return optimizer->getBestScore();
+}
+
+double * solveProblem(Optimizer * optimizer, Problem * problem) {
+	return optimizer->solveProblem(problem);
+}
+
+void problemsTest() {
+
+	Problem * problem = new MscnProblem();
+
+	((MscnProblem*)problem)->setRandomElementsCount(2);
+	((MscnProblem*)problem)->generateInstance(0);
+	((MscnProblem*)problem)->setRandomMinMaxValues(20);
+
+	//std::cout << *((MscnProblem*)problem);
+
+	DiffEvolution * evol = new DiffEvolution(((MscnProblem*)problem), 0.5, 0.1, ((MscnProblem*)problem)->getAllMinMaxValues(), 10);
+	RandomSearch * randSearch = new RandomSearch(((MscnProblem*)problem), 10);
+
+	//std::cout << "DiffEvol: " << optimizerTest(evol) << std::endl;
+	//std::cout << "RandSearch: " << optimizerTest(randSearch);
+
+	std::cout << "DiffEvol: " << std::endl;
+	double * solvedProblem = solveProblem(evol, problem);
+	for (int i = 0; i < problem->getSize(); i++) {
+		std::cout << solvedProblem[i];
+	}
+	delete solvedProblem;
+	std::cout << std::endl;
+	std::cout << "RandSearch: " << std::endl;
+	solvedProblem = solveProblem(randSearch, problem);
+	for (int i = 0; i < problem->getSize(); i++) {
+		std::cout << solvedProblem[i];
+	}
+
+	delete solvedProblem;
+	delete evol;
+	delete randSearch;
 	delete problem;
 
 }
@@ -146,8 +190,9 @@ int main() {
 	//createAndSaveProblemRandom();
 	//readProblemFromTxt(PROBLEM_FILE_NAME);
 	//checkResize();
-	diffEvolTest(10000, 1);
-	randomSearchTest(1);
+	//diffEvolTest(10000, 1);
+	//randomSearchTest(1);
 
+	problemsTest();
 
 }

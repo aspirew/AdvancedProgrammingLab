@@ -273,6 +273,17 @@ void MscnProblem::generateMatrix(int width, int heigth, Matrix<MinMaxValues> * m
 		}
 }
 
+void MscnProblem::decrementValuesInX(int size, Matrix<double> * x, std::vector<double> * s, Matrix<MinMaxValues> * minmax){
+	for (int i = 0; i < size; i++) {
+		int overflow = x->sumOneRow(i) - s->at(i);
+		for (int j = 0; j < overflow; j++) {
+			int newVal = x->getElem(i, j%size) - 1;
+			if (newVal >= minmax->getElem(i, j%size).min) x->setElem(newVal, i, j%size);
+			else overflow++;
+		}
+	}
+}
+
 double MscnProblem::getP(Matrix<double> *xm) {
 	double result = 0;
 
@@ -400,7 +411,7 @@ double MscnProblem::getProfit(MscnSolution sol) {
 
 int MscnProblem::checkIfSolutionIsValid(double *solution, int arrSize) {
 	if (solution == NULL) return ERROR_SOLUTION_IS_NULL;
-	if (arrSize != getValidSize()) return ERROR_WRONG_SIZE;
+	if (arrSize != getSize()) return ERROR_WRONG_SIZE;
 	for (int i = 0; i < arrSize; i++) {
 		if (solution[i] < 0) return ERROR_NEGATIVE_VALUES;
 	}
@@ -429,59 +440,159 @@ int MscnProblem::checkIfSolutionIsValid(double *solution, int arrSize) {
 	return SOLUTION_VALID;
 }
 
+void MscnProblem::fixSolutionForConstraints(MscnSolution * sol, int err){
+
+	if (err == CONSTRAINTS_TOO_MUCH_FROM_DISTRIBUTOR) decrementValuesInX(d, sol->xd, &sd, minmaxxd);
+
+	if (err == CONSTRAINTS_TOO_MUCH_FROM_FACTORY) decrementValuesInX(f, sol->xf, &sf, minmaxxf);
+
+	if (err == CONSTRAINTS_TOO_MUCH_FROM_MAGAZINE) decrementValuesInX(m, sol->xm, &sm, minmaxxm);
+
+	if(err == CONSTRAINTS_TOO_MUCH_FOR_STORE) decrementValuesInX(m, sol->xm, &ss, minmaxxm);
+
+	//(sol.xd->sumOneCol(i) < sol.xf->sumOneRow(i))
+
+	if (err == CONSTRAINTS_NOT_ENOUGH_MATERIALS_FOR_FACTORIES) {
+		for (int i = 0; i < f; i++) {
+			double overflow = sol->xf->sumOneRow(i) - sol->xd->sumOneCol(i);
+			//std::cout << overflow;
+			for (int j = 0; j < overflow; j++) {
+				double newValForXf = sol->xf->getElem(i, j%m) - 1;
+				double newValForXd = sol->xd->getElem(j%f, i) + 1;
+				//std::cout << j % m << " : " << sol->xf->getElem(i, j%m) << " | " << minmaxxf->getElem(i, j%m).min << " ... ";
+				if (newValForXd <= minmaxxd->getElem(j%f, i).max) {
+					sol->xd->setElem(newValForXd, j%f, i);
+				}
+				else if (newValForXf >= minmaxxf->getElem(i, j%m).min) {
+					sol->xf->setElem(newValForXf, i, j%m);
+					//std::cout << j % m << " : " << sol->xf->getElem(i, j%m) << " | " << minmaxxf->getElem(i, j%m).min << std::endl;
+				}
+				else overflow++;
+			}
+		}
+	}
+
+	if (err == CONSTRAINTS_NOT_ENOUGH_PRODUCTS_FOR_MAGAZINES) {
+		for (int i = 0; i < m; i++) {
+			int overflow = sol->xm->sumOneRow(i) - sol->xf->sumOneCol(i);
+			for (int j = 0; j < overflow; j++) {
+				double newValForXf = sol->xf->getElem(j%m, i) + 1;
+				double newValForXm = sol->xm->getElem(i, j%s) - 1;
+				if (newValForXm >= minmaxxm->getElem(i, j%s).min) sol->xm->setElem(newValForXm, i, j%s);
+				else if (newValForXf <= minmaxxf->getElem(j%m, i).max) sol->xf->setElem(newValForXf, j%m, i);
+				else overflow++;
+			}
+		}
+	}
+
+	//std::cout << *(sol);
+
+	//int error = constraintsCheck(*sol);
+
+	//if(error != CONSTRAINTS_OK) fixSolutionForConstraints(sol, error);
+
+}
+
+
+void MscnProblem::fixSolution(double * solution, int arrSize){
+
+	std::vector<MinMaxValues> minmax = getAllMinMaxValues();
+
+	std::cout << " , " <<  solutionErrorState;
+
+	if (solutionErrorState == ERROR_SOLUTION_IS_NULL) {
+		solution = new double[arrSize]();
+		for (int i = 0; i < arrSize; i++) {
+			solution[i] = (minmax[i].min + minmax[i].max) / 2;
+		}
+	}
+
+	if (solutionErrorState == ERROR_WRONG_SIZE) {
+		double * tmpSol = new double[getSize()];
+		int smaller = getSize() < arrSize ? getSize() : arrSize;
+		for (int i = 0; i < smaller; i++) {
+			tmpSol[i] = solution[i];
+		}
+
+		if (arrSize < smaller) {
+			for (int i = arrSize; i < smaller; i++) {
+				tmpSol[i] = (minmax[i].min + minmax[i].max) / 2;
+			}
+		}	
+		delete solution;
+		solution = tmpSol;
+	}
+
+	if (solutionErrorState == ERROR_NEGATIVE_VALUES) {
+		for (int i = 0; i < arrSize; i++) {
+			if(solution[i] < 0) solution[i] *= -1;
+		}
+	}
+
+	if (solutionErrorState == ERROR_NUMBER_TOO_SMALL || solutionErrorState == ERROR_NUMBER_TOO_BIG) {
+		for (int i = 0; i < arrSize; i++) {
+			solution[i] = (minmax[i].min + minmax[i].max) / 2;
+		}
+	}
+
+	if (checkIfSolutionIsValid(solution, arrSize) != SOLUTION_VALID) fixSolution(solution, arrSize);
+
+}
+
 double MscnProblem::getQuality(double *solution, int arrSize){
 
 	solutionErrorState = checkIfSolutionIsValid(solution, arrSize);
 
-	if (solutionErrorState != SOLUTION_VALID) return SOLUTION_NOT_VALID;
+	if (solutionErrorState != SOLUTION_VALID) fixSolution(solution, arrSize);
 
 	MscnSolution sol = getSolution(solution);
+
+	if (constraintsCheck(sol) != CONSTRAINTS_OK) fixSolutionForConstraints(&sol, constraintsCheck(sol));
 
 	return getP(sol.xm) - getKT(sol.xd, sol.xf, sol.xm) - getKU(sol.xd, sol.xf, sol.xm);
 
 }
 
-double MscnProblem::constraintsSatisfied(double *solution, int arrSize) {
+int MscnProblem::constraintsSatisfied(double *solution, int arrSize) {
 
 	solutionErrorState = checkIfSolutionIsValid(solution, arrSize);
 
-	if (solutionErrorState != SOLUTION_VALID) return CONSTRAINTS_NOT_SATISFIED;
+	if (solutionErrorState != SOLUTION_VALID) fixSolution(solution, arrSize);
 
 	MscnSolution sol = getSolution(solution);
 
 	return constraintsCheck(sol);
 }
 
-bool MscnProblem::constraintsCheck(MscnSolution &sol) {
+int MscnProblem::constraintsCheck(MscnSolution &sol) {
 
 	for (int i = 0; i < d; i++) {
-		if (sol.xd->sumOneRow(i) > sd[i]) return CONSTRAINTS_NOT_SATISFIED;
+		if (sol.xd->sumOneRow(i) > sd[i]) return CONSTRAINTS_TOO_MUCH_FROM_DISTRIBUTOR;
 	}
 
 	for (int i = 0; i < f; i++) {
-		if (sol.xf->sumOneRow(i) > sf[i]) return CONSTRAINTS_NOT_SATISFIED;
+		if (sol.xf->sumOneRow(i) > sf[i]) return CONSTRAINTS_TOO_MUCH_FROM_FACTORY;
 	}
 
 	for (int i = 0; i < m; i++) {
-		if (sol.xm->sumOneRow(i) > sm[i]) return CONSTRAINTS_NOT_SATISFIED;
+		if (sol.xm->sumOneRow(i) > sm[i]) return CONSTRAINTS_TOO_MUCH_FROM_MAGAZINE;
 	}
 
 	for (int i = 0; i < s; i++) {
-		if (sol.xm->sumOneCol(i) > ss[i]) return CONSTRAINTS_NOT_SATISFIED;
+		if (sol.xm->sumOneCol(i) > ss[i]) return CONSTRAINTS_TOO_MUCH_FOR_STORE;
 	}
 
 	for (int i = 0; i < f; i++) {
-		if (sol.xd->sumOneCol(i) < sol.xf->sumOneRow(i)) return CONSTRAINTS_NOT_SATISFIED;
+		if (sol.xd->sumOneCol(i) < sol.xf->sumOneRow(i)) return CONSTRAINTS_NOT_ENOUGH_MATERIALS_FOR_FACTORIES;
 	}
 
 	for (int i = 0; i < m; i++) {
-		if (sol.xf->sumOneCol(i) < sol.xm->sumOneRow(i)) return CONSTRAINTS_NOT_SATISFIED;
+		if (sol.xf->sumOneCol(i) < sol.xm->sumOneRow(i)) return CONSTRAINTS_NOT_ENOUGH_PRODUCTS_FOR_MAGAZINES;
 	}
 
-	return CONSTRAINTS_SATISFIED;
+	return CONSTRAINTS_OK;
 
 }
-
 
 bool MscnProblem::saveData(std::string const &path) {
 
@@ -663,7 +774,7 @@ void MscnProblem::setRandomElementsCount(int maxDist) {
 	setCountOfS(rnd.generateInt(1, maxDist*4));
 }
 
-void MscnProblem::setRandomMinMaxValues(int maxMin){
+void MscnProblem::setCorrectRandomMinMaxValues(int maxMin){
 	double min = 0;
 	double max = 0;
 
@@ -702,6 +813,46 @@ void MscnProblem::setRandomMinMaxValues(int maxMin){
 		for (int j = 0; j < f; j++) {
 			min = rnd.generateDouble(minBoundForXD, minBoundForXD + maxMin / 2);
 			max = rnd.generateDouble(minBoundForXD + maxMin / 2, minBoundForXD + maxMin);
+			minmaxxd->setElem({ min, max }, i, j);
+		}
+	}
+
+}
+
+void MscnProblem::setRandomMinMaxValues(int maxDist){
+
+	double min = 0;
+	double max = 0;
+
+	double minBound = 0;
+	double minBoundForXF = 0;
+	double minBoundForXD = 0;
+
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < s; j++) {
+			min = rnd.generateDouble(0, maxDist);
+			max = rnd.generateDouble(maxDist, maxDist*2);
+			minmaxxm->setElem({ min, max }, i, j);
+		}
+	}
+
+	minBoundForXF /= f;
+	minBound = 0;
+
+	for (int i = 0; i < f; i++) {
+		for (int j = 0; j < m; j++) {
+			min = rnd.generateDouble(maxDist, maxDist*2);
+			max = rnd.generateDouble(maxDist*2, maxDist * 3);
+			minmaxxf->setElem({ min, max }, i, j);
+		}
+	}
+
+	minBoundForXD /= d;
+
+	for (int i = 0; i < d; i++) {
+		for (int j = 0; j < f; j++) {
+			min = rnd.generateDouble(maxDist*3, maxDist * 4);
+			max = rnd.generateDouble(maxDist * 4, maxDist * 5);
 			minmaxxd->setElem({ min, max }, i, j);
 		}
 	}
