@@ -44,7 +44,6 @@ public:
 	double getFromSm(int x);
 	double getFromSs(int x);
 	double getFromPs(int x);
-
 	
 	double getQuality(double *solution, int arrSize);
 	int constraintsSatisfied(double *solution, int arrSize);
@@ -65,6 +64,8 @@ public:
 
 	void generateInstance(int instanceSeed);
 
+	bool setRandomClassSeed(int seed) { return rnd.setSeed(seed); }
+
   std::vector<MinMaxValues> getAllMinMaxValues();
   MinMaxValues getMinMaxValueBy1DimIndex(int index);
 
@@ -73,6 +74,8 @@ public:
 private:
 
 	int d, f, m, s;
+
+	Random rnd = Random();
 
 	bool setInVectorOfDoubles(double val, int x, std::vector<double> &vector);
 	double getFromVectorOfDoubles(int x, std::vector<double> &vector);
@@ -91,12 +94,15 @@ private:
 
 	int eps(double x);
 
+	int solutionErrorState = 0;
+
 	Matrix<double> * cd, * cf, * cm;
 	std::vector<double> ud, uf, um, sd, sf, sm, ss, ps;
 	Matrix<MinMaxValues> * minmaxxd, * minmaxxf, * minmaxxm;
 
 	void generateMatrix(int width, int heigth, Matrix<MinMaxValues> * minmax, Matrix<double> * x);
 	void decrementValuesInX(int size, Matrix<double> * x, std::vector<double> * s, Matrix<MinMaxValues> * minmax);
+	void fixColumnsAndRowsSumIssue(int sizeOfChild, int sizeOfGrandChild, Matrix<double> * parentX, Matrix<double> * childX, Matrix<MinMaxValues> * parentMinMax, Matrix<MinMaxValues> * childMinMax);
 
 	void fixSolution(double *solution, int arrSize);
 	void fixSolutionForConstraints(MscnSolution * sol, int err);

@@ -17,4 +17,8 @@ public:
 		return findBestSolution(); 
 	};
 
+private:
+
+	//void setSeed(int seed);
+
 };

@@ -3,15 +3,13 @@
 #include <chrono>
 
 double * RandomSearch::findBestSolution(int instanceSeed, int time) {
-
 	timer.setTime(time);
-	return findBestSolution(0);
-
+	return findBestSolution(instanceSeed);
 }
 
 double * RandomSearch::findBestSolution()
 {
-	return findBestSolution(0, DEFAULT_TIME);
+	return findBestSolution(0);
 }
 
 double * RandomSearch::findBestSolution(int instanceSeed)
@@ -31,15 +29,12 @@ double * RandomSearch::findBestSolution(int instanceSeed)
 		bool bestChange = false;
 		sol = problem->generateRandSolution();
 		int currentQuality = problem->getQuality(sol, solSize);
-
-		if (problem->getSolutionErrorState() == SOLUTION_VALID) {
 			if (currentQuality > bestQuality) {
 				delete bestSol;
 				bestSol = sol;
 				bestQuality = currentQuality;
 				bestChange = true;
 			}
-		}
 		if (!bestChange) delete sol;
 	} while (!timer.hasTimePassed());
 

@@ -159,8 +159,8 @@ void problemsTest() {
 
 	//std::cout << *((MscnProblem*)problem);
 
-	DiffEvolution * evol = new DiffEvolution(((MscnProblem*)problem), 0.5, 0.1, ((MscnProblem*)problem)->getAllMinMaxValues(), 10);
-	RandomSearch * randSearch = new RandomSearch(((MscnProblem*)problem), 10);
+	DiffEvolution * evol = new DiffEvolution(((MscnProblem*)problem), 0.5, 0.1, ((MscnProblem*)problem)->getAllMinMaxValues(), 1);
+	RandomSearch * randSearch = new RandomSearch(((MscnProblem*)problem), 1);
 
 	//std::cout << "DiffEvol: " << optimizerTest(evol) << std::endl;
 	//std::cout << "RandSearch: " << optimizerTest(randSearch);
@@ -168,14 +168,14 @@ void problemsTest() {
 	std::cout << "DiffEvol: " << std::endl;
 	double * solvedProblem = solveProblem(evol, problem);
 	for (int i = 0; i < problem->getSize(); i++) {
-		std::cout << solvedProblem[i];
+		std::cout << solvedProblem[i] << " ; ";
 	}
 	delete solvedProblem;
 	std::cout << std::endl;
 	std::cout << "RandSearch: " << std::endl;
 	solvedProblem = solveProblem(randSearch, problem);
 	for (int i = 0; i < problem->getSize(); i++) {
-		std::cout << solvedProblem[i];
+		std::cout << solvedProblem[i] << " ; ";
 	}
 
 	delete solvedProblem;

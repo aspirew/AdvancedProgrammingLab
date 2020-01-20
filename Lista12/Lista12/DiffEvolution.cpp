@@ -48,7 +48,7 @@ DiffEvolution::DiffEvolution(Problem * problem, int seed, double cp, double dw, 
 }
 
 DiffInd * DiffEvolution::getBestFound() {
-  return getBestFound(DEFAULT_TIME, DEFAULT_POPULATION_NUMBER);
+	return getBestFound(DEFAULT_POPULATION_NUMBER);
 }
 
 DiffInd * DiffEvolution::getBestFound(int time, int populationNumber) {

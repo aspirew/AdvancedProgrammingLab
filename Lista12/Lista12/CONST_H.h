@@ -44,7 +44,7 @@ const int RAND_P_MIN = 60;
 const int RAND_P_MAX = 600;
 
 const unsigned int DEFAULT_SEED = 1577381086;
-const double DEFAULT_TIME = 5;
+const double DEFAULT_TIME = 1;
 
 const int DEFAULT_POPULATION_NUMBER = 1;
 const double DEFAULT_CROSS_PROB = 0.3;

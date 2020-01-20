@@ -284,6 +284,50 @@ void MscnProblem::decrementValuesInX(int size, Matrix<double> * x, std::vector<d
 	}
 }
 
+void MscnProblem::fixColumnsAndRowsSumIssue(int sizeOfChild, int sizeOfGrandChild, Matrix<double> * parentX, Matrix<double> * childX, Matrix<MinMaxValues> * parentMinMax, Matrix<MinMaxValues> * childMinMax) {
+	for (int i = 0; i < sizeOfChild; i++) {
+		double overflow = childX->sumOneRow(i) - parentX->sumOneCol(i);
+		bool full = false;
+		while (overflow > 0 && !full) {
+			double curOverflow = overflow;
+			for (int j = 0; j < sizeOfChild; j++) {
+				double newValForXd = parentX->getElem(j, i) + 1;
+				if (newValForXd <= parentMinMax->getElem(j, i).max) {
+					parentX->setElem(newValForXd, j, i);
+					overflow--;
+				}
+				else {
+					parentX->setElem(parentMinMax->getElem(j, i).max, j, i);
+					overflow - parentMinMax->getElem(i, j).max;
+				}
+			}
+			if (curOverflow == overflow) full = true;
+		}
+
+		overflow = childX->sumOneRow(i) - parentX->sumOneCol(i);
+		full = false;
+		while (overflow > 0 && !full) {
+			double curOverflow = overflow;
+			for (int j = 0; j < sizeOfGrandChild; j++) {
+				double newValForXf = childX->getElem(i, j) - 1;
+				if (newValForXf >= childMinMax->getElem(i, j).min) {
+					childX->setElem(newValForXf, i, j);
+					overflow--;
+				}
+				else {
+					childX->setElem(childMinMax->getElem(j, i).min, j, i);
+					overflow -= childMinMax->getElem(j, i).min;
+				}
+			}
+			if (curOverflow == overflow) full = true;
+		}
+		if (overflow > 0) {
+			std::cout << "Nie mozna zbudowac dobrego rozwiazania";
+			exit(1);
+		}
+	}
+}
+
 double MscnProblem::getP(Matrix<double> *xm) {
 	double result = 0;
 
@@ -330,21 +374,6 @@ MscnSolution MscnProblem::generateRandomSolution(int seed){
 	generateMatrix(d, f, minmaxxd, xd);
 	generateMatrix(f, m, minmaxxf, xf);
 	generateMatrix(m, s, minmaxxm, xm);
-
-	//for (int i = 0; i < d; i++)
-	//	for (int j = 0; j < f; j++) {
-	//		xd->setElem(rnd.generateDouble(minmaxxd->getElem(i, j).min, minmaxxd->getElem(i, j).max), i, j);
-	//	}
-
-	//for (int i = 0; i < f; i++)
-	//	for (int j = 0; j < m; j++) {
-	//		xf->setElem(rnd.generateDouble(minmaxxf->getElem(i, j).min, minmaxxf->getElem(i, j).max), i, j);
-	//	}
-
-	//for (int i = 0; i < m; i++)
-	//	for (int j = 0; j < s; j++) {
-	//		xm->setElem(rnd.generateDouble(minmaxxm->getElem(i, j).min, minmaxxm->getElem(i, j).max), i, j);
-	//	}
 
 	return MscnSolution(xd, xf, xm);
 
@@ -484,12 +513,6 @@ void MscnProblem::fixSolutionForConstraints(MscnSolution * sol, int err){
 			}
 		}
 	}
-
-	//std::cout << *(sol);
-
-	//int error = constraintsCheck(*sol);
-
-	//if(error != CONSTRAINTS_OK) fixSolutionForConstraints(sol, error);
 
 }
 
