@@ -4,6 +4,7 @@
 #include "Random.h"
 #include "RandomSearch.cpp"
 #include "DiffEvolution.cpp"
+#include "EasyAlg.h"
 //#include "vld.h"
 
 double * solution(int size) {
@@ -185,6 +186,25 @@ void problemsTest() {
 
 }
 
+void easyProblem() {
+
+	Problem * problem = new MscnProblem();
+
+	((MscnProblem*)problem)->setRandomElementsCount(2);
+	((MscnProblem*)problem)->generateInstance(0);
+	((MscnProblem*)problem)->setRandomMinMaxValues(20);
+
+	EasyAlg * easy = new EasyAlg(5);
+
+
+	std::cout << "EasyAlg: " << std::endl;
+	double * solvedProblem = solveProblem(easy, problem);
+	for (int i = 0; i < problem->getSize(); i++) {
+		std::cout << solvedProblem[i] << " ; ";
+	}
+
+}
+
 int main() {
 	//createAndSaveProblem();
 	//createAndSaveProblemRandom();
@@ -193,6 +213,7 @@ int main() {
 	//diffEvolTest(10000, 1);
 	//randomSearchTest(1);
 
-	problemsTest();
+	//problemsTest();
+	easyProblem();
 
 }

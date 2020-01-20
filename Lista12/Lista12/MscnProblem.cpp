@@ -481,6 +481,8 @@ void MscnProblem::fixSolutionForConstraints(MscnSolution * sol, int err){
 
 	//(sol.xd->sumOneCol(i) < sol.xf->sumOneRow(i))
 
+	if (err == CONSTRAINTS_NOT_ENOUGH_MATERIALS_FOR_FACTORIES) fixColumnsAndRowsSumIssue(f, m, sol->xd, sol->xf, minmaxxd, minmaxxf);
+
 	if (err == CONSTRAINTS_NOT_ENOUGH_MATERIALS_FOR_FACTORIES) {
 		for (int i = 0; i < f; i++) {
 			double overflow = sol->xf->sumOneRow(i) - sol->xd->sumOneCol(i);
