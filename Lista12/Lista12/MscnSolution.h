@@ -1,26 +1,28 @@
 #pragma once
 #include "CONST_H.h"
 
+template <typename T>
 class MscnSolution {
 
 public:
 
-  Matrix<double> *xd, *xf, *xm;
+  Matrix<T> *xd, *xf, *xm;
 
 	MscnSolution();
 
-	MscnSolution(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm);
+	MscnSolution(Matrix<T> *xd, Matrix<T> *xf, Matrix<T> *xm);
 
-	MscnSolution(MscnSolution const &sol);
+	MscnSolution(MscnSolution<T> const &sol);
 
 	~MscnSolution();
 
-	double * toDouble();
 
-	friend std::ostream& operator<<(std::ostream &os, const MscnSolution &p);
+	T * toTypeTable();
 
-	void operator=(const MscnSolution &sol);
-	bool operator==(const MscnSolution &sol);
+	friend std::ostream& operator<<(std::ostream &os, const MscnSolution<T> &p);
+
+	void operator=(const MscnSolution<T> &sol);
+	bool operator==(const MscnSolution<T> &sol);
 
 
 };

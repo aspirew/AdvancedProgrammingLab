@@ -2,18 +2,19 @@
 #include "mscnProblem.h"
 #include "Optimizer.h"
 
-class RandomSearch : public Optimizer {
+template <typename T>
+class RandomSearch : public Optimizer<T> {
 public:
-	RandomSearch() { }
-	RandomSearch(Problem *problem, int time) : Optimizer(problem, time) { }
+	RandomSearch() : Optimizer<T>() { }
+	RandomSearch(Problem<T> *problem, int time) : Optimizer<T>(problem, time) { }
 	~RandomSearch() { }
-	double * findBestSolution(int instanceSeed, int time);
-	double * findBestSolution(int instanceSeed);
-	double * findBestSolution();
+	T * findBestSolution(int instanceSeed, int time);
+	T * findBestSolution(int instanceSeed);
+	T * findBestSolution();
 
 	double getBestScore();
-	double * solveProblem(Problem * problem) { 
-		setProblem(problem);
+	T * solveProblem(Problem<T> * problem) { 
+		this->setProblem(problem);
 		return findBestSolution(); 
 	};
 

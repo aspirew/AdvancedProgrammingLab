@@ -24,7 +24,7 @@ public:
 		return timePassed >= stopMethodTime;
 	}
 
-//private:
+private:
 
 	std::chrono::steady_clock::time_point time = std::chrono::high_resolution_clock::now();
 	int stopMethodTime;

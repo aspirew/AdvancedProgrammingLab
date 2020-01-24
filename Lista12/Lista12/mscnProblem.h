@@ -7,7 +7,8 @@
 #include "Random.h"
 #include "Problem.h"
 
-class MscnProblem : public Problem {
+template <typename T>
+class MscnProblem : public Problem<T> {
 public:
 
 	MscnProblem();
@@ -45,18 +46,18 @@ public:
 	double getFromSs(int x);
 	double getFromPs(int x);
 	
-	double getQuality(double *solution, int arrSize);
-	int constraintsSatisfied(double *solution, int arrSize);
+	double getQuality(T *solution, int arrSize);
+	int constraintsSatisfied(T *solution, int arrSize);
 
-	MscnSolution getSolution(double *solution);
-	MscnSolution generateRandomSolution(int seed);
-	MscnSolution getSolutionFromTxt(std::string fileName);
+	MscnSolution<T> getSolution(T *solution);
+	MscnSolution<T> generateRandomSolution(int seed);
+	MscnSolution<T> getSolutionFromTxt(std::string fileName);
 
-	double * generateRandSolution() { return generateRandomSolution(0).toDouble(); }
+	T * generateRandSolution() { return generateRandomSolution(0).toTypeTable(); }
 	int getSize() { return d * f + f * m + m * s; }
 
 	bool saveData(std::string const &path);
-	bool saveSolution(double *solution, std::string const &path);
+	bool saveSolution(T *solution, std::string const &path);
 
 	void setRandomElementsCount(int maxDist);
 	void setCorrectRandomMinMaxValues(int maxDist);
@@ -66,10 +67,10 @@ public:
 
 	bool setRandomClassSeed(int seed) { return rnd.setSeed(seed); }
 
-  std::vector<MinMaxValues> getAllMinMaxValues();
-  MinMaxValues getMinMaxValueBy1DimIndex(int index);
+  std::vector<MinMaxValues<T>> getAllMinMaxValues();
+  MinMaxValues<T> getMinMaxValueBy1DimIndex(int index);
 
-	friend std::ostream& operator<<(std::ostream &os, MscnProblem &p);
+	friend std::ostream& operator<<(std::ostream &os, MscnProblem<T> &p);
 
 private:
 
@@ -81,30 +82,30 @@ private:
 	double getFromVectorOfDoubles(int x, std::vector<double> &vector);
 
 	bool setInVectorOfInts(int val, int x, std::vector<int> &vector);
-	double getFromVectorOfInts(int x, std::vector<int> &vector);
+	int getFromVectorOfInts(int x, std::vector<int> &vector);
 
-	double getKT(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm);
-	double getKU(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm);
-	double getP(Matrix<double> *xm);
+	T getKT(Matrix<T> *xd, Matrix<T> *xf, Matrix<T> *xm);
+	T getKU(Matrix<T> *xd, Matrix<T> *xf, Matrix<T> *xm);
+	T getP(Matrix<T> *xm);
 
-	double getProfit(MscnSolution sol);
-	int checkIfSolutionIsValid(double *solution, int arrSize);
+	double getProfit(MscnSolution<T> sol);
+	int checkIfSolutionIsValid(T *solution, int arrSize);
 
-	int constraintsCheck(MscnSolution &sol);
+	int constraintsCheck(MscnSolution<T> &sol);
 
-	int eps(double x);
+	int eps(T x);
 
 	int solutionErrorState = 0;
 
-	Matrix<double> * cd, * cf, * cm;
-	std::vector<double> ud, uf, um, sd, sf, sm, ss, ps;
-	Matrix<MinMaxValues> * minmaxxd, * minmaxxf, * minmaxxm;
+	Matrix<T> * cd, * cf, * cm;
+	std::vector<T> ud, uf, um, sd, sf, sm, ss, ps;
+	Matrix<MinMaxValues<T>> * minmaxxd, * minmaxxf, * minmaxxm;
 
-	void generateMatrix(int width, int heigth, Matrix<MinMaxValues> * minmax, Matrix<double> * x);
-	void decrementValuesInX(int size, Matrix<double> * x, std::vector<double> * s, Matrix<MinMaxValues> * minmax);
-	void fixColumnsAndRowsSumIssue(int sizeOfChild, int sizeOfGrandChild, Matrix<double> * parentX, Matrix<double> * childX, Matrix<MinMaxValues> * parentMinMax, Matrix<MinMaxValues> * childMinMax);
+	void generateMatrix(int width, int heigth, Matrix<MinMaxValues<T>> * minmax, Matrix<T> * x);
+	void decrementValuesInX(int size, Matrix<T> * x, std::vector<T> * s, Matrix<MinMaxValues<T>> * minmax);
+	void fixColumnsAndRowsSumIssue(int sizeOfChild, int sizeOfGrandChild, Matrix<T> * parentX, Matrix<T> * childX, Matrix<MinMaxValues<T>> * parentMinMax, Matrix<MinMaxValues<T>> * childMinMax);
 
-	void fixSolution(double *solution, int arrSize);
-	void fixSolutionForConstraints(MscnSolution * sol, int err);
+	void fixSolution(T *solution, int arrSize);
+	void fixSolutionForConstraints(MscnSolution<T> * sol, int err);
 
 };

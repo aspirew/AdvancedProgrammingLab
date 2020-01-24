@@ -1,20 +1,21 @@
 #pragma once
 #include "Optimizer.h"
 
-class EasyAlg : public Optimizer {
+template <typename T>
+class EasyAlg : public Optimizer<T> {
 
 public:
 
-	EasyAlg(int n) {
+	EasyAlg(int n) : Optimizer<T>() {
 		this->n = n;
 	}
 	double getBestScore() {
 		return 0;
 	}
 
-	double * solveProblem(Problem * problem) {
+	T * solveProblem(Problem<T> * problem) {
 		int size = problem->getSize();
-		double * sol = new double[size];
+		T * sol = new T[size];
 			for (int i = 0; i < size; i++) {
 				sol[i] = i % n;
 			}

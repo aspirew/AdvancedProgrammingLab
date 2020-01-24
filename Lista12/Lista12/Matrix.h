@@ -27,7 +27,7 @@ public:
 	T sumOneCol(int col);
 	T sumWholeMat();
 
-	double * toDouble();
+	T * toTypeTable();
 
 	void operator=(const Matrix<T> &mat);
 

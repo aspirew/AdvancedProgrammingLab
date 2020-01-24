@@ -4,16 +4,17 @@
 #include <cstdlib>
 #include "Random.cpp"
 
-MscnProblem::MscnProblem() {
+template <typename T>
+MscnProblem<T>::MscnProblem() : Problem<T>() {
 
 	d = D_COUNT;
 	f = F_COUNT;
 	m = M_COUNT;
 	s = S_COUNT;
 
-	cd = new Matrix<double>(d, f);
-	cf = new Matrix<double>(f, m);
-	cm = new Matrix<double>(m, s);
+	cd = new Matrix<T>(d, f);
+	cf = new Matrix<T>(f, m);
+	cm = new Matrix<T>(m, s);
 
 	ud.resize(d);
 	uf.resize(f);
@@ -24,13 +25,14 @@ MscnProblem::MscnProblem() {
 	ss.resize(s);
 	ps.resize(s);
 
-	minmaxxd = new Matrix<MinMaxValues>(d, f);
-	minmaxxf = new Matrix<MinMaxValues>(f, m);
-	minmaxxm = new Matrix<MinMaxValues>(m, s);
+	minmaxxd = new Matrix<MinMaxValues<T>>(d, f);
+	minmaxxf = new Matrix<MinMaxValues<T>>(f, m);
+	minmaxxm = new Matrix<MinMaxValues<T>>(m, s);
 
 }
 
-MscnProblem::MscnProblem(std::string fileName) {
+template <typename T>
+MscnProblem<T>::MscnProblem(std::string fileName) : Problem<T>() {
 
 	FILE * pFile;
 	pFile = fopen(fileName.c_str(), "r+");
@@ -49,50 +51,50 @@ MscnProblem::MscnProblem(std::string fileName) {
 		is >> s;
 
 		is.ignore(256, ' ');
-		sd = deserializeVec<double>(is, d);
+		sd = deserializeVec<T>(is, d);
 		is.ignore(256, ' ');
 		is.ignore(256, ' ');
-		sf = deserializeVec<double>(is, f);
+		sf = deserializeVec<T>(is, f);
 		is.ignore(256, ' ');
 		is.ignore(256, ' ');
-		sm = deserializeVec<double>(is, m);
+		sm = deserializeVec<T>(is, m);
 		is.ignore(256, ' ');
 		is.ignore(256, ' ');
-		ss = deserializeVec<double>(is, s);
-		is.ignore(256, ' ');
-		is.ignore(256, ' ');
-
-		cd = new Matrix<double>(d, f, is);
-		is.ignore(256, ' ');
-		is.ignore(256, ' ');
-		cf = new Matrix<double>(f, m, is);
-		is.ignore(256, ' ');
-		is.ignore(256, ' ');
-		cm = new Matrix<double>(m, s, is);
+		ss = deserializeVec<T>(is, s);
 		is.ignore(256, ' ');
 		is.ignore(256, ' ');
 
-		ud = deserializeVec<double>(is, d);
+		cd = new Matrix<T>(d, f, is);
 		is.ignore(256, ' ');
 		is.ignore(256, ' ');
-		uf = deserializeVec<double>(is, f);
+		cf = new Matrix<T>(f, m, is);
 		is.ignore(256, ' ');
 		is.ignore(256, ' ');
-		um = deserializeVec<double>(is, m);
+		cm = new Matrix<T>(m, s, is);
 		is.ignore(256, ' ');
 		is.ignore(256, ' ');
-		ps = deserializeVec<double>(is, s);
+
+		ud = deserializeVec<T>(is, d);
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
+		uf = deserializeVec<T>(is, f);
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
+		um = deserializeVec<T>(is, m);
+		is.ignore(256, ' ');
+		is.ignore(256, ' ');
+		ps = deserializeVec<T>(is, s);
 
 		is.ignore(256, ' ');
 		is.ignore(256, ' ');
 
-		minmaxxd = new Matrix<MinMaxValues>(d, f, is);
+		minmaxxd = new Matrix<MinMaxValues<T>>(d, f, is);
 		is.ignore(256, ' ');
 		is.ignore(256, ' ');
-		minmaxxf = new Matrix<MinMaxValues>(f, m, is);
+		minmaxxf = new Matrix<MinMaxValues<T>>(f, m, is);
 		is.ignore(256, ' ');
 		is.ignore(256, ' ');
-		minmaxxm = new Matrix<MinMaxValues>(m, s, is);
+		minmaxxm = new Matrix<MinMaxValues<T>>(m, s, is);
 
 		is.close();
 	}
@@ -103,7 +105,8 @@ MscnProblem::MscnProblem(std::string fileName) {
 	fclose(pFile);
 }
 
-MscnProblem::~MscnProblem() {
+template <typename T>
+MscnProblem<T>::~MscnProblem() {
 	delete cd;
 	delete cf;
 	delete cm;
@@ -112,7 +115,8 @@ MscnProblem::~MscnProblem() {
 	delete minmaxxm;
 }
 
-bool MscnProblem::setCountOfD(int val) {
+template <typename T>
+bool MscnProblem<T>::setCountOfD(int val) {
 
 	if (val < 1) return false;
 	d = val;
@@ -123,7 +127,8 @@ bool MscnProblem::setCountOfD(int val) {
 	return true;
 }
 
-bool MscnProblem::setCountOfF(int val) {
+template <typename T>
+bool MscnProblem<T>::setCountOfF(int val) {
 
 	if (val < 1) return false;
 	f = val;
@@ -136,7 +141,8 @@ bool MscnProblem::setCountOfF(int val) {
 	return true;
 }
 
-bool MscnProblem::setCountOfM(int val) {
+template <typename T>
+bool MscnProblem<T>::setCountOfM(int val) {
 
 	if (val < 1) return false;
 	m = val;
@@ -149,7 +155,8 @@ bool MscnProblem::setCountOfM(int val) {
 	return true;
 }
 
-bool MscnProblem::setCountOfS(int val) {
+template <typename T>
+bool MscnProblem<T>::setCountOfS(int val) {
 
 	if (val < 1) return false;
 	s = val;
@@ -160,60 +167,85 @@ bool MscnProblem::setCountOfS(int val) {
 	return true;
 }
 
-bool MscnProblem::setInCd(double val, int y, int x) { return cd->setElem(val, y, x); }
-bool MscnProblem::setInCf(double val, int y, int x) { return cf->setElem(val, y, x); }
-bool MscnProblem::setInCm(double val, int y, int x) { return cm->setElem(val, y, x); }
+template <typename T>
+bool MscnProblem<T>::setInCd(double val, int y, int x) { return cd->setElem(val, y, x); }
+template <typename T>
+bool MscnProblem<T>::setInCf(double val, int y, int x) { return cf->setElem(val, y, x); }
+template <typename T>
+bool MscnProblem<T>::setInCm(double val, int y, int x) { return cm->setElem(val, y, x); }
 
-double MscnProblem::getFromCd(int y, int x) { return cd->getElem(y, x); }
-double MscnProblem::getFromCf(int y, int x) { return cf->getElem(y, x); }
-double MscnProblem::getFromCm(int y, int x) { return cm->getElem(y, x); }
+template <typename T>
+double MscnProblem<T>::getFromCd(int y, int x) { return cd->getElem(y, x); }
+template <typename T>
+double MscnProblem<T>::getFromCf(int y, int x) { return cf->getElem(y, x); }
+template <typename T>
+double MscnProblem<T>::getFromCm(int y, int x) { return cm->getElem(y, x); }
+
+template <typename T>
+bool MscnProblem<T>::setInUd(double val, int x) { return setInVectorOfDoubles(val, x, ud); }
+template <typename T>
+bool MscnProblem<T>::setInUf(double val, int x) { return setInVectorOfDoubles(val, x, uf); }
+template <typename T>
+bool MscnProblem<T>::setInUm(double val, int x) { return setInVectorOfDoubles(val, x, um); }
+template <typename T>
+bool MscnProblem<T>::setInSd(double val, int x) { return setInVectorOfDoubles(val, x, sd); }
+template <typename T>
+bool MscnProblem<T>::setInSf(double val, int x) { return setInVectorOfDoubles(val, x, sf); }
+template <typename T>
+bool MscnProblem<T>::setInSm(double val, int x) { return setInVectorOfDoubles(val, x, sm); }
+template <typename T>
+bool MscnProblem<T>::setInSs(double val, int x) { return setInVectorOfDoubles(val, x, ss); }
+template <typename T>
+bool MscnProblem<T>::setInPs(double val, int x) { return setInVectorOfDoubles(val, x, ps); }
+
+template <typename T>
+double MscnProblem<T>::getFromUd(int x) { return getFromVectorOfDoubles(x, ud); }
+template <typename T>
+double MscnProblem<T>::getFromUf(int x) { return getFromVectorOfDoubles(x, uf); }
+template <typename T>
+double MscnProblem<T>::getFromUm(int x) { return getFromVectorOfDoubles(x, um); }
+template <typename T>
+double MscnProblem<T>::getFromSd(int x) { return getFromVectorOfDoubles(x, sd); }
+template <typename T>
+double MscnProblem<T>::getFromSf(int x) { return getFromVectorOfDoubles(x, sf); }
+template <typename T>
+double MscnProblem<T>::getFromSm(int x) { return getFromVectorOfDoubles(x, sm); }
+template <typename T>
+double MscnProblem<T>::getFromSs(int x) { return getFromVectorOfDoubles(x, ss); }
+template <typename T>
+double MscnProblem<T>::getFromPs(int x) { return getFromVectorOfDoubles(x, ps); }
 
 
-bool MscnProblem::setInUd(double val, int x) { return setInVectorOfDoubles(val, x, ud); }
-bool MscnProblem::setInUf(double val, int x) { return setInVectorOfDoubles(val, x, uf); }
-bool MscnProblem::setInUm(double val, int x) { return setInVectorOfDoubles(val, x, um); }
-bool MscnProblem::setInSd(double val, int x) { return setInVectorOfDoubles(val, x, sd); }
-bool MscnProblem::setInSf(double val, int x) { return setInVectorOfDoubles(val, x, sf); }
-bool MscnProblem::setInSm(double val, int x) { return setInVectorOfDoubles(val, x, sm); }
-bool MscnProblem::setInSs(double val, int x) { return setInVectorOfDoubles(val, x, ss); }
-bool MscnProblem::setInPs(double val, int x) { return setInVectorOfDoubles(val, x, ps); }
-
-double MscnProblem::getFromUd(int x) { return getFromVectorOfDoubles(x, ud); }
-double MscnProblem::getFromUf(int x) { return getFromVectorOfDoubles(x, uf); }
-double MscnProblem::getFromUm(int x) { return getFromVectorOfDoubles(x, um); }
-double MscnProblem::getFromSd(int x) { return getFromVectorOfDoubles(x, sd); }
-double MscnProblem::getFromSf(int x) { return getFromVectorOfDoubles(x, sf); }
-double MscnProblem::getFromSm(int x) { return getFromVectorOfDoubles(x, sm); }
-double MscnProblem::getFromSs(int x) { return getFromVectorOfDoubles(x, ss); }
-double MscnProblem::getFromPs(int x) { return getFromVectorOfDoubles(x, ps); }
-
-
-bool MscnProblem::setInVectorOfDoubles(double val, int x, std::vector<double> &vector) {
+template <typename T>
+bool MscnProblem<T>::setInVectorOfDoubles(double val, int x, std::vector<double> &vector) {
 	if (x < 0 || x >= vector.size()) return false;
 	vector[x] = val;
 	return true;
 }
 
-double MscnProblem::getFromVectorOfDoubles(int x, std::vector<double> &vector) {
+template <typename T>
+double MscnProblem<T>::getFromVectorOfDoubles(int x, std::vector<double> &vector) {
 	if (x < 0 || x >= vector.size())
 		return vector[x];
 }
 
-bool MscnProblem::setInVectorOfInts(int val, int x, std::vector<int> &vector) {
+template <typename T>
+bool MscnProblem<T>::setInVectorOfInts(int val, int x, std::vector<int> &vector) {
 	if (x < 0 || x >= vector.size()) return false;
 	vector[x] = val;
 	return true;
 }
 
-double MscnProblem::getFromVectorOfInts(int x, std::vector<int> &vector) {
+template <typename T>
+int MscnProblem<T>::getFromVectorOfInts(int x, std::vector<int> &vector) {
 	if (x < 0 || x >= vector.size())
 		return vector[x];
 }
 
-double MscnProblem::getKT(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm) {
+template <typename T>
+T MscnProblem<T>::getKT(Matrix<T> *xd, Matrix<T> *xf, Matrix<T> *xm) {
 
-	double result = 0;
-
+	T result = 0;
 
 	for (int i = 0; i < d; i++)
 		for (int j = 0; j < f; j++)
@@ -230,11 +262,12 @@ double MscnProblem::getKT(Matrix<double> *xd, Matrix<double> *xf, Matrix<double>
 	return result;
 }
 
-double MscnProblem::getKU(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm) {
-	double result = 0;
+template <typename T>
+T MscnProblem<T>::getKU(Matrix<T> *xd, Matrix<T> *xf, Matrix<T> *xm) {
+	T result = 0;
 
 	for (int i = 0; i < d; i++) {
-		double KUDF = 0;
+		T KUDF = 0;
 		for (int j = 0; j < f; j++) {
 			KUDF += xd->getElem(i, j);
 		}
@@ -242,7 +275,7 @@ double MscnProblem::getKU(Matrix<double> *xd, Matrix<double> *xf, Matrix<double>
 	}
 
 	for (int i = 0; i < f; i++) {
-		double KUFM = 0;
+		T KUFM = 0;
 		for (int j = 0; j < m; j++) {
 			KUFM += xf->getElem(i, j);
 		}
@@ -250,7 +283,7 @@ double MscnProblem::getKU(Matrix<double> *xd, Matrix<double> *xf, Matrix<double>
 	}
 
 	for (int i = 0; i < m; i++) {
-		double KUMS = 0;
+		T KUMS = 0;
 		for (int j = 0; j < s; j++) {
 			KUMS += xm->getElem(i, j);
 		}
@@ -260,12 +293,14 @@ double MscnProblem::getKU(Matrix<double> *xd, Matrix<double> *xf, Matrix<double>
 	return result;
 }
 
-int MscnProblem::eps(double x) {
+template <typename T>
+int MscnProblem<T>::eps(T x) {
 	if (x > 0) return 1;
 	else return 0;
 }
 
-void MscnProblem::generateMatrix(int width, int heigth, Matrix<MinMaxValues> * minmax, Matrix<double> * x){
+template <typename T>
+void MscnProblem<T>::generateMatrix(int width, int heigth, Matrix<MinMaxValues<T>> * minmax, Matrix<T> * x){
 
 	for (int i = 0; i < width; i++)
 		for (int j = 0; j < heigth; j++) {
@@ -273,7 +308,8 @@ void MscnProblem::generateMatrix(int width, int heigth, Matrix<MinMaxValues> * m
 		}
 }
 
-void MscnProblem::decrementValuesInX(int size, Matrix<double> * x, std::vector<double> * s, Matrix<MinMaxValues> * minmax){
+template <typename T>
+void MscnProblem<T>::decrementValuesInX(int size, Matrix<T> * x, std::vector<T> * s, Matrix<MinMaxValues<T>> * minmax){
 	for (int i = 0; i < size; i++) {
 		int overflow = x->sumOneRow(i) - s->at(i);
 		for (int j = 0; j < overflow; j++) {
@@ -284,14 +320,15 @@ void MscnProblem::decrementValuesInX(int size, Matrix<double> * x, std::vector<d
 	}
 }
 
-void MscnProblem::fixColumnsAndRowsSumIssue(int sizeOfChild, int sizeOfGrandChild, Matrix<double> * parentX, Matrix<double> * childX, Matrix<MinMaxValues> * parentMinMax, Matrix<MinMaxValues> * childMinMax) {
+template <typename T>
+void MscnProblem<T>::fixColumnsAndRowsSumIssue(int sizeOfChild, int sizeOfGrandChild, Matrix<T> * parentX, Matrix<T> * childX, Matrix<MinMaxValues<T>> * parentMinMax, Matrix<MinMaxValues<T>> * childMinMax) {
 	for (int i = 0; i < sizeOfChild; i++) {
-		double overflow = childX->sumOneRow(i) - parentX->sumOneCol(i);
+		T overflow = childX->sumOneRow(i) - parentX->sumOneCol(i);
 		bool full = false;
 		while (overflow > 0 && !full) {
-			double curOverflow = overflow;
+			T curOverflow = overflow;
 			for (int j = 0; j < sizeOfChild; j++) {
-				double newValForXd = parentX->getElem(j, i) + 1;
+				T newValForXd = parentX->getElem(j, i) + 1;
 				if (newValForXd <= parentMinMax->getElem(j, i).max) {
 					parentX->setElem(newValForXd, j, i);
 					overflow--;
@@ -307,9 +344,9 @@ void MscnProblem::fixColumnsAndRowsSumIssue(int sizeOfChild, int sizeOfGrandChil
 		overflow = childX->sumOneRow(i) - parentX->sumOneCol(i);
 		full = false;
 		while (overflow > 0 && !full) {
-			double curOverflow = overflow;
+			T curOverflow = overflow;
 			for (int j = 0; j < sizeOfGrandChild; j++) {
-				double newValForXf = childX->getElem(i, j) - 1;
+				T newValForXf = childX->getElem(i, j) - 1;
 				if (newValForXf >= childMinMax->getElem(i, j).min) {
 					childX->setElem(newValForXf, i, j);
 					overflow--;
@@ -328,8 +365,9 @@ void MscnProblem::fixColumnsAndRowsSumIssue(int sizeOfChild, int sizeOfGrandChil
 	}
 }
 
-double MscnProblem::getP(Matrix<double> *xm) {
-	double result = 0;
+template <typename T>
+T MscnProblem<T>::getP(Matrix<T> *xm) {
+	T result = 0;
 
 	for (int i = 0; i < m; i++) 
 		for (int j = 0; j < s; j++) 
@@ -338,11 +376,12 @@ double MscnProblem::getP(Matrix<double> *xm) {
 	return result;
 }
 
-MscnSolution MscnProblem::getSolution(double *solution) {
+template <typename T>
+MscnSolution<T> MscnProblem<T>::getSolution(T *solution) {
 
-	Matrix<double> * xd = new Matrix<double>(d, f);
-	Matrix<double> * xf = new Matrix<double>(f, m);
-	Matrix<double> * xm = new Matrix<double>(m, s);
+	Matrix<T> * xd = new Matrix<T>(d, f);
+	Matrix<T> * xf = new Matrix<T>(f, m);
+	Matrix<T> * xm = new Matrix<T>(m, s);
 
 	for (int i = 0; i < d; i++)
 		for (int j = 0; j < f; j++) {
@@ -359,38 +398,40 @@ MscnSolution MscnProblem::getSolution(double *solution) {
 			xm->setElem(solution[d*f + f * m + i * s + j], i, j);
 		}
 
-	return MscnSolution(xd, xf, xm);
+	return MscnSolution<T>(xd, xf, xm);
 }
 
-MscnSolution MscnProblem::generateRandomSolution(int seed){
+template <typename T>
+MscnSolution<T> MscnProblem<T>::generateRandomSolution(int seed){
 
-	Matrix<double> * xd = new Matrix<double>(d, f);
-	Matrix<double> * xf = new Matrix<double>(f, m);
-	Matrix<double> * xm = new Matrix<double>(m, s);
+	Matrix<T> * xd = new Matrix<T>(d, f);
+	Matrix<T> * xf = new Matrix<T>(f, m);
+	Matrix<T> * xm = new Matrix<T>(m, s);
 
   if (seed != 0)
-    if (rnd.setSeed(seed)) return MscnSolution(xd, xf, xm);
+    if (rnd.setSeed(seed)) return MscnSolution<T>(xd, xf, xm);
 
 	generateMatrix(d, f, minmaxxd, xd);
 	generateMatrix(f, m, minmaxxf, xf);
 	generateMatrix(m, s, minmaxxm, xm);
 
-	return MscnSolution(xd, xf, xm);
+	return MscnSolution<T>(xd, xf, xm);
 
 }
 
-MscnSolution MscnProblem::getSolutionFromTxt(std::string fileName){
+template <typename T>
+MscnSolution<T> MscnProblem<T>::getSolutionFromTxt(std::string fileName){
 
 	FILE * pFile;
 	pFile = fopen(fileName.c_str(), "r+");
 
-	if (!pFile) return MscnSolution();
+	if (!pFile) return MscnSolution<T>();
 
 	std::ifstream is(pFile);
 
-	Matrix<double> * xd = new Matrix<double>(d, f);
-	Matrix<double> * xf = new Matrix<double>(f, m);
-	Matrix<double> * xm = new Matrix<double>(m, s);
+	Matrix<T> * xd = new Matrix<T>(d, f);
+	Matrix<T> * xf = new Matrix<T>(f, m);
+	Matrix<T> * xm = new Matrix<T>(m, s);
 
 	std::string foo;
 
@@ -402,7 +443,7 @@ MscnSolution MscnProblem::getSolutionFromTxt(std::string fileName){
 
 	for (int i = 0; i < d; i++)
 		for (int j = 0; j < f; j++) {
-			double result;
+			T result;
 			is >> result;
 			xd->setElem(result, i, j);
 		}
@@ -412,7 +453,7 @@ MscnSolution MscnProblem::getSolutionFromTxt(std::string fileName){
 
 	for (int i = 0; i < f; i++)
 		for (int j = 0; j < m; j++) {
-			double result;
+			T result;
 			is >> result;
 			xf->setElem(result, i, j);
 		}
@@ -422,7 +463,7 @@ MscnSolution MscnProblem::getSolutionFromTxt(std::string fileName){
 
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < s; j++) {
-			double result;
+			T result;
 			is >> result;
 			xm->setElem(result, i, j);
 		}
@@ -430,15 +471,17 @@ MscnSolution MscnProblem::getSolutionFromTxt(std::string fileName){
 	is.close();
 	fclose(pFile);
 
-	return MscnSolution(xd, xf, xm);
+	return MscnSolution<T>(xd, xf, xm);
 }
 
-double MscnProblem::getProfit(MscnSolution sol) {
+template <typename T>
+double MscnProblem<T>::getProfit(MscnSolution<T> sol) {
 
 	return getP(sol.xm) - getKT(sol.xd, sol.xf, sol.xm) - getKU(sol.xd, sol.xf, sol.xm);
 }
 
-int MscnProblem::checkIfSolutionIsValid(double *solution, int arrSize) {
+template <typename T>
+int MscnProblem<T>::checkIfSolutionIsValid(T *solution, int arrSize) {
 	if (solution == NULL) return ERROR_SOLUTION_IS_NULL;
 	if (arrSize != getSize()) return ERROR_WRONG_SIZE;
 	for (int i = 0; i < arrSize; i++) {
@@ -469,7 +512,8 @@ int MscnProblem::checkIfSolutionIsValid(double *solution, int arrSize) {
 	return SOLUTION_VALID;
 }
 
-void MscnProblem::fixSolutionForConstraints(MscnSolution * sol, int err){
+template <typename T>
+void MscnProblem<T>::fixSolutionForConstraints(MscnSolution<T> * sol, int err){
 
 	if (err == CONSTRAINTS_TOO_MUCH_FROM_DISTRIBUTOR) decrementValuesInX(d, sol->xd, &sd, minmaxxd);
 
@@ -485,11 +529,11 @@ void MscnProblem::fixSolutionForConstraints(MscnSolution * sol, int err){
 
 	if (err == CONSTRAINTS_NOT_ENOUGH_MATERIALS_FOR_FACTORIES) {
 		for (int i = 0; i < f; i++) {
-			double overflow = sol->xf->sumOneRow(i) - sol->xd->sumOneCol(i);
+			T overflow = sol->xf->sumOneRow(i) - sol->xd->sumOneCol(i);
 			//std::cout << overflow;
 			for (int j = 0; j < overflow; j++) {
-				double newValForXf = sol->xf->getElem(i, j%m) - 1;
-				double newValForXd = sol->xd->getElem(j%f, i) + 1;
+				T newValForXf = sol->xf->getElem(i, j%m) - 1;
+				T newValForXd = sol->xd->getElem(j%f, i) + 1;
 				//std::cout << j % m << " : " << sol->xf->getElem(i, j%m) << " | " << minmaxxf->getElem(i, j%m).min << " ... ";
 				if (newValForXd <= minmaxxd->getElem(j%f, i).max) {
 					sol->xd->setElem(newValForXd, j%f, i);
@@ -507,8 +551,8 @@ void MscnProblem::fixSolutionForConstraints(MscnSolution * sol, int err){
 		for (int i = 0; i < m; i++) {
 			int overflow = sol->xm->sumOneRow(i) - sol->xf->sumOneCol(i);
 			for (int j = 0; j < overflow; j++) {
-				double newValForXf = sol->xf->getElem(j%m, i) + 1;
-				double newValForXm = sol->xm->getElem(i, j%s) - 1;
+				T newValForXf = sol->xf->getElem(j%m, i) + 1;
+				T newValForXm = sol->xm->getElem(i, j%s) - 1;
 				if (newValForXm >= minmaxxm->getElem(i, j%s).min) sol->xm->setElem(newValForXm, i, j%s);
 				else if (newValForXf <= minmaxxf->getElem(j%m, i).max) sol->xf->setElem(newValForXf, j%m, i);
 				else overflow++;
@@ -518,22 +562,22 @@ void MscnProblem::fixSolutionForConstraints(MscnSolution * sol, int err){
 
 }
 
+template <typename T>
+void MscnProblem<T>::fixSolution(T * solution, int arrSize){
 
-void MscnProblem::fixSolution(double * solution, int arrSize){
-
-	std::vector<MinMaxValues> minmax = getAllMinMaxValues();
+	std::vector<MinMaxValues<T>> minmax = getAllMinMaxValues();
 
 	std::cout << " , " <<  solutionErrorState;
 
 	if (solutionErrorState == ERROR_SOLUTION_IS_NULL) {
-		solution = new double[arrSize]();
+		solution = new T[arrSize]();
 		for (int i = 0; i < arrSize; i++) {
 			solution[i] = (minmax[i].min + minmax[i].max) / 2;
 		}
 	}
 
 	if (solutionErrorState == ERROR_WRONG_SIZE) {
-		double * tmpSol = new double[getSize()];
+		T * tmpSol = new T[getSize()];
 		int smaller = getSize() < arrSize ? getSize() : arrSize;
 		for (int i = 0; i < smaller; i++) {
 			tmpSol[i] = solution[i];
@@ -564,13 +608,14 @@ void MscnProblem::fixSolution(double * solution, int arrSize){
 
 }
 
-double MscnProblem::getQuality(double *solution, int arrSize){
+template <typename T>
+double MscnProblem<T>::getQuality(T *solution, int arrSize){
 
 	solutionErrorState = checkIfSolutionIsValid(solution, arrSize);
 
 	if (solutionErrorState != SOLUTION_VALID) fixSolution(solution, arrSize);
 
-	MscnSolution sol = getSolution(solution);
+	MscnSolution<T> sol = getSolution(solution);
 
 	if (constraintsCheck(sol) != CONSTRAINTS_OK) fixSolutionForConstraints(&sol, constraintsCheck(sol));
 
@@ -578,18 +623,20 @@ double MscnProblem::getQuality(double *solution, int arrSize){
 
 }
 
-int MscnProblem::constraintsSatisfied(double *solution, int arrSize) {
+template <typename T>
+int MscnProblem<T>::constraintsSatisfied(T *solution, int arrSize) {
 
 	solutionErrorState = checkIfSolutionIsValid(solution, arrSize);
 
 	if (solutionErrorState != SOLUTION_VALID) fixSolution(solution, arrSize);
 
-	MscnSolution sol = getSolution(solution);
+	MscnSolution<T> sol = getSolution(solution);
 
 	return constraintsCheck(sol);
 }
 
-int MscnProblem::constraintsCheck(MscnSolution &sol) {
+template <typename T>
+int MscnProblem<T>::constraintsCheck(MscnSolution<T> &sol) {
 
 	for (int i = 0; i < d; i++) {
 		if (sol.xd->sumOneRow(i) > sd[i]) return CONSTRAINTS_TOO_MUCH_FROM_DISTRIBUTOR;
@@ -619,7 +666,8 @@ int MscnProblem::constraintsCheck(MscnSolution &sol) {
 
 }
 
-bool MscnProblem::saveData(std::string const &path) {
+template <typename T>
+bool MscnProblem<T>::saveData(std::string const &path) {
 
 	FILE * pFile;
 	pFile = fopen(path.c_str(), "w+");
@@ -633,7 +681,8 @@ bool MscnProblem::saveData(std::string const &path) {
 	return true;
 }
 
-bool MscnProblem::saveSolution(double * solution, std::string const &path) {
+template <typename T>
+bool MscnProblem<T>::saveSolution(T * solution, std::string const &path) {
 
 	FILE * pFile;
 	pFile = fopen(path.c_str(), "w+");
@@ -652,7 +701,8 @@ bool MscnProblem::saveSolution(double * solution, std::string const &path) {
 	return true;
 }
 
-std::ostream& operator<<(std::ostream &os, MscnProblem &p){
+
+std::ostream& operator<<(std::ostream &os, MscnProblem<double> &p){
 
 	os << "D " << p.d << "\n" << "F " << p.f << "\n";
 	os << "M " << p.m << "\n" << "S " << p.s << "\n";
@@ -718,7 +768,8 @@ std::ostream& operator<<(std::ostream &os, MscnProblem &p){
 	return os;
 }
 
-void MscnProblem::generateInstance(int instanceSeed) {
+template <typename T>
+void MscnProblem<T>::generateInstance(int instanceSeed) {
 
 	if (instanceSeed != 0) {
 		rnd.setSeed(instanceSeed);
@@ -753,9 +804,10 @@ void MscnProblem::generateInstance(int instanceSeed) {
 	}
 }
 
-std::vector<MinMaxValues> MscnProblem::getAllMinMaxValues() {
+template <typename T>
+std::vector<MinMaxValues<T>> MscnProblem<T>::getAllMinMaxValues() {
 
-  std::vector<MinMaxValues> res;
+  std::vector<MinMaxValues<T>> res;
   int iterator = 0;
 
   for (int i = 0; i < d; i++) {
@@ -779,7 +831,8 @@ std::vector<MinMaxValues> MscnProblem::getAllMinMaxValues() {
   return res;
 }
 
-MinMaxValues MscnProblem::getMinMaxValueBy1DimIndex(int index){
+template <typename T>
+MinMaxValues<T> MscnProblem<T>::getMinMaxValueBy1DimIndex(int index){
 
 	if (index >= d*f + f * m) {
 		index -= d * f + f * m;
@@ -792,20 +845,22 @@ MinMaxValues MscnProblem::getMinMaxValueBy1DimIndex(int index){
 	else return minmaxxd->getElemByOneDimIndex(index);
 }
 
-void MscnProblem::setRandomElementsCount(int maxDist) {
+template <typename T>
+void MscnProblem<T>::setRandomElementsCount(int maxDist) {
 	setCountOfD(rnd.generateInt(1, maxDist));
 	setCountOfF(rnd.generateInt(1, maxDist*2));
 	setCountOfM(rnd.generateInt(1, maxDist*3));
 	setCountOfS(rnd.generateInt(1, maxDist*4));
 }
 
-void MscnProblem::setCorrectRandomMinMaxValues(int maxMin){
-	double min = 0;
-	double max = 0;
+template <typename T>
+void MscnProblem<T>::setCorrectRandomMinMaxValues(int maxMin){
+	T min = 0;
+	T max = 0;
 
-	double minBound = 0;
-	double minBoundForXF = 0;
-	double minBoundForXD = 0;
+	T minBound = 0;
+	T minBoundForXF = 0;
+	T minBoundForXD = 0;
 
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < s; j++) {
@@ -844,14 +899,15 @@ void MscnProblem::setCorrectRandomMinMaxValues(int maxMin){
 
 }
 
-void MscnProblem::setRandomMinMaxValues(int maxDist){
+template <typename T>
+void MscnProblem<T>::setRandomMinMaxValues(int maxDist){
 
-	double min = 0;
-	double max = 0;
+	T min = 0;
+	T max = 0;
 
-	double minBound = 0;
-	double minBoundForXF = 0;
-	double minBoundForXD = 0;
+	T minBound = 0;
+	T minBoundForXF = 0;
+	T minBoundForXD = 0;
 
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < s; j++) {

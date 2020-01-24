@@ -1,39 +1,44 @@
 #include "MscnSolution.h"
 
-MscnSolution::MscnSolution() {
-	this->xd = new Matrix<double>(1, 1);
-	this->xf = new Matrix<double>(1, 1);
-	this->xm = new Matrix<double>(1, 1);
+template <typename T>
+MscnSolution<T>::MscnSolution() {
+	this->xd = new Matrix<T>(1, 1);
+	this->xf = new Matrix<T>(1, 1);
+	this->xm = new Matrix<T>(1, 1);
 }
 
-MscnSolution::MscnSolution(Matrix<double> *xd, Matrix<double> *xf, Matrix<double> *xm) {
+template <typename T>
+MscnSolution<T>::MscnSolution(Matrix<T> *xd, Matrix<T> *xf, Matrix<T> *xm) {
 	this->xd = xd;
 	this->xf = xf;
 	this->xm = xm;
 }
 
-MscnSolution::MscnSolution(MscnSolution const & sol){
-	this->xd = new Matrix<double>(*(sol.xd));
-	this->xf = new Matrix<double>(*(sol.xf));
-	this->xm = new Matrix<double>(*(sol.xm));
+template <typename T>
+MscnSolution<T>::MscnSolution(MscnSolution<T> const & sol){
+	this->xd = new Matrix<T>(*(sol.xd));
+	this->xf = new Matrix<T>(*(sol.xf));
+	this->xm = new Matrix<T>(*(sol.xm));
 }
 
-MscnSolution::~MscnSolution() {
+template <typename T>
+MscnSolution<T>::~MscnSolution() {
 	delete xd;
 	delete xf;
 	delete xm;
 }
 
-double * MscnSolution::toDouble() {
+template <typename T>
+T * MscnSolution<T>::toTypeTable() {
 
-	double * res = new double[xd->getFullSize() + xf->getFullSize() + xm->getFullSize()];
+	T * res = new T[xd->getFullSize() + xf->getFullSize() + xm->getFullSize()];
 	int xdSize = xd->getWidth()*xd->getHeigth();
 	int xfSize = xf->getWidth()*xf->getHeigth();
 	int xmSize = xm->getWidth()*xm->getHeigth();
 
-	double * xdd = xd->toDouble();
-	double * xff = xf->toDouble();
-	double * xmm = xm->toDouble();
+	T * xdd = xd->toTypeTable();
+	T * xff = xf->toTypeTable();
+	T * xmm = xm->toTypeTable();
 
 	std::copy(xdd, xdd + xdSize, res);
 	std::copy(xff, xff + xfSize, res + xdSize);
@@ -46,7 +51,8 @@ double * MscnSolution::toDouble() {
 	return res;
 }
 
-void MscnSolution::operator=(const MscnSolution & sol){
+template <typename T>
+void MscnSolution<T>::operator=(const MscnSolution<T> & sol){
 	delete xd;
 	this->xd = new Matrix<double>(*(sol.xd));
 	delete xf;
@@ -55,7 +61,8 @@ void MscnSolution::operator=(const MscnSolution & sol){
 	this->xm = new Matrix<double>(*(sol.xm));
 }
 
-bool MscnSolution::operator==(const MscnSolution & sol) {
+template <typename T>
+bool MscnSolution<T>::operator==(const MscnSolution<T> & sol) {
 
   if (xd->getHeigth() != sol.xd->getHeigth() || xd->getWidth() != sol.xd->getWidth()) return false;
 
@@ -84,7 +91,7 @@ bool MscnSolution::operator==(const MscnSolution & sol) {
   return true;
 }
 
-std::ostream& operator<<(std::ostream &os, const MscnSolution &sol) {
+std::ostream& operator<<(std::ostream &os, const MscnSolution<double> &sol) {
 	//os << "xd" << *(sol.xd) << "\n";
 	//os << "xf" << *(sol.xf) << "\n";
 	//os << "xm" << *(sol.xm) << "\n";

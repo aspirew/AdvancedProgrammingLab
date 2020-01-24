@@ -1,10 +1,11 @@
 #pragma once
 
+template <typename T>
 struct MinMaxValues {
-	double min;
-	double max;
+	T min;
+	T max;
 
-	friend std::ostream& operator<<(std::ostream& os, const MinMaxValues& minmax) {
+	friend std::ostream& operator<<(std::ostream& os, const MinMaxValues<T>& minmax) {
 		os << minmax.min << " " << minmax.max;
 		return os;
 	}

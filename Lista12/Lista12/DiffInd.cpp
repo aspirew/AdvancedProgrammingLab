@@ -1,46 +1,55 @@
 #include "DiffInd.h"
 
-DiffInd::DiffInd() {
+template <typename T>
+DiffInd<T>::DiffInd() {
   genotypeSize = 1;
   fitness = 0;
   genotype = new double[genotypeSize];
 }
 
-DiffInd::DiffInd(double fitness, double * genotype, int genotypeSize) {
+template <typename T>
+DiffInd<T>::DiffInd(double fitness, T * genotype, int genotypeSize) {
   this->genotypeSize = genotypeSize;
   this->fitness = fitness;
   this->genotype = genotype;
 }
 
-DiffInd::DiffInd(const DiffInd & other) {
+template <typename T>
+DiffInd<T>::DiffInd(const DiffInd & other) {
   copyInd(other);
 }
 
-bool DiffInd::setGenotypeAt(int index, double val) {
+template <typename T>
+bool DiffInd<T>::setGenotypeAt(int index, T val) {
   if (index < 0 || index >= genotypeSize) return false;
 
   genotype[index] = val;
   return true;
 }
 
-double DiffInd::getFromGenotype(int index) {
+template <typename T>
+T DiffInd<T>::getFromGenotype(int index) {
   if (index < 0 || index >= genotypeSize) return 0.0;
   return genotype[index];
 }
 
-double DiffInd::getFitness() {
+template <typename T>
+double DiffInd<T>::getFitness() {
   return fitness;
 }
 
-void DiffInd::setFitness(double fit) {
+template <typename T>
+void DiffInd<T>::setFitness(double fit) {
   fitness = fit;
 }
 
-void DiffInd::operator=(const DiffInd & other) {
+template <typename T>
+void DiffInd<T>::operator=(const DiffInd<T> & other) {
   copyInd(other);
 }
 
-bool DiffInd::operator!=(const DiffInd & diff) {
+template <typename T>
+bool DiffInd<T>::operator!=(const DiffInd<T> & diff) {
     if (genotypeSize != diff.genotypeSize) return true;
 
     for (int i = 0; i < genotypeSize; i++) {
@@ -50,7 +59,8 @@ bool DiffInd::operator!=(const DiffInd & diff) {
     return false;
 }
 
-void DiffInd::copyInd(const DiffInd & other) {
+template <typename T>
+void DiffInd<T>::copyInd(const DiffInd<T> & other) {
   delete[] genotype;
 
   genotypeSize = other.genotypeSize;

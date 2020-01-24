@@ -1,28 +1,29 @@
 #pragma once
 
+template <typename T>
 class DiffInd {
 
 public:
 
   DiffInd();
-  DiffInd(double fitness, double * genotype, int genotypeSize);
+  DiffInd(double fitness, T * genotype, int genotypeSize);
   DiffInd(const DiffInd &other);
   ~DiffInd() { delete genotype; }
 
-  bool setGenotypeAt(int index, double val);
-  double getFromGenotype(int index);
+  bool setGenotypeAt(int index, T val);
+  T getFromGenotype(int index);
   double getFitness();
   void setFitness(double fit);
-  double * getGenotype() { return genotype; }
+  T * getGenotype() { return genotype; }
 
-  void operator=(const DiffInd &other);
-  bool operator!=(const DiffInd &diff);
+  void operator=(const DiffInd<T> &other);
+  bool operator!=(const DiffInd<T> &diff);
 
 private:
 
   int genotypeSize;
-  double * genotype;
+  T * genotype;
   double fitness;
-  void copyInd(const DiffInd & other);
+  void copyInd(const DiffInd<T> & other);
 
 };

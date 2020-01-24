@@ -2,33 +2,36 @@
 #include "Random.h"
 #include <chrono>
 
-double * RandomSearch::findBestSolution(int instanceSeed, int time) {
-	timer.setTime(time);
+template <typename T>
+T * RandomSearch<T>::findBestSolution(int instanceSeed, int time) {
+	this->timer.setTime(time);
 	return findBestSolution(instanceSeed);
 }
 
-double * RandomSearch::findBestSolution()
+template <typename T>
+T * RandomSearch<T>::findBestSolution()
 {
 	return findBestSolution(0);
 }
 
-double * RandomSearch::findBestSolution(int instanceSeed)
+template <typename T>
+T * RandomSearch<T>::findBestSolution(int instanceSeed)
 {
-	int bestQuality = INT_MIN;
-	int solSize = problem->getSize();
-	double * sol;
-	double * bestSol = new double[0]();
+	double bestQuality = INT_MIN;
+	int solSize = this->problem->getSize();
+	T * sol;
+	T * bestSol = new T[0]();
 
 	if (instanceSeed != 0)
-		if (!problem->setRandomClassSeed(instanceSeed)) return bestSol;
+		if (!this->problem->setRandomClassSeed(instanceSeed)) return bestSol;
 
-	timer.startTimer();
+	this->timer.startTimer();
 
 	do {
 
 		bool bestChange = false;
-		sol = problem->generateRandSolution();
-		int currentQuality = problem->getQuality(sol, solSize);
+		sol = this->problem->generateRandSolution();
+		int currentQuality = this->problem->getQuality(sol, solSize);
 			if (currentQuality > bestQuality) {
 				delete bestSol;
 				bestSol = sol;
@@ -36,12 +39,13 @@ double * RandomSearch::findBestSolution(int instanceSeed)
 				bestChange = true;
 			}
 		if (!bestChange) delete sol;
-	} while (!timer.hasTimePassed());
+	} while (!this->timer.hasTimePassed());
 
 	return bestSol;
 }
 
-double RandomSearch::getBestScore()
+template <typename T>
+double RandomSearch<T>::getBestScore()
 {
-	return problem->getQuality(findBestSolution(0, DEFAULT_TIME), problem->getSize());
+	return this->problem->getQuality(findBestSolution(0, DEFAULT_TIME), this->problem->getSize());
 }

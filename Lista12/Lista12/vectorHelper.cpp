@@ -19,8 +19,8 @@ std::vector<T> deserializeVec(std::istream &is, int size) {
 	return v;
 }
 
-std::vector<MinMaxValues> deserializeVec(std::istream &is, int size) {
-	std::vector<MinMaxValues> v(size);
+std::vector<MinMaxValues<double>> deserializeVec(std::istream &is, int size) {
+	std::vector<MinMaxValues<double>> v(size);
 	for (int i = 0; i < size; i++) {
 		double result1, result2;
 		is >> result1;
