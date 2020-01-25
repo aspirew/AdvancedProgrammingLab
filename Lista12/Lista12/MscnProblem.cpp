@@ -168,76 +168,63 @@ bool MscnProblem<T>::setCountOfS(int val) {
 }
 
 template <typename T>
-bool MscnProblem<T>::setInCd(double val, int y, int x) { return cd->setElem(val, y, x); }
+bool MscnProblem<T>::setInCd(T val, int y, int x) { return cd->setElem(val, y, x); }
 template <typename T>
-bool MscnProblem<T>::setInCf(double val, int y, int x) { return cf->setElem(val, y, x); }
+bool MscnProblem<T>::setInCf(T val, int y, int x) { return cf->setElem(val, y, x); }
 template <typename T>
-bool MscnProblem<T>::setInCm(double val, int y, int x) { return cm->setElem(val, y, x); }
+bool MscnProblem<T>::setInCm(T val, int y, int x) { return cm->setElem(val, y, x); }
 
 template <typename T>
-double MscnProblem<T>::getFromCd(int y, int x) { return cd->getElem(y, x); }
+T MscnProblem<T>::getFromCd(int y, int x) { return cd->getElem(y, x); }
 template <typename T>
-double MscnProblem<T>::getFromCf(int y, int x) { return cf->getElem(y, x); }
+T MscnProblem<T>::getFromCf(int y, int x) { return cf->getElem(y, x); }
 template <typename T>
-double MscnProblem<T>::getFromCm(int y, int x) { return cm->getElem(y, x); }
+T MscnProblem<T>::getFromCm(int y, int x) { return cm->getElem(y, x); }
 
 template <typename T>
-bool MscnProblem<T>::setInUd(double val, int x) { return setInVectorOfDoubles(val, x, ud); }
+bool MscnProblem<T>::setInUd(T val, int x) { return setInVector(val, x, ud); }
 template <typename T>
-bool MscnProblem<T>::setInUf(double val, int x) { return setInVectorOfDoubles(val, x, uf); }
+bool MscnProblem<T>::setInUf(T val, int x) { return setInVector(val, x, uf); }
 template <typename T>
-bool MscnProblem<T>::setInUm(double val, int x) { return setInVectorOfDoubles(val, x, um); }
+bool MscnProblem<T>::setInUm(T val, int x) { return setInVector(val, x, um); }
 template <typename T>
-bool MscnProblem<T>::setInSd(double val, int x) { return setInVectorOfDoubles(val, x, sd); }
+bool MscnProblem<T>::setInSd(T val, int x) { return setInVector(val, x, sd); }
 template <typename T>
-bool MscnProblem<T>::setInSf(double val, int x) { return setInVectorOfDoubles(val, x, sf); }
+bool MscnProblem<T>::setInSf(T val, int x) { return setInVector(val, x, sf); }
 template <typename T>
-bool MscnProblem<T>::setInSm(double val, int x) { return setInVectorOfDoubles(val, x, sm); }
+bool MscnProblem<T>::setInSm(T val, int x) { return setInVector(val, x, sm); }
 template <typename T>
-bool MscnProblem<T>::setInSs(double val, int x) { return setInVectorOfDoubles(val, x, ss); }
+bool MscnProblem<T>::setInSs(T val, int x) { return setInVector(val, x, ss); }
 template <typename T>
-bool MscnProblem<T>::setInPs(double val, int x) { return setInVectorOfDoubles(val, x, ps); }
+bool MscnProblem<T>::setInPs(T val, int x) { return setInVector(val, x, ps); }
 
 template <typename T>
-double MscnProblem<T>::getFromUd(int x) { return getFromVectorOfDoubles(x, ud); }
+T MscnProblem<T>::getFromUd(int x) { return getFromVector(x, ud); }
 template <typename T>
-double MscnProblem<T>::getFromUf(int x) { return getFromVectorOfDoubles(x, uf); }
+T MscnProblem<T>::getFromUf(int x) { return getFromVector(x, uf); }
 template <typename T>
-double MscnProblem<T>::getFromUm(int x) { return getFromVectorOfDoubles(x, um); }
+T MscnProblem<T>::getFromUm(int x) { return getFromVector(x, um); }
 template <typename T>
-double MscnProblem<T>::getFromSd(int x) { return getFromVectorOfDoubles(x, sd); }
+T MscnProblem<T>::getFromSd(int x) { return getFromVector(x, sd); }
 template <typename T>
-double MscnProblem<T>::getFromSf(int x) { return getFromVectorOfDoubles(x, sf); }
+T MscnProblem<T>::getFromSf(int x) { return getFromVector(x, sf); }
 template <typename T>
-double MscnProblem<T>::getFromSm(int x) { return getFromVectorOfDoubles(x, sm); }
+T MscnProblem<T>::getFromSm(int x) { return getFromVector(x, sm); }
 template <typename T>
-double MscnProblem<T>::getFromSs(int x) { return getFromVectorOfDoubles(x, ss); }
+T MscnProblem<T>::getFromSs(int x) { return getFromVector(x, ss); }
 template <typename T>
-double MscnProblem<T>::getFromPs(int x) { return getFromVectorOfDoubles(x, ps); }
+T MscnProblem<T>::getFromPs(int x) { return getFromVector(x, ps); }
 
 
 template <typename T>
-bool MscnProblem<T>::setInVectorOfDoubles(double val, int x, std::vector<double> &vector) {
+bool MscnProblem<T>::setInVector(T val, int x, std::vector<T> &vector) {
 	if (x < 0 || x >= vector.size()) return false;
 	vector[x] = val;
 	return true;
 }
 
 template <typename T>
-double MscnProblem<T>::getFromVectorOfDoubles(int x, std::vector<double> &vector) {
-	if (x < 0 || x >= vector.size())
-		return vector[x];
-}
-
-template <typename T>
-bool MscnProblem<T>::setInVectorOfInts(int val, int x, std::vector<int> &vector) {
-	if (x < 0 || x >= vector.size()) return false;
-	vector[x] = val;
-	return true;
-}
-
-template <typename T>
-int MscnProblem<T>::getFromVectorOfInts(int x, std::vector<int> &vector) {
+T MscnProblem<T>::getFromVector(int x, std::vector<T> &vector) {
 	if (x < 0 || x >= vector.size())
 		return vector[x];
 }
@@ -302,10 +289,18 @@ int MscnProblem<T>::eps(T x) {
 template <typename T>
 void MscnProblem<T>::generateMatrix(int width, int heigth, Matrix<MinMaxValues<T>> * minmax, Matrix<T> * x){
 
-	for (int i = 0; i < width; i++)
-		for (int j = 0; j < heigth; j++) {
-			x->setElem(rnd.generateDouble(minmax->getElem(i, j).min, minmax->getElem(i, j).max), i, j);
-		}
+	if (this->isTemplateDouble()) {
+		for (int i = 0; i < width; i++)
+			for (int j = 0; j < heigth; j++) {
+				x->setElem(rnd.generateDouble(minmax->getElem(i, j).min, minmax->getElem(i, j).max), i, j);
+			}
+	}
+	else {
+		for (int i = 0; i < width; i++)
+			for (int j = 0; j < heigth; j++) {
+				x->setElem(rnd.generateInt(minmax->getElem(i, j).min, minmax->getElem(i, j).max), i, j);
+			}
+	}
 }
 
 template <typename T>
@@ -529,6 +524,7 @@ void MscnProblem<T>::fixSolutionForConstraints(MscnSolution<T> * sol, int err){
 
 	if (err == CONSTRAINTS_NOT_ENOUGH_MATERIALS_FOR_FACTORIES) {
 		for (int i = 0; i < f; i++) {
+			bool full = false;
 			T overflow = sol->xf->sumOneRow(i) - sol->xd->sumOneCol(i);
 			//std::cout << overflow;
 			for (int j = 0; j < overflow; j++) {
@@ -537,25 +533,40 @@ void MscnProblem<T>::fixSolutionForConstraints(MscnSolution<T> * sol, int err){
 				//std::cout << j % m << " : " << sol->xf->getElem(i, j%m) << " | " << minmaxxf->getElem(i, j%m).min << " ... ";
 				if (newValForXd <= minmaxxd->getElem(j%f, i).max) {
 					sol->xd->setElem(newValForXd, j%f, i);
+					full = false;
 				}
 				else if (newValForXf >= minmaxxf->getElem(i, j%m).min) {
 					sol->xf->setElem(newValForXf, i, j%m);
+					full = false;
 					//std::cout << j % m << " : " << sol->xf->getElem(i, j%m) << " | " << minmaxxf->getElem(i, j%m).min << std::endl;
 				}
-				else overflow++;
+				else if (!full) {
+					overflow++;
+					if (j%m == 0) full = true;
+				}
 			}
 		}
 	}
 
 	if (err == CONSTRAINTS_NOT_ENOUGH_PRODUCTS_FOR_MAGAZINES) {
 		for (int i = 0; i < m; i++) {
-			int overflow = sol->xm->sumOneRow(i) - sol->xf->sumOneCol(i);
+			bool full = false;
+			T overflow = sol->xm->sumOneRow(i) - sol->xf->sumOneCol(i);
 			for (int j = 0; j < overflow; j++) {
 				T newValForXf = sol->xf->getElem(j%m, i) + 1;
 				T newValForXm = sol->xm->getElem(i, j%s) - 1;
-				if (newValForXm >= minmaxxm->getElem(i, j%s).min) sol->xm->setElem(newValForXm, i, j%s);
-				else if (newValForXf <= minmaxxf->getElem(j%m, i).max) sol->xf->setElem(newValForXf, j%m, i);
-				else overflow++;
+				if (newValForXm >= minmaxxm->getElem(i, j%s).min) {
+					sol->xm->setElem(newValForXm, i, j%s);
+					full = false;
+				}
+				else if (newValForXf <= minmaxxf->getElem(j%m, i).max) {
+					sol->xf->setElem(newValForXf, j%m, i);
+					full = false;
+				}
+				else if (!full) {
+					overflow++;
+					if (j%m == 0) full = true;
+				}
 			}
 		}
 	}
@@ -701,75 +712,8 @@ bool MscnProblem<T>::saveSolution(T * solution, std::string const &path) {
 	return true;
 }
 
-
-std::ostream& operator<<(std::ostream &os, MscnProblem<double> &p){
-
-	os << "D " << p.d << "\n" << "F " << p.f << "\n";
-	os << "M " << p.m << "\n" << "S " << p.s << "\n";
-	os << "sd \n" << p.sd << "\n";
-	os << "sf \n" << p.sf << "\n";
-	os << "sm \n" << p.sm << "\n";
-	os << "ss \n" << p.ss << "\n";
-
-	os << "cd \n";
-	for (int i = 0; i < p.cd->getHeigth(); i++) {
-		for (int j = 0; j < p.cd->getWidth(); j++) {
-			os << p.cd->getElem(i, j) << " ";
-		}
-		os << "\n";
-	}
-
-	os << "cf \n";
-	for (int i = 0; i < p.cf->getHeigth(); i++) {
-		for (int j = 0; j < p.cf->getWidth(); j++) {
-			os << p.cf->getElem(i, j) << " ";
-		}
-		os << "\n";
-	}
-
-	os << "cm \n";
-	for (int i = 0; i < p.cm->getHeigth(); i++) {
-		for (int j = 0; j < p.cm->getWidth(); j++) {
-			os << p.cm->getElem(i, j) << " ";
-		}
-		os << "\n";
-	}
-
-	os << "ud \n" << p.ud << "\n";
-	os << "uf \n" << p.uf << "\n";
-	os << "um \n" << p.um << "\n";
-
-	os << "p \n" << p.ps << "\n";
-
-	os << "minmaxxd \n";
-	for (int i = 0; i < p.minmaxxd->getHeigth(); i++) {
-		for (int j = 0; j < p.minmaxxd->getWidth(); j++) {
-			os << p.minmaxxd->getElem(i, j) << " ";
-		}
-		os << "\n";
-	}
-
-	os << "minmaxxf \n";
-	for (int i = 0; i < p.minmaxxf->getHeigth(); i++) {
-		for (int j = 0; j < p.minmaxxf->getWidth(); j++) {
-			os << p.minmaxxf->getElem(i, j) << " ";
-		}
-		os << "\n";
-	}
-
-	os << "minmaxxm \n";
-	for (int i = 0; i < p.minmaxxm->getHeigth(); i++) {
-		for (int j = 0; j < p.minmaxxm->getWidth(); j++) {
-			os << p.minmaxxm->getElem(i, j) << " ";
-		}
-		os << "\n";
-	}
-
-	return os;
-}
-
-template <typename T>
-void MscnProblem<T>::generateInstance(int instanceSeed) {
+template <>
+void MscnProblem<double>::generateInstance(int instanceSeed) {
 
 	if (instanceSeed != 0) {
 		rnd.setSeed(instanceSeed);
@@ -801,6 +745,42 @@ void MscnProblem<T>::generateInstance(int instanceSeed) {
 	for (int i = 0; i < s; i++) {
 		setInPs(rnd.generateDouble(RAND_P_MIN, RAND_P_MAX), i);
 		setInSs(rnd.generateDouble(RAND_S_MIN, RAND_S_MAX), i);
+	}
+}
+
+template <>
+void MscnProblem<int>::generateInstance(int instanceSeed) {
+
+	if (instanceSeed != 0) {
+		rnd.setSeed(instanceSeed);
+	}
+	for (int i = 0; i < d; i++) {
+		setInSd(rnd.generateInt(RAND_S_MIN, RAND_S_MAX), i);
+		setInUd(rnd.generateInt(RAND_U_MIN, RAND_U_MAX), i);
+		for (int j = 0; j < f; j++) {
+			setInCd(rnd.generateInt(RAND_C_MIN, RAND_C_MAX), i, j);
+		}
+	}
+
+	for (int i = 0; i < f; i++) {
+		setInSf(rnd.generateInt(RAND_S_MIN, RAND_S_MAX), i);
+		setInUf(rnd.generateInt(RAND_U_MIN, RAND_U_MAX), i);
+		for (int j = 0; j < m; j++) {
+			setInCf(rnd.generateInt(RAND_C_MIN, RAND_C_MAX), i, j);
+		}
+	}
+
+	for (int i = 0; i < m; i++) {
+		setInSm(rnd.generateInt(RAND_S_MIN, RAND_S_MAX), i);
+		setInUm(rnd.generateInt(RAND_U_MIN, RAND_U_MAX), i);
+		for (int j = 0; j < s; j++) {
+			setInCm(rnd.generateInt(RAND_C_MIN, RAND_C_MAX), i, j);
+		}
+	}
+
+	for (int i = 0; i < s; i++) {
+		setInPs(rnd.generateInt(RAND_P_MIN, RAND_P_MAX), i);
+		setInSs(rnd.generateInt(RAND_S_MIN, RAND_S_MAX), i);
 	}
 }
 
@@ -899,43 +879,52 @@ void MscnProblem<T>::setCorrectRandomMinMaxValues(int maxMin){
 
 }
 
-template <typename T>
-void MscnProblem<T>::setRandomMinMaxValues(int maxDist){
+template <>
+void MscnProblem<double>::setRandomMinMaxValues(int maxDist){
 
-	T min = 0;
-	T max = 0;
+	double min = 0;
+	double max = 0;
 
-	T minBound = 0;
-	T minBoundForXF = 0;
-	T minBoundForXD = 0;
-
-	for (int i = 0; i < m; i++) {
-		for (int j = 0; j < s; j++) {
-			min = rnd.generateDouble(0, maxDist);
-			max = rnd.generateDouble(maxDist, maxDist*2);
-			minmaxxm->setElem({ min, max }, i, j);
+	auto assignValues = [&](int width, int heigth, int iteration, Matrix<MinMaxValues<double>> * minmax)
+	{
+		for (int i = 0; i < heigth; i++) {
+			for (int j = 0; j < width; j++) {
+				min = rnd.generateDouble(iteration*maxDist, (iteration + 1)*maxDist);
+				max = rnd.generateDouble((iteration + 1)*maxDist, (iteration + 2)*maxDist);
+				minmax->setElem({ min, max }, i, j);
+			}
 		}
-	}
+	};
 
-	minBoundForXF /= f;
-	minBound = 0;
+	assignValues(m, s, 0, minmaxxm);
+	assignValues(f, m, 1, minmaxxf);
+	assignValues(d, f, 2, minmaxxd);
 
-	for (int i = 0; i < f; i++) {
-		for (int j = 0; j < m; j++) {
-			min = rnd.generateDouble(maxDist, maxDist*2);
-			max = rnd.generateDouble(maxDist*2, maxDist * 3);
-			minmaxxf->setElem({ min, max }, i, j);
+}
+
+template <>
+void MscnProblem<int>::setRandomMinMaxValues(int maxDist) {
+
+	int min = 0;
+	int max = 0;
+
+	int minBound = 0;
+	int minBoundForXF = 0;
+	int minBoundForXD = 0;
+
+	auto assignValues = [&](int width, int heigth, int iteration, Matrix<MinMaxValues<int>> * minmax)
+	{
+		for (int i = 0; i < heigth; i++) {
+			for (int j = 0; j < width; j++) {
+				min = rnd.generateInt(iteration*maxDist, (iteration + 1)*maxDist);
+				max = rnd.generateInt((iteration + 1)*maxDist, (iteration + 2)*maxDist);
+				minmax->setElem({ min, max }, i, j);
+			}
 		}
-	}
+	};
 
-	minBoundForXD /= d;
-
-	for (int i = 0; i < d; i++) {
-		for (int j = 0; j < f; j++) {
-			min = rnd.generateDouble(maxDist*3, maxDist * 4);
-			max = rnd.generateDouble(maxDist * 4, maxDist * 5);
-			minmaxxd->setElem({ min, max }, i, j);
-		}
-	}
+	assignValues(s, m, 0, minmaxxm);
+	assignValues(m, f, 1, minmaxxf);
+	assignValues(f, d, 2, minmaxxd);
 
 }

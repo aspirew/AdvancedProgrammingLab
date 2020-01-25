@@ -4,7 +4,7 @@ template <typename T>
 DiffInd<T>::DiffInd() {
   genotypeSize = 1;
   fitness = 0;
-  genotype = new double[genotypeSize];
+  genotype = new T[genotypeSize];
 }
 
 template <typename T>
@@ -64,7 +64,7 @@ void DiffInd<T>::copyInd(const DiffInd<T> & other) {
   delete[] genotype;
 
   genotypeSize = other.genotypeSize;
-  genotype = new double[genotypeSize];
+  genotype = new T[genotypeSize];
   for (int i = 0; i < genotypeSize; i++) {
     genotype[i] = other.genotype[i];
   }

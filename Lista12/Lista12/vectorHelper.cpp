@@ -1,8 +1,15 @@
-template <typename T>
-std::ostream& operator<<(std::ostream& os, const std::vector<T>& v)
+std::ostream& operator<<(std::ostream& os, const std::vector<double>& v)
 {
 	for (int i = 0; i < v.size(); ++i) {
-		os << v[i] << " ";
+		os << v[i] << " XD ";
+	}
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::vector<int>& v)
+{
+	for (int i = 0; i < v.size(); ++i) {
+		os << v[i] << " D: ";
 	}
 	return os;
 }

@@ -163,7 +163,7 @@ void problemsTest() {
 	((MscnProblem<double>*)problem)->generateInstance(0);
 	((MscnProblem<double>*)problem)->setRandomMinMaxValues(20);
 
-	std::cout << *((MscnProblem<double>*)problem);
+	//std::cout << *((MscnProblem<double>*)problem);
 
 	DiffEvolution<double> * evol = new DiffEvolution<double>(((MscnProblem<double>*)problem), 0.5, 0.1, ((MscnProblem<double>*)problem)->getAllMinMaxValues(), 1);
 	RandomSearch<double> * randSearch = new RandomSearch<double>(((MscnProblem<double>*)problem), 1);
@@ -223,7 +223,7 @@ void problemsTestForInt() {
 	((MscnProblem<int>*)problem)->generateInstance(0);
 	((MscnProblem<int>*)problem)->setRandomMinMaxValues(20);
 
-	std::cout << *((MscnProblem<double>*)problem);
+	//std::cout << *((MscnProblem<int>*)problem);
 
 	DiffEvolution<int> * evol = new DiffEvolution<int>(((MscnProblem<int>*)problem), 0.5, 0.1, ((MscnProblem<int>*)problem)->getAllMinMaxValues(), 1);
 	RandomSearch<int> * randSearch = new RandomSearch<int>(((MscnProblem<int>*)problem), 1);

@@ -11,8 +11,8 @@ class DiffEvolution : public Optimizer<T> {
 public:
 
   DiffEvolution(std::vector<MinMaxValues<T>> allMinMaxValues);
-  DiffEvolution(Problem<T> * problem, double cp, double dw, std::vector<MinMaxValues<T>> allMinMaxValues, int time);
-  DiffEvolution(Problem<T> * problem, int seed, double cp, double dw, std::vector<MinMaxValues<T>> allMinMaxValues, int time);
+  DiffEvolution(Problem<T> * problem, double cp, T dw, std::vector<MinMaxValues<T>> allMinMaxValues, int time);
+  DiffEvolution(Problem<T> * problem, int seed, double cp, T dw, std::vector<MinMaxValues<T>> allMinMaxValues, int time);
   ~DiffEvolution() { }
 
 DiffInd<T> * getBestFound();
@@ -35,7 +35,7 @@ private:
   DiffInd<T> getRandomInd();
 
   double crossProb;
-  double diffWeigth;
+  T diffWeigth;
 
   std::vector<MinMaxValues<T>> allMinMaxValues;
 

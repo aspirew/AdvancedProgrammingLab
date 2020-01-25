@@ -20,7 +20,7 @@ public:
 	virtual T * generateRandSolution() = 0;
 	virtual int getSize() = 0;
 
-private:
+protected:
 
 	bool isCorrectTemplate() { return isTemplateDouble() || isTemplateInt(); }
 	bool isTemplateDouble();

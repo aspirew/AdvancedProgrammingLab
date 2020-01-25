@@ -7,7 +7,7 @@ template <typename T>
 DiffEvolution<T>::DiffEvolution(std::vector<MinMaxValues<T>> allMinMaxValues) : Optimizer<T>() {
 	crossProb = DEFAULT_CROSS_PROB;
 	diffWeigth = DIFF_WEIGTH;
-  this->problem = new MscnProblem();
+  this->problem = new MscnProblem<T>();
   r = Random();
   crossProb = DEFAULT_CROSS_PROB;
   this->allMinMaxValues = allMinMaxValues;
@@ -16,7 +16,7 @@ DiffEvolution<T>::DiffEvolution(std::vector<MinMaxValues<T>> allMinMaxValues) : 
 }
 
 template <typename T>
-DiffEvolution<T>::DiffEvolution(Problem<T> * problem, double cp, double dw, std::vector<MinMaxValues<T>> allMinMaxValues, int time) : Optimizer<T>(problem, time) {
+DiffEvolution<T>::DiffEvolution(Problem<T> * problem, double cp, T dw, std::vector<MinMaxValues<T>> allMinMaxValues, int time) : Optimizer<T>(problem, time) {
 
 	this->allMinMaxValues = allMinMaxValues;
 
@@ -34,7 +34,7 @@ DiffEvolution<T>::DiffEvolution(Problem<T> * problem, double cp, double dw, std:
 }
 
 template <typename T>
-DiffEvolution<T>::DiffEvolution(Problem<T> * problem, int seed, double cp, double dw, std::vector<MinMaxValues<T>> allMinMaxValues, int time) : Optimizer<T>(problem, time) {
+DiffEvolution<T>::DiffEvolution(Problem<T> * problem, int seed, double cp, T dw, std::vector<MinMaxValues<T>> allMinMaxValues, int time) : Optimizer<T>(problem, time) {
 
 	this->allMinMaxValues = allMinMaxValues;
 
@@ -98,6 +98,7 @@ DiffInd<T> * DiffEvolution<T>::getBestFound(int populationNumber) {
           population[i] = newInd;
         }
     }
+	//std::cout << "1";
   } while (!this->timer.hasTimePassed());
 
   double bestSol = 0;
@@ -135,13 +136,12 @@ template <typename T>
 std::vector<DiffInd<T>> DiffEvolution<T>::initPopulation(int populationNumber) {
   std::vector<DiffInd<T>> population(populationNumber);
   //RandomSearch rs = RandomSearch(problem);
-
   for (int i = 0; i < populationNumber; i++) {
     //MscnSolution sol = rs.findBestSolution(0, 1);
 	T * tmpSol = this->problem->generateRandSolution();
     double tmpFit = this->problem->getQuality(tmpSol, this->problem->getSize());
     population[i] = DiffInd<T>(tmpFit, tmpSol, this->problem->getSize());
-
+	
   }
 
   return population;

@@ -17,11 +17,25 @@ Matrix<T>::Matrix(int heigth, int width, std::istream &is) {
 		}
 }
 
-Matrix<MinMaxValues<double>>::Matrix(int heigth, int width, std::istream &is) { // ????????????
+Matrix<MinMaxValues<double>>::Matrix(int heigth, int width, std::istream &is) {
 	initializeMatrix(heigth, width);
 
 	double min = 0;
 	double max = 0;
+
+	for (int i = 0; i < heigth; i++)
+		for (int j = 0; j < width; j++) {
+			is >> min;
+			is >> max;
+			setElem({ min, max }, i, j);
+		}
+}
+
+Matrix<MinMaxValues<int>>::Matrix(int heigth, int width, std::istream &is) {
+	initializeMatrix(heigth, width);
+
+	int min = 0;
+	int max = 0;
 
 	for (int i = 0; i < heigth; i++)
 		for (int j = 0; j < width; j++) {
@@ -179,7 +193,7 @@ T Matrix<T>::sumWholeMat() {
 
 template <typename T>
 T * Matrix<T>::toTypeTable() {
-	double * res = new double[heigth*width];
+	T * res = new T[heigth*width];
 	for (int i = 0; i < heigth; i++) {
 		for (int j = 0; j < width; j++) {
 			res[i*width+j] = getElem(i, j);
