@@ -86,12 +86,12 @@ DiffInd<T> * DiffEvolution<T>::getBestFound(int populationNumber) {
 			  newVal = baseInd.getFromGenotype(geneOffset) + diffWeigth * (addInd0.getFromGenotype(geneOffset) - addInd1.getFromGenotype(geneOffset));
 			  if (!isCorrectValue(newVal, geneOffset)) newVal = fixValue(newVal, geneOffset);
 			  newInd.setGenotypeAt(geneOffset, newVal);
-		  }	  
+		  }
 		  else {
 			  newInd.setGenotypeAt(geneOffset, population[i].getFromGenotype(geneOffset));
 		  }
 	  }
-        newInd.setFitness(this->problem->getQuality(newInd.getGenotype(), genotypeSize));
+		 newInd.setFitness(this->problem->getQuality(newInd.getGenotype(), genotypeSize));
 		//std::cout << problem->constraintsSatisfied(newInd.getGenotype(), genotypeSize);
 		//std::cout << population[i].getFitness() << " | " << newInd.getFitness() << std::endl;
         if (newInd.getFitness() >= population[i].getFitness()) {    
@@ -141,7 +141,6 @@ std::vector<DiffInd<T>> DiffEvolution<T>::initPopulation(int populationNumber) {
 	T * tmpSol = this->problem->generateRandSolution();
     double tmpFit = this->problem->getQuality(tmpSol, this->problem->getSize());
     population[i] = DiffInd<T>(tmpFit, tmpSol, this->problem->getSize());
-	
   }
 
   return population;

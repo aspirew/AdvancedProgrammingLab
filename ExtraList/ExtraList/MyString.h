@@ -21,6 +21,7 @@ public:
 
 	MyString & operator+=(const char * newWord);
 	MyString & operator+=(const MyString &other);
+	MyString & operator*=(int num);
 	char& operator[] (int index);
 	operator bool() const;
 

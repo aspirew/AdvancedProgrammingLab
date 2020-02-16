@@ -19,11 +19,12 @@ MyString::MyString(const MyString &other) {
 }
 
 MyString::~MyString(){
-	delete[] word;
+	if(word != NULL)
+		delete[] word;
 }
 
 MyString & MyString::operator=(const char * newWord) {
-	delete[] word;
+	if (word != NULL) delete[] word;
 	length = strlen(newWord);
 	word = new char[length];
 	strncpy(word, newWord, length);
@@ -32,7 +33,7 @@ MyString & MyString::operator=(const char * newWord) {
 
 MyString & MyString::operator=(const MyString &other) {
 	if (this != &other) {
-		delete[] word;
+		if (word != NULL) delete[] word;
 		length = other.length;
 		word = new char[length];
 		strncpy(word, other.word, length);
@@ -75,6 +76,19 @@ MyString & MyString::operator+=(const char * newWord) {
 
 MyString & MyString::operator+=(const MyString &other) {
 	*this = *this + other;
+	return *this;
+}
+
+MyString & MyString::operator*=(int num) {
+
+	MyString res;
+	if (word == NULL || num < 1) return res;
+	res.length = this->length * num;
+	res.word = new char[res.length];
+	for (int i = 0; i < num; i++) {
+		strncpy(res.word + (this->length * i), this->word, this->length);
+	}
+	*this = res;
 	return *this;
 }
 

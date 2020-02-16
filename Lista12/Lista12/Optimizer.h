@@ -1,6 +1,7 @@
 #pragma once
 #include "Problem.h"
 #include "Timer.h"
+#include "MyInt.h"
 
 template <typename T>
 class Optimizer {
@@ -39,9 +40,10 @@ protected:
 
 private:
 
-	bool isCorrectTemplate() { return isTemplateDouble() || isTemplateInt(); }
+	bool isCorrectTemplate() { return isTemplateDouble() || isTemplateInt() || isTemplateMyInt(); }
 	bool isTemplateDouble();
 	bool isTemplateInt();
+	bool isTemplateMyInt();
 
 };
 
@@ -65,6 +67,18 @@ inline bool Optimizer<T>::isTemplateInt()
 
 template<>
 inline bool Optimizer<int>::isTemplateInt()
+{
+	return true;
+}
+
+template<typename T>
+inline bool Optimizer<T>::isTemplateMyInt()
+{
+	return false;
+}
+
+template<>
+inline bool Optimizer<MyInt>::isTemplateMyInt()
 {
 	return true;
 }

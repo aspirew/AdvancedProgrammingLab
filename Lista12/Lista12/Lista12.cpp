@@ -6,6 +6,7 @@
 #include "DiffEvolution.cpp"
 #include "EasyAlg.h"
 #include "dummyProblem.h"
+#include "MyInt.h"
 //#include "vld.h"
 
 double * solution(int size) {
@@ -163,7 +164,7 @@ void problemsTest() {
 	((MscnProblem<double>*)problem)->generateInstance(0);
 	((MscnProblem<double>*)problem)->setRandomMinMaxValues(20);
 
-	//std::cout << *((MscnProblem<double>*)problem);
+	std::cout << *((MscnProblem<double>*)problem);
 
 	DiffEvolution<double> * evol = new DiffEvolution<double>(((MscnProblem<double>*)problem), 0.5, 0.1, ((MscnProblem<double>*)problem)->getAllMinMaxValues(), 1);
 	RandomSearch<double> * randSearch = new RandomSearch<double>(((MscnProblem<double>*)problem), 1);
@@ -212,7 +213,9 @@ void easyProblem() {
 void wrongProblemsTest() {
 
 	Problem<float> * problem = new dummyProblem<float>;
-	EasyAlg<std::string> * easy = new EasyAlg<std::string>(5);
+	EasyAlg<double> * easy = new EasyAlg<double>(5);
+
+	//easy->solveProblem(problem);
 
 }
 
@@ -223,7 +226,7 @@ void problemsTestForInt() {
 	((MscnProblem<int>*)problem)->generateInstance(0);
 	((MscnProblem<int>*)problem)->setRandomMinMaxValues(20);
 
-	//std::cout << *((MscnProblem<int>*)problem);
+	std::cout << *((MscnProblem<int>*)problem);
 
 	DiffEvolution<int> * evol = new DiffEvolution<int>(((MscnProblem<int>*)problem), 0.5, 0.1, ((MscnProblem<int>*)problem)->getAllMinMaxValues(), 1);
 	RandomSearch<int> * randSearch = new RandomSearch<int>(((MscnProblem<int>*)problem), 1);
@@ -250,6 +253,40 @@ void problemsTestForInt() {
 	delete problem;
 }
 
+void problemsTestForMyInt() {
+	Problem<MyInt> * problem = new MscnProblem<MyInt>();
+
+	((MscnProblem<MyInt>*)problem)->setRandomElementsCount(2);
+	((MscnProblem<MyInt>*)problem)->generateInstance(0);
+	((MscnProblem<MyInt>*)problem)->setRandomMinMaxValues(20);
+
+	std::cout << *((MscnProblem<MyInt>*)problem);
+
+	DiffEvolution<MyInt> * evol = new DiffEvolution<MyInt>(((MscnProblem<MyInt>*)problem), 0.5, 0.1, ((MscnProblem<MyInt>*)problem)->getAllMinMaxValues(), 1);
+	RandomSearch<MyInt> * randSearch = new RandomSearch<MyInt>(((MscnProblem<MyInt>*)problem), 1);
+
+	//std::cout << "DiffEvol: " << optimizerTest(evol) << std::endl;
+	//std::cout << "RandSearch: " << optimizerTest(randSearch);
+
+	std::cout << "DiffEvol: " << std::endl;
+	MyInt * solvedProblem = solveProblem(evol, problem);
+	for (int i = 0; i < problem->getSize(); i++) {
+		std::cout << solvedProblem[i] << " ; ";
+	}
+	delete solvedProblem;
+	std::cout << std::endl;
+	std::cout << "RandSearch: " << std::endl;
+	solvedProblem = solveProblem(randSearch, problem);
+	for (int i = 0; i < problem->getSize(); i++) {
+		std::cout << solvedProblem[i] << " ; ";
+	}
+
+	delete solvedProblem;
+	delete evol;
+	delete randSearch;
+	delete problem;
+}
+
 int main() {
 	//createAndSaveProblem();
 	//createAndSaveProblemRandom();
@@ -258,10 +295,14 @@ int main() {
 	//diffEvolTest(10000, 1);
 	//randomSearchTest(1);
 
-	//problemsTest();
 	//easyProblem();
 
-	problemsTestForInt();
+	//problemsTestForInt();
+	//std::cout << std::endl;
+	//problemsTest();
+
+	problemsTestForMyInt();
+	
 	//wrongProblemsTest();
 
 }

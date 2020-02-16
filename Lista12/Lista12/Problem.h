@@ -1,6 +1,7 @@
 #pragma once
 #include "CONST_H.h"
 #include "Random.h"
+#include "MyInt.h"
 
 template <typename T>
 class Problem {
@@ -22,9 +23,10 @@ public:
 
 protected:
 
-	bool isCorrectTemplate() { return isTemplateDouble() || isTemplateInt(); }
+	bool isCorrectTemplate() { return isTemplateDouble() || isTemplateInt() || isTemplateMyInt(); }
 	bool isTemplateDouble();
 	bool isTemplateInt();
+	bool isTemplateMyInt();
 
 
 };
@@ -49,6 +51,18 @@ inline bool Problem<T>::isTemplateInt()
 
 template<>
 inline bool Problem<int>::isTemplateInt()
+{
+	return true;
+}
+
+template<typename T>
+inline bool Problem<T>::isTemplateMyInt()
+{
+	return false;
+}
+
+template<>
+inline bool Problem<MyInt>::isTemplateMyInt()
 {
 	return true;
 }

@@ -1,7 +1,9 @@
+#include "MyInt.h"
+
 std::ostream& operator<<(std::ostream& os, const std::vector<double>& v)
 {
 	for (int i = 0; i < v.size(); ++i) {
-		os << v[i] << " XD ";
+		os << v[i] << " ";
 	}
 	return os;
 }
@@ -9,7 +11,15 @@ std::ostream& operator<<(std::ostream& os, const std::vector<double>& v)
 std::ostream& operator<<(std::ostream& os, const std::vector<int>& v)
 {
 	for (int i = 0; i < v.size(); ++i) {
-		os << v[i] << " D: ";
+		os << v[i] << " ";
+	}
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::vector<MyInt>& v)
+{
+	for (int i = 0; i < v.size(); ++i) {
+		os << v[i] << " ";
 	}
 	return os;
 }

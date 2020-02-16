@@ -571,6 +571,42 @@ void MscnProblem<T>::fixSolutionForConstraints(MscnSolution<T> * sol, int err){
 		}
 	}
 
+
+
+}
+
+template<typename T>
+void MscnProblem<T>::genInstInt()
+{
+
+	for (int i = 0; i < d; i++) {
+		setInSd(rnd.generateInt(RAND_S_MIN, RAND_S_MAX), i);
+		setInUd(rnd.generateInt(RAND_U_MIN, RAND_U_MAX), i);
+		for (int j = 0; j < f; j++) {
+			setInCd(rnd.generateInt(RAND_C_MIN, RAND_C_MAX), i, j);
+		}
+	}
+
+	for (int i = 0; i < f; i++) {
+		setInSf(rnd.generateInt(RAND_S_MIN, RAND_S_MAX), i);
+		setInUf(rnd.generateInt(RAND_U_MIN, RAND_U_MAX), i);
+		for (int j = 0; j < m; j++) {
+			setInCf(rnd.generateInt(RAND_C_MIN, RAND_C_MAX), i, j);
+		}
+	}
+
+	for (int i = 0; i < m; i++) {
+		setInSm(rnd.generateInt(RAND_S_MIN, RAND_S_MAX), i);
+		setInUm(rnd.generateInt(RAND_U_MIN, RAND_U_MAX), i);
+		for (int j = 0; j < s; j++) {
+			setInCm(rnd.generateInt(RAND_C_MIN, RAND_C_MAX), i, j);
+		}
+	}
+
+	for (int i = 0; i < s; i++) {
+		setInPs(rnd.generateInt(RAND_P_MIN, RAND_P_MAX), i);
+		setInSs(rnd.generateInt(RAND_S_MIN, RAND_S_MAX), i);
+	}
 }
 
 template <typename T>
@@ -749,39 +785,21 @@ void MscnProblem<double>::generateInstance(int instanceSeed) {
 }
 
 template <>
+void MscnProblem<MyInt>::generateInstance(int instanceSeed) {
+	if (instanceSeed != 0) {
+		rnd.setSeed(instanceSeed);
+	}
+	genInstInt();
+}
+
+template <>
 void MscnProblem<int>::generateInstance(int instanceSeed) {
 
 	if (instanceSeed != 0) {
 		rnd.setSeed(instanceSeed);
 	}
-	for (int i = 0; i < d; i++) {
-		setInSd(rnd.generateInt(RAND_S_MIN, RAND_S_MAX), i);
-		setInUd(rnd.generateInt(RAND_U_MIN, RAND_U_MAX), i);
-		for (int j = 0; j < f; j++) {
-			setInCd(rnd.generateInt(RAND_C_MIN, RAND_C_MAX), i, j);
-		}
-	}
+	genInstInt();
 
-	for (int i = 0; i < f; i++) {
-		setInSf(rnd.generateInt(RAND_S_MIN, RAND_S_MAX), i);
-		setInUf(rnd.generateInt(RAND_U_MIN, RAND_U_MAX), i);
-		for (int j = 0; j < m; j++) {
-			setInCf(rnd.generateInt(RAND_C_MIN, RAND_C_MAX), i, j);
-		}
-	}
-
-	for (int i = 0; i < m; i++) {
-		setInSm(rnd.generateInt(RAND_S_MIN, RAND_S_MAX), i);
-		setInUm(rnd.generateInt(RAND_U_MIN, RAND_U_MAX), i);
-		for (int j = 0; j < s; j++) {
-			setInCm(rnd.generateInt(RAND_C_MIN, RAND_C_MAX), i, j);
-		}
-	}
-
-	for (int i = 0; i < s; i++) {
-		setInPs(rnd.generateInt(RAND_P_MIN, RAND_P_MAX), i);
-		setInSs(rnd.generateInt(RAND_S_MIN, RAND_S_MAX), i);
-	}
 }
 
 template <typename T>
@@ -896,9 +914,9 @@ void MscnProblem<double>::setRandomMinMaxValues(int maxDist){
 		}
 	};
 
-	assignValues(m, s, 0, minmaxxm);
-	assignValues(f, m, 1, minmaxxf);
-	assignValues(d, f, 2, minmaxxd);
+	assignValues(s, m, 0, minmaxxm);
+	assignValues(m, f, 1, minmaxxf);
+	assignValues(f, d, 2, minmaxxd);
 
 }
 
@@ -908,11 +926,30 @@ void MscnProblem<int>::setRandomMinMaxValues(int maxDist) {
 	int min = 0;
 	int max = 0;
 
-	int minBound = 0;
-	int minBoundForXF = 0;
-	int minBoundForXD = 0;
-
 	auto assignValues = [&](int width, int heigth, int iteration, Matrix<MinMaxValues<int>> * minmax)
+	{
+		for (int i = 0; i < heigth; i++) {
+			for (int j = 0; j < width; j++) {
+				min = rnd.generateInt(iteration*maxDist, (iteration + 1)*maxDist);
+				max = rnd.generateInt((iteration + 1)*maxDist, (iteration + 2)*maxDist);
+				minmax->setElem({ min, max }, i, j);
+			}
+		}
+	};
+
+	assignValues(s, m, 0, minmaxxm);
+	assignValues(m, f, 1, minmaxxf);
+	assignValues(f, d, 2, minmaxxd);
+
+}
+
+template <>
+void MscnProblem<MyInt>::setRandomMinMaxValues(int maxDist) {
+
+	MyInt min = 0;
+	MyInt max = 0;
+
+	auto assignValues = [&](int width, int heigth, int iteration, Matrix<MinMaxValues<MyInt>> * minmax)
 	{
 		for (int i = 0; i < heigth; i++) {
 			for (int j = 0; j < width; j++) {

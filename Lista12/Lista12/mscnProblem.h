@@ -171,4 +171,6 @@ private:
 	void fixSolution(T *solution, int arrSize);
 	void fixSolutionForConstraints(MscnSolution<T> * sol, int err);
 
+	void genInstInt();
+
 };
